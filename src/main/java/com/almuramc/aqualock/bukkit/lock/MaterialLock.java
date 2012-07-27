@@ -39,9 +39,9 @@ public class MaterialLock implements Lock {
 	private String owner;
 	private List<String> coowners;
 	private int x, y, z, id;
-	private short data;
+	private byte data;
 
-	public MaterialLock(String owner, List<String> coowners, int x, int y, int z, Material type, short data) {
+	public MaterialLock(String owner, List<String> coowners, int x, int y, int z, Material type, byte data) {
 		this.owner = owner;
 		this.coowners = coowners;
 		this.x = x;
@@ -90,7 +90,7 @@ public class MaterialLock implements Lock {
 		return Material.getMaterial(id);
 	}
 
-	public short getData() {
+	public byte getData() {
 		return this.data;
 	}
 
