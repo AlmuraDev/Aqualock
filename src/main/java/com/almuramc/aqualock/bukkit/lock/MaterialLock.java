@@ -96,11 +96,29 @@ public class MaterialLock implements Lock {
 
 	@Override
 	public boolean equals(Object obj) {
+		if (obj == null || !(obj instanceof MaterialLock)) {
+			return false;
+		}
+		MaterialLock mobj = (MaterialLock) obj;
+		if (this.owner.equals(mobj.owner) && this.coowners.equals(mobj.coowners) && this.x == mobj.x &&
+				this.y == mobj.y && this.z == mobj.z && this.id == mobj.id &&
+				this.data == mobj.data) {
+			return true;
+		}
 		return false;
 	}
 
 	@Override
 	public String toString() {
-		return "";
+		StringBuilder out = new StringBuilder();
+		out
+				.append("owner: " + this.owner)
+				.append("coowners:" + this.coowners.toString())
+				.append("x: " + this.x)
+				.append("y: " + this.y)
+				.append("z: " + this.z)
+				.append("material id: " + this.id)
+				.append("data: " + this.data);
+		return out.toString();
 	}
 }
