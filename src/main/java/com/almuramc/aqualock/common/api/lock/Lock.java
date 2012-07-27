@@ -26,5 +26,54 @@
  */
 package com.almuramc.aqualock.common.api.lock;
 
+import java.util.List;
+
+/**
+ * The blueprint for an object representing a lock. Implementations are welcome to provide their
+ * own characteristics.
+ */
 public interface Lock {
+	/**
+	 * Gets the owner of this lock
+	 * @return The name of the owner
+	 */
+	public String getOwner();
+
+	/**
+	 * Sets the owner of this lock.
+	 * @param owner The name of the new owner of this lock.
+	 */
+	public void setOwner(String owner);
+
+	/**
+	 * Gets the Co-Owners of this lock. A null value indicates
+	 * that the lock is available to everyone.
+	 * @return List of names representing co-owners or null for everyone
+	 */
+	public List getCoOwners();
+
+	/**
+	 * Sets the Co-Owners of this lock. A null value indicates
+	 * that the lock will be available to everyone.
+	 * @param owner List of names representing co-owners
+	 */
+	public void setCoOwners(List<String> owner);
+
+	/**
+	 * Gets the x coordinate of the position of this lock
+	 * @return The x coordinate of this lock's position
+	 */
+	public int getX();
+
+	/**
+	 * Gets the y coordinate of the position of this lock
+	 * @return The y coordinate of this lock's position
+	 */
+	public int getY();
+
+	/**
+	 * Gets the z coordinate of the position of this lock
+	 * @return The z coordinate of this lock's position
+	 */
+	public int getZ();
 }
