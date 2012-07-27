@@ -26,13 +26,14 @@
  */
 package com.almuramc.aqualock.common.api.lock;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * The blueprint for an object representing a lock. Implementations are welcome to provide their
  * own characteristics.
  */
-public interface Lock {
+public interface Lock extends Serializable {
 	/**
 	 * Gets the owner of this lock
 	 * @return The name of the owner
@@ -55,24 +56,24 @@ public interface Lock {
 	/**
 	 * Sets the Co-Owners of this lock. A null value indicates
 	 * that the lock will be available to everyone.
-	 * @param owner List of names representing co-owners
+	 * @param coowners List of names representing co-owners
 	 */
-	public void setCoOwners(List<String> owner);
+	public void setCoOwners(List<String> coowners);
 
 	/**
-	 * Gets the x coordinate of the position of this lock
+	 * Gets the x coordinate of the position of this lock.
 	 * @return The x coordinate of this lock's position
 	 */
 	public int getX();
 
 	/**
-	 * Gets the y coordinate of the position of this lock
+	 * Gets the y coordinate of the position of this lock.
 	 * @return The y coordinate of this lock's position
 	 */
 	public int getY();
 
 	/**
-	 * Gets the z coordinate of the position of this lock
+	 * Gets the z coordinate of the position of this lock.
 	 * @return The z coordinate of this lock's position
 	 */
 	public int getZ();

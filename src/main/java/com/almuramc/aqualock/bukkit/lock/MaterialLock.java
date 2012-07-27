@@ -38,8 +38,7 @@ import org.bukkit.Material;
 public class MaterialLock implements Lock {
 	private String owner;
 	private List<String> coowners;
-	private int x, y, z;
-	private Material type;
+	private int x, y, z, id;
 	private short data;
 
 	public MaterialLock(String owner, List<String> coowners, int x, int y, int z, Material type, short data) {
@@ -48,7 +47,7 @@ public class MaterialLock implements Lock {
 		this.x = x;
 		this.y = y;
 		this.z = z;
-		this.type = type;
+		this.id = type.getId();
 		this.data = data;
 	}
 
@@ -68,7 +67,7 @@ public class MaterialLock implements Lock {
 	}
 
 	@Override
-	public void setCoOwners(List<String> owner) {
+	public void setCoOwners(List<String> coowners) {
 		this.coowners = coowners;
 	}
 
@@ -85,5 +84,23 @@ public class MaterialLock implements Lock {
 	@Override
 	public int getZ() {
 		return z;
+	}
+
+	public Material getType() {
+		return Material.getMaterial(id);
+	}
+
+	public short getData() {
+		return this.data;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return false;
+	}
+
+	@Override
+	public String toString() {
+		return "";
 	}
 }
