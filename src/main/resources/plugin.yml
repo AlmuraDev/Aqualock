@@ -1,0 +1,9 @@
+name: ${project.name}
+version: ${buildNumber}
+description: ${project.description}
+author: ${project.organization.name}
+website: ${project.organization.url}
+
+main: com.almuramc.aqualock.AquaLockPlugin
+depend: [Spout, Vault]
+load: POSTWORLD
