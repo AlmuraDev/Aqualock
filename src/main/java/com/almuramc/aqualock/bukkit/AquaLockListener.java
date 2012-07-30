@@ -28,5 +28,5 @@ package com.almuramc.aqualock.bukkit;
 
 import org.bukkit.event.Listener;
 
-public class AquaLockListener implements Listener {
+public class AqualockListener implements Listener {
 }

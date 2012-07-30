@@ -26,5 +26,5 @@
  */
 package com.almuramc.aqualock.bukkit.configuration;
 
-public class AquaLockConfiguration {
+public class AqualockConfiguration {
 }

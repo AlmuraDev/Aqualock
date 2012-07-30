@@ -26,5 +26,5 @@
  */
 package com.almuramc.aqualock.bukkit.display;
 
-public class AquaLockPanel {
+public class AquaPanel {
 }

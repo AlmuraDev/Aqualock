@@ -28,5 +28,5 @@ package com.almuramc.aqualock.bukkit;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class AquaLockPlugin extends JavaPlugin {
+public class AqualockPlugin extends JavaPlugin {
 }
