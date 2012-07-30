@@ -26,11 +26,13 @@
  */
 package com.almuramc.aqualock.common.api.registry;
 
+import java.util.Collection;
+
 import com.almuramc.aqualock.common.api.lock.Lock;
 
 public interface Registry {
-	public void initialize();
 	public Registry addLock(Lock lock);
+	public Registry addLocks(Collection<Lock> locks);
 	public Registry removeLock(Lock lock);
-	public Registry addLocks(Lock... locks);
+	public Registry removeLocks(Collection<Lock> locks);
 }

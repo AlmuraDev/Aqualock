@@ -26,23 +26,88 @@
  */
 package com.almuramc.aqualock.common;
 
+import java.util.Collection;
+import java.util.HashSet;
+
 import com.almuramc.aqualock.common.api.lock.Lock;
 import com.almuramc.aqualock.common.api.registry.Registry;
 
 public class CommonLockRegistry implements Registry {
+	private final HashSet<Lock> registry;
 
-	@Override
-	public void initialize() {
-		//To change body of implemented methods use File | Settings | File Templates.
+	public CommonLockRegistry() {
+		registry = new HashSet<Lock>();
 	}
 
 	@Override
 	public Registry addLock(Lock lock) {
-		return null;  //To change body of implemented methods use File | Settings | File Templates.
+		if (lock == null) {
+			throw new NullPointerException("Trying to add a null lock to the registry!");
+		}
+		if (!registry.contains(lock)) {
+			registry.add(lock);
+		}
+		return this;
+	}
+
+	@Override
+	public Registry addLocks(Collection<Lock> locks) {
+		if (locks == null) {
+			throw new NullPointerException("Trying to add a null collection of locks to the registry!");
+		}
+
+		//Registry either contains all of the locks or none of the locks
+		if (registry.containsAll(locks)) {
+			return this;
+		} else if (!registry.containsAll(locks)) {
+			registry.addAll(locks);
+			return this;
+		}
+
+		//Collection contains some locks that the registry doesn't, loop through and add them.
+		for (Lock lock : locks) {
+			if (registry.contains(lock)) {
+				continue;
+			}
+			registry.add(lock);
+		}
+
+		return this;
 	}
 
 	@Override
 	public Registry removeLock(Lock lock) {
-		return null;  //To change body of implemented methods use File | Settings | File Templates.
+		if (lock == null) {
+			throw new NullPointerException("Trying to remove a null lock from the registry!");
+		}
+		if (registry.contains(lock)) {
+			registry.remove(lock);
+		}
+		return this;
+	}
+
+	@Override
+	public Registry removeLocks(Collection<Lock> locks) {
+		if (locks == null) {
+			throw new NullPointerException("Trying to remove a null collection of locks from the registry!");
+		}
+
+		//Registry either doesn't contain any of the locks or all the locks
+		if (!registry.containsAll(locks)) {
+			return this;
+		} else if (registry.containsAll(locks)) {
+			registry.removeAll(locks);
+			return this;
+		}
+
+		//Registry contains some of the locks, loop through and remove them
+		for (Lock lock : locks) {
+			if (!registry.contains(lock)) {
+				continue;
+			}
+			registry.remove(lock);
+		}
+
+		return this;
 	}
 }
