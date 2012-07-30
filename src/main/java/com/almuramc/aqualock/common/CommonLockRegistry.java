@@ -1,10 +1,10 @@
 /*
- * This file is part of AquaLock.
+ * This file is part of Aqualock.
  *
  * Copyright (c) 2012, AlmuraDev <http://www.almuramc.com/>
- * AquaLock is licensed under the Almura Development License.
+ * Aqualock is licensed under the Almura Development License.
  *
- * AquaLock is free software: you can redistribute it and/or modify
+ * Aqualock is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
@@ -13,7 +13,7 @@
  * are hereby licensed under the GNU Lesser Public License, as described
  * in Almura Development License.
  *
- * AquaLock is distributed in the hope that it will be useful,
+ * Aqualock is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
@@ -29,8 +29,8 @@ package com.almuramc.aqualock.common;
 import java.util.Collection;
 import java.util.HashSet;
 
-import com.almuramc.aqualock.common.api.lock.Lock;
-import com.almuramc.aqualock.common.api.registry.Registry;
+import com.almuramc.bolt.lock.Lock;
+import com.almuramc.bolt.registry.Registry;
 
 public class CommonLockRegistry implements Registry {
 	private final HashSet<Lock> registry;
