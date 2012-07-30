@@ -44,9 +44,7 @@ public class CommonLockRegistry implements Registry {
 		if (lock == null) {
 			throw new NullPointerException("Trying to add a null lock to the registry!");
 		}
-		if (!registry.contains(lock)) {
-			registry.add(lock);
-		}
+		registry.add(lock);
 		return this;
 	}
 
@@ -55,23 +53,7 @@ public class CommonLockRegistry implements Registry {
 		if (locks == null) {
 			throw new NullPointerException("Trying to add a null collection of locks to the registry!");
 		}
-
-		//Registry either contains all of the locks or none of the locks
-		if (registry.containsAll(locks)) {
-			return this;
-		} else if (!registry.containsAll(locks)) {
-			registry.addAll(locks);
-			return this;
-		}
-
-		//Collection contains some locks that the registry doesn't, loop through and add them.
-		for (Lock lock : locks) {
-			if (registry.contains(lock)) {
-				continue;
-			}
-			registry.add(lock);
-		}
-
+		registry.addAll(locks);
 		return this;
 	}
 
@@ -80,9 +62,7 @@ public class CommonLockRegistry implements Registry {
 		if (lock == null) {
 			throw new NullPointerException("Trying to remove a null lock from the registry!");
 		}
-		if (registry.contains(lock)) {
-			registry.remove(lock);
-		}
+		registry.remove(lock);
 		return this;
 	}
 
@@ -91,23 +71,7 @@ public class CommonLockRegistry implements Registry {
 		if (locks == null) {
 			throw new NullPointerException("Trying to remove a null collection of locks from the registry!");
 		}
-
-		//Registry either doesn't contain any of the locks or all the locks
-		if (!registry.containsAll(locks)) {
-			return this;
-		} else if (registry.containsAll(locks)) {
-			registry.removeAll(locks);
-			return this;
-		}
-
-		//Registry contains some of the locks, loop through and remove them
-		for (Lock lock : locks) {
-			if (!registry.contains(lock)) {
-				continue;
-			}
-			registry.remove(lock);
-		}
-
+		registry.removeAll(locks);
 		return this;
 	}
 }
