@@ -35,7 +35,7 @@ import org.bukkit.Material;
 /**
  * The basic Bukkit-like Material lock.
  */
-public class MaterialLock implements Lock {
+public class MaterialLock extends Lock {
 	private String owner;
 	private List<String> coowners;
 	private int x, y, z, id;

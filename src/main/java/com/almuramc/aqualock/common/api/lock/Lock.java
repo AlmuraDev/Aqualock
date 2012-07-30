@@ -33,48 +33,65 @@ import java.util.List;
  * The blueprint for an object representing a lock. Implementations are welcome to provide their
  * own characteristics.
  */
-public interface Lock extends Serializable {
+public abstract class Lock implements Serializable {
 	/**
 	 * Gets the owner of this lock
 	 * @return The name of the owner
 	 */
-	public String getOwner();
+	public abstract String getOwner();
 
 	/**
 	 * Sets the owner of this lock.
 	 * @param owner The name of the new owner of this lock.
 	 */
-	public void setOwner(String owner);
+	public abstract void setOwner(String owner);
 
 	/**
 	 * Gets the Co-Owners of this lock. A null value indicates
 	 * that the lock is available to everyone.
 	 * @return List of names representing co-owners or null for everyone
 	 */
-	public List getCoOwners();
+	public abstract List getCoOwners();
 
 	/**
 	 * Sets the Co-Owners of this lock. A null value indicates
 	 * that the lock will be available to everyone.
 	 * @param coowners List of names representing co-owners
 	 */
-	public void setCoOwners(List<String> coowners);
+	public abstract void setCoOwners(List<String> coowners);
 
 	/**
 	 * Gets the x coordinate of the position of this lock.
 	 * @return The x coordinate of this lock's position
 	 */
-	public int getX();
+	public abstract int getX();
 
 	/**
 	 * Gets the y coordinate of the position of this lock.
 	 * @return The y coordinate of this lock's position
 	 */
-	public int getY();
+	public abstract int getY();
 
 	/**
 	 * Gets the z coordinate of the position of this lock.
 	 * @return The z coordinate of this lock's position
 	 */
-	public int getZ();
+	public abstract int getZ();
+
+	/**
+	 * Returns whether one object is equal to another. Locks are forced to override
+	 * this so the registry can find out if locks are the same.
+	 * @param other the object that will be compared for equality
+	 * @return True if equals, false if not
+	 */
+	@Override
+	public abstract boolean equals(Object other);
+
+	/**
+	 * Returns a string representation of this object. Locks are forced to override
+	 * this so the registry can printout detailed information.
+	 * @return String object representing detailed information of this object
+	 */
+	@Override
+	public abstract String toString();
 }

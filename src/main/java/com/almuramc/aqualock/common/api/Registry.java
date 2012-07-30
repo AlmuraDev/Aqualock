@@ -26,5 +26,10 @@
  */
 package com.almuramc.aqualock.common.api;
 
+import com.almuramc.aqualock.common.api.lock.Lock;
+
 public interface Registry {
+	public void initialize();
+	public void addLock(Lock lock);
+
 }
