@@ -29,11 +29,16 @@ package com.almuramc.aqualock.common.api.lock;
 import java.io.Serializable;
 import java.util.List;
 
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
 /**
  * The blueprint for an object representing a lock. Implementations are welcome to provide their
  * own characteristics.
  */
 public abstract class Lock implements Serializable {
+	private boolean isHashed = false;
+	private int hashcode = 0;
+
 	/**
 	 * Gets the owner of this lock
 	 * @return The name of the owner
@@ -94,4 +99,17 @@ public abstract class Lock implements Serializable {
 	 */
 	@Override
 	public abstract String toString();
+
+	/**
+	 * Generates a unique hashcode for this object, used when comparing.
+	 * @return the hashcode of this object.
+	 */
+	@Override
+	public int hashCode() {
+		if (!isHashed) {
+			hashcode = new HashCodeBuilder(7, 11).append(getX()).append(getY()).append(getZ()).toHashCode();
+			isHashed = true;
+		}
+		return hashcode;
+	}
 }

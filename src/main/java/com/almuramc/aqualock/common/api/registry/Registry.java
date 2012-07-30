@@ -24,12 +24,13 @@
  * <http://www.gnu.org/licenses/> for the GNU General Public License and
  * the GNU Lesser Public License.
  */
-package com.almuramc.aqualock.common.api;
+package com.almuramc.aqualock.common.api.registry;
 
 import com.almuramc.aqualock.common.api.lock.Lock;
 
 public interface Registry {
 	public void initialize();
-	public void addLock(Lock lock);
-
+	public Registry addLock(Lock lock);
+	public Registry removeLock(Lock lock);
+	public Registry addLocks(Lock... locks);
 }

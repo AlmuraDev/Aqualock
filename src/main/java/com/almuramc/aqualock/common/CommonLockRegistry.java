@@ -26,7 +26,23 @@
  */
 package com.almuramc.aqualock.common;
 
-import com.almuramc.aqualock.common.api.Registry;
+import com.almuramc.aqualock.common.api.lock.Lock;
+import com.almuramc.aqualock.common.api.registry.Registry;
 
 public class CommonLockRegistry implements Registry {
+
+	@Override
+	public void initialize() {
+		//To change body of implemented methods use File | Settings | File Templates.
+	}
+
+	@Override
+	public Registry addLock(Lock lock) {
+		return null;  //To change body of implemented methods use File | Settings | File Templates.
+	}
+
+	@Override
+	public Registry removeLock(Lock lock) {
+		return null;  //To change body of implemented methods use File | Settings | File Templates.
+	}
 }
