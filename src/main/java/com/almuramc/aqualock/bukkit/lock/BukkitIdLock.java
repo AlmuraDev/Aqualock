@@ -35,28 +35,27 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.bukkit.Material;
 
 /**
- * Basic Bukkit-like Material lock extension that stores block data and Material (if id isn't desired).
+ * Basic Bukkit-like Material lock extension that stores block data.
  */
-public class BukkitMaterialLock extends IdLock {
-	private Material material;
+public class BukkitIdLock extends IdLock {
+	private int id;
 	private byte data;
 
-	public BukkitMaterialLock(String owner, List<String> coowners, int x, int y, int z, int id, byte data) {
-		super(owner, coowners, x, y, z, id);
-		this.material = Material.getMaterial(id);
+	public BukkitIdLock(String owner, List<String> coowners, int x, int y, int z, Material material, byte data) {
+		super(owner, coowners, x, y, z, material.getId());
 		this.data = data;
 	}
 
-	public BukkitMaterialLock(String owner, List<String> coowners, int x, int y, int z, int id) {
-		this(owner, coowners, x, y, z, id, (byte) 0);
+	public BukkitIdLock(String owner, List<String> coowners, int x, int y, int z, Material material) {
+		this(owner, coowners, x, y, z, material, (byte) 0);
 	}
 
-	public BukkitMaterialLock(String owner, int x, int y, int z, int id) {
-		this(owner, null, x, y, z, id);
+	public BukkitIdLock(String owner, int x, int y, int z, Material material) {
+		this(owner, null, x, y, z, material);
 	}
 
 	public Material getMaterial() {
-		return material;
+		return Material.getMaterial(id);
 	}
 
 	public byte getData() {
@@ -69,9 +68,8 @@ public class BukkitMaterialLock extends IdLock {
 			return false;
 		}
 
-		final BukkitMaterialLock other = (BukkitMaterialLock) obj;
+		final BukkitIdLock other = (BukkitIdLock) obj;
 		return new org.apache.commons.lang3.builder.EqualsBuilder()
-				.append(this.material, other.material)
 				.append(this.data, other.data)
 				.isEquals();
 	}
@@ -80,7 +78,6 @@ public class BukkitMaterialLock extends IdLock {
 	public String toString() {
 		return new ToStringBuilder(this)
 				.append(super.toString())
-				.append("material", material)
 				.append("data", data)
 				.toString();
 	}
