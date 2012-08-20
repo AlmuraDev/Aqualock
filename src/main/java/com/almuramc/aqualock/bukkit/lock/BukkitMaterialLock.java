@@ -28,7 +28,7 @@ package com.almuramc.aqualock.bukkit.lock;
 
 import java.util.List;
 
-import com.almuramc.bolt.lock.type.single.MaterialPointLock;
+import com.almuramc.bolt.lock.type.single.IdLock;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
@@ -37,21 +37,21 @@ import org.bukkit.Material;
 /**
  * Basic Bukkit-like Material lock extension that stores block data and Material (if id isn't desired).
  */
-public class BukkitMaterialPointLock extends MaterialPointLock {
+public class BukkitMaterialLock extends IdLock {
 	private Material material;
 	private byte data;
 
-	public BukkitMaterialPointLock(String owner, List<String> coowners, int x, int y, int z, int id, byte data) {
+	public BukkitMaterialLock(String owner, List<String> coowners, int x, int y, int z, int id, byte data) {
 		super(owner, coowners, x, y, z, id);
 		this.material = Material.getMaterial(id);
 		this.data = data;
 	}
 
-	public BukkitMaterialPointLock(String owner, List<String> coowners, int x, int y, int z, int id) {
+	public BukkitMaterialLock(String owner, List<String> coowners, int x, int y, int z, int id) {
 		this(owner, coowners, x, y, z, id, (byte) 0);
 	}
 
-	public BukkitMaterialPointLock(String owner, int x, int y, int z, int id) {
+	public BukkitMaterialLock(String owner, int x, int y, int z, int id) {
 		this(owner, null, x, y, z, id);
 	}
 
@@ -69,7 +69,7 @@ public class BukkitMaterialPointLock extends MaterialPointLock {
 			return false;
 		}
 
-		final BukkitMaterialPointLock other = (BukkitMaterialPointLock) obj;
+		final BukkitMaterialLock other = (BukkitMaterialLock) obj;
 		return new org.apache.commons.lang3.builder.EqualsBuilder()
 				.append(this.material, other.material)
 				.append(this.data, other.data)
