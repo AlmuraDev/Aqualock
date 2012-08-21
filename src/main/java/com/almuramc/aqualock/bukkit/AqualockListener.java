@@ -61,25 +61,25 @@ public class AqualockListener implements Listener {
 	public void onBlockBreak(BlockBreakEvent event) {
 		final Block block = event.getBlock();
 		final UUID ident = block.getWorld().getUID();
-		final int x = block.getX();
-		final int y = block.getY();
-		final int z = block.getZ();
 		if (!WorldRegistry.contains(ident)) {
 			 return;
 		}
-		Registry registry = WorldRegistry.getRegistry(ident);
+		final Registry registry = WorldRegistry.getRegistry(ident);
+		final int x = block.getX();
+		final int y = block.getY();
+		final int z = block.getZ();
 		if (!registry.contains(x, y, z)) {
 			return;
 		}
-		String playerName = event.getPlayer().getName();
-		Lock lock = registry.getLock(x, y, z);
+		final String playerName = event.getPlayer().getName();
+		final Lock lock = registry.getLock(x, y, z);
 		//Handle generic-like characteristics
 		if ((lock.getOwner().equals(playerName)) || (lock.getCoOwners().contains(playerName))) {
 			event.setCancelled(true);
 		}
 		//Handle Bukkit-like characteristics
 		if (lock instanceof BukkitIdLock) {
-			BukkitIdLock temp = (BukkitIdLock) lock;
+			final BukkitIdLock temp = (BukkitIdLock) lock;
 			if (!temp.getMaterial().equals(block.getType()) || temp.getData() != block.getData()) {
 				event.setCancelled(true);
 			}
