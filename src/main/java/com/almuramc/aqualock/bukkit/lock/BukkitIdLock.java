@@ -28,7 +28,7 @@ package com.almuramc.aqualock.bukkit.lock;
 
 import java.util.List;
 
-import com.almuramc.bolt.lock.type.single.IdLock;
+import com.almuramc.bolt.lock.type.IdLock;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 

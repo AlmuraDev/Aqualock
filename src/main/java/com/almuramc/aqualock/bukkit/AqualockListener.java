@@ -28,10 +28,12 @@ package com.almuramc.aqualock.bukkit;
 
 import java.util.UUID;
 
+import com.almuramc.aqualock.bukkit.lock.BukkitIdLock;
 import com.almuramc.bolt.lock.Lock;
 import com.almuramc.bolt.registry.Registry;
-import com.almuramc.bolt.registry.world.WorldRegistry;
+import com.almuramc.bolt.registry.WorldRegistry;
 
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -57,18 +59,28 @@ public class AqualockListener implements Listener {
 
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onBlockBreak(BlockBreakEvent event) {
-		Block block = event.getBlock();
-		int x = block.getX();
-		int y = block.getY();
-		int z = block.getZ();
-		Registry registry = WorldRegistry.getRegistry(block.getWorld().getUID());
-		if (registry == null) {
+		final Block block = event.getBlock();
+		final UUID ident = block.getWorld().getUID();
+		final int x = block.getX();
+		final int y = block.getY();
+		final int z = block.getZ();
+		if (!WorldRegistry.contains(ident)) {
+			 return;
+		}
+		Registry registry = WorldRegistry.getRegistry(ident);
+		if (!registry.contains(x, y, z)) {
 			return;
 		}
 		String playerName = event.getPlayer().getName();
 		Lock lock = registry.getLock(x, y, z);
-		if (lock != null) {
-			if (!(lock.getOwner().equals(playerName)) || (!lock.getCoOwners().contains(playerName))) {
+		//Handle generic-like characteristics
+		if ((lock.getOwner().equals(playerName)) || (lock.getCoOwners().contains(playerName))) {
+			event.setCancelled(true);
+		}
+		//Handle Bukkit-like characteristics
+		if (lock instanceof BukkitIdLock) {
+			BukkitIdLock temp = (BukkitIdLock) lock;
+			if (!temp.getMaterial().equals(block.getType()) || temp.getData() != block.getData()) {
 				event.setCancelled(true);
 			}
 		}
