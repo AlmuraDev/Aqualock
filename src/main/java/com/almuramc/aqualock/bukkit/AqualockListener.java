@@ -33,7 +33,6 @@ import com.almuramc.bolt.lock.Lock;
 import com.almuramc.bolt.registry.Registry;
 import com.almuramc.bolt.registry.WorldRegistry;
 
-import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -43,26 +42,26 @@ import org.bukkit.event.world.WorldLoadEvent;
 import org.bukkit.event.world.WorldUnloadEvent;
 
 public class AqualockListener implements Listener {
-	@EventHandler(priority = EventPriority.HIGHEST)
+	@EventHandler(priority = EventPriority.LOWEST)
 	public void onWorldLoad(WorldLoadEvent event) {
 		UUID worldIdentifier = event.getWorld().getUID();
 		//TODO Fetch from Storage
 		WorldRegistry.addWorld(worldIdentifier);
 	}
 
-	@EventHandler(priority = EventPriority.HIGHEST)
+	@EventHandler(priority = EventPriority.LOWEST)
 	public void onWorldUnload(WorldUnloadEvent event) {
 		UUID worldIdentifier = event.getWorld().getUID();
 		//TODO save to Storage
 		WorldRegistry.removeWorld(worldIdentifier);
 	}
 
-	@EventHandler(priority = EventPriority.HIGHEST)
+	@EventHandler(priority = EventPriority.MONITOR)
 	public void onBlockBreak(BlockBreakEvent event) {
 		final Block block = event.getBlock();
 		final UUID ident = block.getWorld().getUID();
 		if (!WorldRegistry.contains(ident)) {
-			 return;
+			return;
 		}
 		final Registry registry = WorldRegistry.getRegistry(ident);
 		final int x = block.getX();
