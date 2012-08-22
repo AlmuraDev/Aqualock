@@ -27,8 +27,10 @@
 package com.almuramc.aqualock.bukkit.command;
 
 import com.almuramc.aqualock.bukkit.AqualockPlugin;
+import com.almuramc.bolt.lock.Lock;
 import com.almuramc.bolt.lock.type.BasicLock;
 
+import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -51,15 +53,33 @@ public class AqualockCommands implements CommandExecutor {
 		if (!command.getName().equalsIgnoreCase("aqualock")) {
 			return false;
 		}
-		if (!strings[0].equalsIgnoreCase("lock")) {
+		if (strings.length < 1) {
 			return false;
 		}
 		Player player = (Player) commandSender;
-		Block lookingAt = player.getEyeLocation().getBlock();
-		BasicLock lock = new BasicLock("Charlie", null, player.getWorld().getUID(), lookingAt.getX(), lookingAt.getY(), lookingAt.getZ());
-		plugin.getLogger().info(lock.toString());
-		plugin.getRegistry().addLock(lock);
-		plugin.getBackend().addLock(lock);
-		return true;
+		if (strings[0].equalsIgnoreCase("lock")) {
+			Block lookingAt = player.getEyeLocation().getBlock();
+			BasicLock lock = new BasicLock(player.getName(), null, player.getWorld().getUID(), lookingAt.getX() + 1, lookingAt.getY(), lookingAt.getZ());
+			plugin.getRegistry().addLock(lock);
+			plugin.getBackend().addLock(lock);
+			player.sendMessage("[" + ChatColor.AQUA + "Aqualock" + ChatColor.WHITE + "] Locked voxel at x: " + lock.getX() + ", y: " + lock.getY() + ", z: " + lock.getZ());
+			return true;
+		} else if (strings[0].equalsIgnoreCase("unlock")) {
+			Block lookingAt = player.getEyeLocation().getBlock();
+			if (plugin.getRegistry().contains(lookingAt.getWorld().getUID(), lookingAt.getX() + 1, lookingAt.getY(), lookingAt.getZ())) {
+				Lock lock = plugin.getRegistry().getLock(lookingAt.getWorld().getUID(), lookingAt.getX() + 1, lookingAt.getY(), lookingAt.getZ());
+				if (lock.getOwner().equals(player.getName())) {
+					plugin.getRegistry().removeLock(lock);
+					plugin.getBackend().removeLock(lock);
+					player.sendMessage("[" + ChatColor.AQUA + "Aqualock" + ChatColor.WHITE + "] Removed lock at x: " + lock.getX() + ", y: " + lock.getY() + ", z: " + lock.getZ());
+				} else {
+					player.kickPlayer("Bolt says its not nice to unlock other's locks!");
+				}
+			} else {
+				player.sendMessage("[" + ChatColor.AQUA + "Aqualock" + ChatColor.WHITE + "] Did not find a lock at this location!");
+			}
+			return true;
+		}
+		return false;
 	}
 }

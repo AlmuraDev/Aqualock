@@ -31,7 +31,6 @@ import com.almuramc.bolt.lock.Lock;
 import com.almuramc.bolt.registry.CommonRegistry;
 import com.almuramc.bolt.storage.SqlStorage;
 import com.almuramc.bolt.storage.Storage;
-import com.alta189.simplesave.h2.H2Configuration;
 import com.alta189.simplesave.sqlite.SQLiteConfiguration;
 
 import org.bukkit.plugin.java.JavaPlugin;
