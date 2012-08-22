@@ -88,16 +88,6 @@
 		</resources>
 		<!-- Plugins -->
 		<plugins>
-			<!-- Compile plugin -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.3.2</version>
-				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
-				</configuration>
-			</plugin>
 			<!-- License header formatting plugin -->
 			<plugin>
 				<groupId>com.mycila.maven-license-plugin</groupId>

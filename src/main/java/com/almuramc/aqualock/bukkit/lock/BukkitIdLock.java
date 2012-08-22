@@ -27,6 +27,7 @@
 package com.almuramc.aqualock.bukkit.lock;
 
 import java.util.List;
+import java.util.UUID;
 
 import com.almuramc.bolt.lock.type.IdLock;
 
@@ -41,17 +42,18 @@ public class BukkitIdLock extends IdLock {
 	private int id;
 	private byte data;
 
-	public BukkitIdLock(String owner, List<String> coowners, int x, int y, int z, Material material, byte data) {
-		super(owner, coowners, x, y, z, material.getId());
+	public BukkitIdLock(String owner, List<String> coowners, UUID worldIdentifier, int x, int y, int z, Material material, byte data) {
+		super(owner, coowners, worldIdentifier, x, y, z, material.getId());
+		this.id = material.getId();
 		this.data = data;
 	}
 
-	public BukkitIdLock(String owner, List<String> coowners, int x, int y, int z, Material material) {
-		this(owner, coowners, x, y, z, material, (byte) 0);
+	public BukkitIdLock(String owner, List<String> coowners, UUID worldIdentifier, int x, int y, int z, Material material) {
+		this(owner, coowners, worldIdentifier, x, y, z, material, (byte) 0);
 	}
 
-	public BukkitIdLock(String owner, int x, int y, int z, Material material) {
-		this(owner, null, x, y, z, material);
+	public BukkitIdLock(String owner, UUID worldIdentifier, int x, int y, int z, Material material) {
+		this(owner, null, worldIdentifier, x, y, z, material);
 	}
 
 	public Material getMaterial() {

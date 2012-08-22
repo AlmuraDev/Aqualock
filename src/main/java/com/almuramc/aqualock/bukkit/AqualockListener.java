@@ -26,62 +26,14 @@
  */
 package com.almuramc.aqualock.bukkit;
 
-import java.util.UUID;
-
-import com.almuramc.aqualock.bukkit.lock.BukkitIdLock;
-import com.almuramc.bolt.lock.Lock;
-import com.almuramc.bolt.registry.Registry;
-import com.almuramc.bolt.registry.WorldRegistry;
-
-import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.world.WorldLoadEvent;
-import org.bukkit.event.world.WorldUnloadEvent;
 
 public class AqualockListener implements Listener {
-	@EventHandler(priority = EventPriority.LOWEST)
-	public void onWorldLoad(WorldLoadEvent event) {
-		UUID worldIdentifier = event.getWorld().getUID();
-		//TODO Fetch from Storage
-		WorldRegistry.addWorld(worldIdentifier);
-	}
-
-	@EventHandler(priority = EventPriority.LOWEST)
-	public void onWorldUnload(WorldUnloadEvent event) {
-		UUID worldIdentifier = event.getWorld().getUID();
-		//TODO save to Storage
-		WorldRegistry.removeWorld(worldIdentifier);
-	}
-
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onBlockBreak(BlockBreakEvent event) {
-		final Block block = event.getBlock();
-		final UUID ident = block.getWorld().getUID();
-		if (!WorldRegistry.contains(ident)) {
-			return;
-		}
-		final Registry registry = WorldRegistry.getRegistry(ident);
-		final int x = block.getX();
-		final int y = block.getY();
-		final int z = block.getZ();
-		if (!registry.contains(x, y, z)) {
-			return;
-		}
-		final String playerName = event.getPlayer().getName();
-		final Lock lock = registry.getLock(x, y, z);
-		//Handle generic-like characteristics
-		if ((lock.getOwner().equals(playerName)) || (lock.getCoOwners().contains(playerName))) {
-			event.setCancelled(true);
-		}
-		//Handle Bukkit-like characteristics
-		if (lock instanceof BukkitIdLock) {
-			final BukkitIdLock temp = (BukkitIdLock) lock;
-			if (!temp.getMaterial().equals(block.getType()) || temp.getData() != block.getData()) {
-				event.setCancelled(true);
-			}
-		}
+		//TODO re-write this
 	}
 }
