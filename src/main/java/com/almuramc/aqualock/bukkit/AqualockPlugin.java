@@ -26,7 +26,25 @@
  */
 package com.almuramc.aqualock.bukkit;
 
+import com.almuramc.aqualock.bukkit.command.AqualockCommands;
+import com.almuramc.bolt.registry.CommonRegistry;
+
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class AqualockPlugin extends JavaPlugin {
+	private static final CommonRegistry registry;
+
+	static {
+		registry = new CommonRegistry();
+	}
+
+	@Override
+	public void onEnable() {
+		this.getCommand("aqualock").setExecutor(new AqualockCommands(this));
+		this.getServer().getPluginManager().registerEvents(new AqualockListener(this), this);
+	}
+
+	public CommonRegistry getRegistry() {
+		return registry;
+	}
 }

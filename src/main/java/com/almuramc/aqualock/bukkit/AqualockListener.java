@@ -26,14 +26,34 @@
  */
 package com.almuramc.aqualock.bukkit;
 
+import com.almuramc.bolt.lock.Lock;
+import com.almuramc.bolt.registry.Registry;
+
+import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 
 public class AqualockListener implements Listener {
+	private final AqualockPlugin plugin;
+
+	public AqualockListener(AqualockPlugin plugin) {
+		this.plugin = plugin;
+	}
+
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onBlockBreak(BlockBreakEvent event) {
-		//TODO re-write this
+		Player breaker = event.getPlayer();
+		Block breaking = event.getBlock();
+		Registry registry = plugin.getRegistry();
+		if (registry.contains(breaking.getWorld().getUID(), breaking.getX(), breaking.getY(), breaking.getZ())) {
+			Lock lock = registry.getLock(breaking.getWorld().getUID(), breaking.getX(), breaking.getY(), breaking.getZ());
+			plugin.getLogger().info(lock.toString());
+			if (!lock.getOwner().equals(breaker.getName())) {
+				 event.setCancelled(true);
+			}
+		}
 	}
 }

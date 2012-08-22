@@ -4,6 +4,11 @@ description: ${project.description}
 author: ${project.organization.name}
 website: ${project.organization.url}
 
-main: com.almuramc.aqualock.AqualockPlugin
+main: com.almuramc.aqualock.bukkit.AqualockPlugin
 depend: [Spout, Vault]
 load: POSTWORLD
+
+commands:
+    aqualock:
+        description: Manage Aqualock
+        usage: /aqualock [command] [arguments]
