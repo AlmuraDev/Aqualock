@@ -52,7 +52,8 @@ public class AqualockListener implements Listener {
 			Lock lock = registry.getLock(breaking.getWorld().getUID(), breaking.getX(), breaking.getY(), breaking.getZ());
 			plugin.getLogger().info(lock.toString());
 			if (!lock.getOwner().equals(breaker.getName())) {
-				 event.setCancelled(true);
+				breaker.sendMessage("[Aqualock] This is locked by: " + lock.getOwner());
+				event.setCancelled(true);
 			}
 		}
 	}

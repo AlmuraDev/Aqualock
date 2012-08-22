@@ -27,24 +27,43 @@
 package com.almuramc.aqualock.bukkit;
 
 import com.almuramc.aqualock.bukkit.command.AqualockCommands;
+import com.almuramc.bolt.lock.Lock;
 import com.almuramc.bolt.registry.CommonRegistry;
+import com.almuramc.bolt.storage.SqlStorage;
+import com.almuramc.bolt.storage.Storage;
+import com.alta189.simplesave.h2.H2Configuration;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class AqualockPlugin extends JavaPlugin {
 	private static final CommonRegistry registry;
+	private static Storage backend;
 
 	static {
 		registry = new CommonRegistry();
 	}
 
 	@Override
+	public void onDisable() {
+		backend.onUnLoad();
+	}
+
+	@Override
 	public void onEnable() {
+		backend = new SqlStorage(new H2Configuration(), getDataFolder());
+		backend.onLoad();
+		for (Lock lock : backend.getAll()) {
+			registry.addLock(lock);
+		}
 		this.getCommand("aqualock").setExecutor(new AqualockCommands(this));
 		this.getServer().getPluginManager().registerEvents(new AqualockListener(this), this);
 	}
 
 	public CommonRegistry getRegistry() {
 		return registry;
+	}
+
+	public Storage getBackend() {
+		return backend;
 	}
 }

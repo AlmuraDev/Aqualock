@@ -59,6 +59,7 @@ public class AqualockCommands implements CommandExecutor {
 		BasicLock lock = new BasicLock("Charlie", null, player.getWorld().getUID(), lookingAt.getX(), lookingAt.getY(), lookingAt.getZ());
 		plugin.getLogger().info(lock.toString());
 		plugin.getRegistry().addLock(lock);
+		plugin.getBackend().addLock(lock);
 		return true;
 	}
 }
