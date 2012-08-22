@@ -32,6 +32,7 @@ import com.almuramc.bolt.registry.CommonRegistry;
 import com.almuramc.bolt.storage.SqlStorage;
 import com.almuramc.bolt.storage.Storage;
 import com.alta189.simplesave.h2.H2Configuration;
+import com.alta189.simplesave.sqlite.SQLiteConfiguration;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -50,7 +51,7 @@ public class AqualockPlugin extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
-		backend = new SqlStorage(new H2Configuration(), getDataFolder());
+		backend = new SqlStorage(new SQLiteConfiguration(), getDataFolder());
 		backend.onLoad();
 		for (Lock lock : backend.getAll()) {
 			registry.addLock(lock);
