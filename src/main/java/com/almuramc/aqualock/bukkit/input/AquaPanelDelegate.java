@@ -26,12 +26,21 @@
  */
 package com.almuramc.aqualock.bukkit.input;
 
+import com.almuramc.aqualock.bukkit.AqualockPlugin;
+
 import org.getspout.spoutapi.event.input.KeyBindingEvent;
 import org.getspout.spoutapi.keyboard.BindingExecutionDelegate;
 
 public class AquaPanelDelegate implements BindingExecutionDelegate {
+	private final AqualockPlugin plugin;
+
+	public AquaPanelDelegate(AqualockPlugin plugin) {
+		this.plugin = plugin;
+	}
+
 	@Override
 	public void keyPressed(KeyBindingEvent keyBindingEvent) {
+
 	}
 
 	@Override
