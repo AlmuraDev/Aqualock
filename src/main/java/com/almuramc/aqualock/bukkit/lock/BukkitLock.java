@@ -27,37 +27,28 @@
 package com.almuramc.aqualock.bukkit.lock;
 
 import java.util.List;
-import java.util.UUID;
 
-import com.almuramc.bolt.lock.type.IdLock;
+import com.almuramc.bolt.lock.type.BasicLock;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
-import org.bukkit.Material;
+import org.bukkit.Location;
 
 /**
  * Basic Bukkit-like Material lock extension that stores block data.
  */
-public class BukkitIdLock extends IdLock {
-	private int id;
+public class BukkitLock extends BasicLock {
+	private String passcode;
 	private byte data;
 
-	public BukkitIdLock(String owner, List<String> coowners, UUID worldIdentifier, int x, int y, int z, Material material, byte data) {
-		super(owner, coowners, worldIdentifier, x, y, z, material.getId());
-		this.id = material.getId();
+	public BukkitLock(String owner, List<String> coowners, String passcode, Location location, byte data) {
+		super(owner, coowners, location.getWorld().getUID(), location.getBlockX(), location.getBlockY(), location.getBlockZ());
+		this.passcode = passcode;
 		this.data = data;
 	}
 
-	public BukkitIdLock(String owner, List<String> coowners, UUID worldIdentifier, int x, int y, int z, Material material) {
-		this(owner, coowners, worldIdentifier, x, y, z, material, (byte) 0);
-	}
-
-	public BukkitIdLock(String owner, UUID worldIdentifier, int x, int y, int z, Material material) {
-		this(owner, null, worldIdentifier, x, y, z, material);
-	}
-
-	public Material getMaterial() {
-		return Material.getMaterial(id);
+	public String getPasscode() {
+		return passcode;
 	}
 
 	public byte getData() {
@@ -70,8 +61,9 @@ public class BukkitIdLock extends IdLock {
 			return false;
 		}
 
-		final BukkitIdLock other = (BukkitIdLock) obj;
+		final BukkitLock other = (BukkitLock) obj;
 		return new org.apache.commons.lang3.builder.EqualsBuilder()
+				.append(this.passcode, other.passcode)
 				.append(this.data, other.data)
 				.isEquals();
 	}
@@ -80,6 +72,7 @@ public class BukkitIdLock extends IdLock {
 	public String toString() {
 		return new ToStringBuilder(this)
 				.append(super.toString())
+				.append("passcode", passcode)
 				.append("data", data)
 				.toString();
 	}

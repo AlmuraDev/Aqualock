@@ -33,11 +33,18 @@ import com.almuramc.bolt.storage.SqlStorage;
 import com.almuramc.bolt.storage.Storage;
 import com.alta189.simplesave.sqlite.SQLiteConfiguration;
 
+import net.milkbowl.vault.economy.Economy;
+import net.milkbowl.vault.permission.Permission;
+
+import org.bukkit.ChatColor;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class AqualockPlugin extends JavaPlugin {
 	private static final CommonRegistry registry;
 	private static Storage backend;
+	private static Permission permission;
+	private static Economy economy;
 
 	static {
 		registry = new CommonRegistry();
@@ -50,6 +57,12 @@ public class AqualockPlugin extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
+		if (!setupPermissions()) {
+			throw new RuntimeException("Failed to intialize Vault for permissions!");
+		}
+		if (!setupEconomy()) {
+			throw new RuntimeException("Failed to intialize Vault for economy!");
+		}
 		backend = new SqlStorage(new SQLiteConfiguration(), getDataFolder());
 		backend.onLoad();
 		for (Lock lock : backend.getAll()) {
@@ -59,11 +72,37 @@ public class AqualockPlugin extends JavaPlugin {
 		this.getServer().getPluginManager().registerEvents(new AqualockListener(this), this);
 	}
 
-	public CommonRegistry getRegistry() {
+	public static CommonRegistry getRegistry() {
 		return registry;
 	}
 
-	public Storage getBackend() {
+	public static Storage getBackend() {
 		return backend;
+	}
+
+	public static String getPrefix() {
+		return "[" + ChatColor.AQUA + "Aqualock" + ChatColor.WHITE + "] ";
+	}
+
+	public static Permission getPermissions() {
+		return permission;
+	}
+
+	public static Economy getEconomies() {
+		return economy;
+	}
+
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	private boolean setupPermissions() {
+		RegisteredServiceProvider<Permission> rsp = getServer().getServicesManager().getRegistration(Permission.class);
+		permission = rsp.getProvider();
+		return permission != null;
+	}
+
+	private boolean setupEconomy() {
+		RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
+		economy = rsp.getProvider();
+		return economy != null;
 	}
 }

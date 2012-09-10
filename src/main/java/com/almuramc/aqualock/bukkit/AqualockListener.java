@@ -31,7 +31,6 @@ import com.almuramc.bolt.registry.Registry;
 
 import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -47,7 +46,6 @@ import org.bukkit.event.block.EntityBlockFormEvent;
 import org.bukkit.event.block.LeavesDecayEvent;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.weather.LightningStrikeEvent;
-import org.bukkit.material.PistonExtensionMaterial;
 
 public class AqualockListener implements Listener {
 	private final AqualockPlugin plugin;
