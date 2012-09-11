@@ -47,4 +47,12 @@ public class PermissionUtil {
 	public static boolean has(Player player, String perm) {
 		return has(player, player.getWorld(), perm);
 	}
+
+	public static boolean canLock(Player player) {
+		return has(player, player.getWorld(), "aqualock.lock") || has(player, player.getWorld(), "aqualock.admin");
+	}
+
+	public static boolean canUnlock(Player player) {
+		return has(player, player.getWorld(), "aqualock.unlock") || has(player, player.getWorld(), "aqualock.admin");
+	}
 }

@@ -30,6 +30,7 @@ import java.util.List;
 
 import com.almuramc.aqualock.bukkit.AqualockPlugin;
 import com.almuramc.aqualock.bukkit.lock.BukkitLock;
+import com.almuramc.bolt.lock.Lock;
 import com.almuramc.bolt.registry.CommonRegistry;
 import com.almuramc.bolt.storage.Storage;
 
@@ -50,51 +51,51 @@ public class LockUtil {
 		backend = AqualockPlugin.getBackend();
 	}
 
+	/**
+	 *
+	 * @param owner
+	 * @param coowners
+	 * @param passcode
+	 * @param location
+	 * @param data
+	 */
 	public static void lock(String owner, List<String> coowners, String passcode, Location location, byte data) {
-		checkOwner(owner);
 		checkLocation(location);
+		Player player = checkNameAndGetPlayer(owner);
 
-		Player player = Bukkit.getPlayerExact(owner);
-		//Make sure the owner is present on this server (sanity check).
-		if (player == null) {
-			throw new IllegalArgumentException("The owner's name specified to lock the voxel was not found on this server!");
-		}
 		BukkitLock lock = new BukkitLock(owner, coowners, passcode, location, data);
 		//Make sure we aren't relocking blocks
 		if (registry.contains(lock)) {
 			//TODO call change
 			return;
 		}
-		//lock is not in the registry, so we are creating a new lock. Check if they have lock perms
-		if (PermissionUtil.has(player, player.getWorld(), "aqualock.lock")) {
 			//If the server has an economy system, use it
-			if (AqualockPlugin.getEconomies() != null) {
-				//Check if they need to be charged for this lock
-				if (PermissionUtil.has(player, player.getWorld(), "aqualock.lock.cost")) {
-					//No account? Let the player know some message and return
-					if (!EconomyUtil.hasAccount(player)) {
+		if (AqualockPlugin.getEconomies() != null) {
+			//Check if they need to be charged for this lock
+			if (EconomyUtil.shouldChargeForLock(player)) {
+				//No account? Let the player know some message and return
+				if (!EconomyUtil.hasAccount(player)) {
+					//TODO message
+					return;
+				} else {
+					double cost = EconomyUtil.getCostForLock(player);
+					//Find out if they have the money.
+					if (EconomyUtil.hasEnough(player, cost)) {
+						//TODO If the cost was zero then say something like "Locking was free!"
+						if (cost == 0) {
+							//player.sendMessage
+							//TODO If cost was less than zero then say something like "Locking gave you monies!"
+						} else if (cost < 0) {
+							//player.sendMessage
+							//TODO Tell the user how much they were charged
+						} else {
+							//player.sendMessage
+						}
+						//TODO message
+						//Don't have enough? Tell them that and return
+					} else {
 						//TODO message
 						return;
-					} else {
-						double cost = EconomyUtil.getCostFor(player);
-						//Find out if they have the money.
-						if (EconomyUtil.hasEnough(player, cost)) {
-							//TODO If the cost was zero then say something like "Locking was free!"
-							if (cost == 0) {
-								//player.sendMessage
-								//TODO If cost was less than zero then say something like "Locking gave you monies!"
-							} else if (cost < 0) {
-								//player.sendMessage
-								//TODO Tell the user how much they were charged
-							} else {
-								//player.sendMessage
-							}
-							//TODO message
-							//Don't have enough? Tell them that and return
-						} else {
-							//TODO message
-							return;
-						}
 					}
 				}
 			}
@@ -118,6 +119,104 @@ public class LockUtil {
 		backend.addLock(lock);
 	}
 
+	/**
+	 *
+	 * @param playerName
+	 * @param passcode
+	 * @param location
+	 */
+	public static void unlock(String playerName, String passcode, Location location) {
+		checkLocation(location);
+		Player player = checkNameAndGetPlayer(playerName);
+
+		Lock lock = registry.getLock(location.getWorld().getUID(), location.getBlockX(), location.getBlockY(), location.getBlockZ());
+
+		if (lock == null) {
+			//TODO Tell the user there was no lock at this location...
+			return;
+		} else {
+			String owner = lock.getOwner();
+			//The owner of the lock at the location doesn't match the player's name, check co-owners next
+			if (!owner.equals(playerName)) {
+				//They aren't a co-owner either, so return and print a message
+				if (!lock.getCoOwners().contains(playerName)) {
+					//TODO message
+					//TODO Hurt them?
+					return;
+				}
+			}
+			//At this point they are either an owner or co-owner but that is irrelevant.
+			//TODO Owner-level only privileges?
+			//Now lets handle Bukkit-like lock characteristics to determine if we can unlock
+			if (lock instanceof BukkitLock) {
+				//Is a Bukkit lock but the passcode passed in fails so fail to unlock (even if it was the owner...)
+				if (!((BukkitLock) lock).getPasscode().equals(passcode)) {
+					//TODO message
+					return;
+				}
+			}
+
+			//If the server has an economy system, use it
+			if (AqualockPlugin.getEconomies() != null) {
+				//Check if they need to be charged for this lock
+				if (EconomyUtil.shouldChargeForUnlock(player)) {
+					//No account? Let the player know some message and return
+					if (!EconomyUtil.hasAccount(player)) {
+						//TODO message
+						return;
+					} else {
+						double cost = EconomyUtil.getCostForUnlock(player);
+						//Find out if they have the money.
+						if (EconomyUtil.hasEnough(player, cost)) {
+							//TODO If the cost was zero then say something like "Unlocking was free!"
+							if (cost == 0) {
+								//player.sendMessage
+								//TODO If cost was less than zero then say something like "Unlocking gave you monies!"
+							} else if (cost < 0) {
+								//player.sendMessage
+								//TODO Tell the user how much they were charged
+							} else {
+								//player.sendMessage
+							}
+							//TODO message
+							//Don't have enough? Tell them that and return
+						} else {
+							//TODO message
+							return;
+						}
+					}
+				}
+			}
+		}
+		registry.removeLock(lock);
+		backend.removeLock(lock);
+	}
+
+	/**
+	 *
+	 * @param playerName
+	 * @param owner
+	 * @param coowners
+	 * @param passcode
+	 * @param location
+	 * @param data
+	 */
+	public static void update(String playerName, String owner, List<String> coowners, String passcode, Location location, byte data) {
+		//First check if the registry has a lock at this location, if not then lock.
+		if (!registry.contains(location.getWorld().getUID(), location.getBlockX(), location.getBlockY(), location.getBlockZ())) {
+			lock(owner, coowners, passcode, location, data);
+			return;
+		}
+
+		Lock lock = registry.getLock(location.getWorld().getUID(), location.getBlockX(), location.getBlockY(), location.getBlockZ());
+
+	}
+
+	////////////////////////////////////////////////////////////////////////////////////////////////////////
+	///////////////////////////////////////Overriden Methods///////////////////////////////////////////////
+	//////////////////////////////////////Don't touch these!//////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	public static void lock(String owner, List<String> coowners, String passcode, Location location) {
 		checkLocation(location);
 		lock(owner, coowners, passcode, location, location.getBlock().getData());
@@ -133,25 +232,13 @@ public class LockUtil {
 		lock(owner, null, "", location, location.getBlock().getData());
 	}
 
-	public static void unlock(String owner, List<String> coowners, String passcode, Location location, byte data) {
-		checkOwner(owner);
-		checkLocation(location);
+	public static void unlock(String playerName, Location location) {
+		unlock(playerName, "", location);
 	}
 
-	public static void unlock(String owner, List<String> coowners, String passcode, Location location) {
-		checkLocation(location);
-		unlock(owner, coowners, passcode, location, location.getBlock().getData());
-	}
-
-	public static void unlock(String owner, List<String> coowners, Location location) {
-		checkLocation(location);
-		unlock(owner, coowners, "", location, location.getBlock().getData());
-	}
-
-	public static void unlock(String owner, Location location) {
-		checkLocation(location);
-		unlock(owner, null, "", location, location.getBlock().getData());
-	}
+	////////////////////////////////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////Private helpers//////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////////////////////////////
 
 	private static void checkLocation(Location location) {
 		if (location == null) {
@@ -159,9 +246,14 @@ public class LockUtil {
 		}
 	}
 
-	private static void checkOwner(String owner) {
-		if (owner == null || owner.isEmpty()) {
-			throw new IllegalArgumentException("Owner cannot be null or empty!");
+	private static Player checkNameAndGetPlayer(String name) {
+		if (name == null || name.isEmpty()) {
+			throw new IllegalArgumentException("Name cannot be null or empty!");
 		}
+		Player player = Bukkit.getPlayerExact(name);
+		if (player == null) {
+			throw new IllegalArgumentException("No player found matching name: " + name + " found on this server!");
+		}
+		return player;
 	}
 }

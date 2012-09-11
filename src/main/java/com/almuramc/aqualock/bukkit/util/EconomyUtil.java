@@ -54,7 +54,7 @@ public class EconomyUtil {
 		return false;
 	}
 
-	public static double getCostFor(Player player) {
+	public static double getCostForLock(Player player) {
 		for (PermissionAttachmentInfo perm : player.getEffectivePermissions()) {
 			if (perm.getPermission().contains("aqualock.lock.cost.")) {
 				try {
@@ -64,5 +64,41 @@ public class EconomyUtil {
 			}
 		}
 		return 0;
+	}
+
+	public static double getCostForUnlock(Player player) {
+		for (PermissionAttachmentInfo perm : player.getEffectivePermissions()) {
+			if (perm.getPermission().contains("aqualock.unlock.cost.")) {
+				try {
+					return Double.parseDouble(perm.getPermission().split("aqualock.unlock.cost.")[1]);
+				} catch (Exception ignore) {
+				}
+			}
+		}
+		return 0;
+	}
+
+	public static double getCostForUse(Player player) {
+		for (PermissionAttachmentInfo perm : player.getEffectivePermissions()) {
+			if (perm.getPermission().contains("aqualock.use.cost.")) {
+				try {
+					return Double.parseDouble(perm.getPermission().split("aqualock.use.cost.")[1]);
+				} catch (Exception ignore) {
+				}
+			}
+		}
+		return 0;
+	}
+
+	public static boolean shouldChargeForLock(Player player) {
+		return PermissionUtil.has(player, player.getWorld(), "aqualock.lock.cost") && !PermissionUtil.has(player, player.getWorld(), "aqualock.admin");
+	}
+
+	public static boolean shouldChargeForUnlock(Player player) {
+		return PermissionUtil.has(player, player.getWorld(), "aqualock.unlock.cost") && !PermissionUtil.has(player, player.getWorld(), "aqualock.admin");
+	}
+
+	public static boolean shouldChargeForUse(Player player) {
+		return PermissionUtil.has(player, player.getWorld(), "aqualock.use.cost") && !PermissionUtil.has(player, player.getWorld(), "aqualock.admin");
 	}
 }
