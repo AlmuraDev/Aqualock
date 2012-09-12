@@ -54,6 +54,10 @@ public class EconomyUtil {
 		return false;
 	}
 
+	public static void apply(Player player, double amount) {
+		economy.withdrawPlayer(player.getName(), amount);
+	}
+
 	public static double getCostForLock(Player player) {
 		for (PermissionAttachmentInfo perm : player.getEffectivePermissions()) {
 			if (perm.getPermission().contains("aqualock.lock.cost.")) {

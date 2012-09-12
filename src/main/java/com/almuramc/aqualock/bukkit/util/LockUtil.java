@@ -91,7 +91,7 @@ public class LockUtil {
 						} else {
 							//player.sendMessage
 						}
-						//TODO message
+						EconomyUtil.apply(player, cost);
 						//Don't have enough? Tell them that and return
 					} else {
 						//TODO message
@@ -178,7 +178,7 @@ public class LockUtil {
 							} else {
 								//player.sendMessage
 							}
-							//TODO message
+							EconomyUtil.apply(player, cost);
 							//Don't have enough? Tell them that and return
 						} else {
 							//TODO message
