@@ -2,16 +2,13 @@ Just so I can clarify
 
 aqualock.lock - If they can lock
 aqualock.lock.cost - If they will be charged
-aqualock.lock.cost.digits.decimals - ex. aqualock.lock.cost.9.50 would charge $9.50 to the user when they lock. IF THIS IS NOT PRESENT OR NON NUMERICAL VALUES ARE GIVEN it will default to $0.00
 
 See above for following...
 
 aqualock.unlock
 aqualock.unlock.cost
-aqualock.unlock.cost.digits.decimals
 
 aqualock.use
 aqualock.use.cost
-aqualock.use.cost.digits.decimals
 
 aqualock.admin bypasses lock and use as well as YOU WON'T BE CHARGED. Keep this in mind.

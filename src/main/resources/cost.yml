@@ -1,0 +1,20 @@
+##########################
+# cost.yml
+#
+# material explanation:
+#
+# material:
+#   dirt:
+#     lock: 10.00
+#     unlock: 10.00
+#     use: 10.00
+#
+# Things to note:
+#                 - Negative values will increase the user's wealth, positive values will decrease the user's wealth.
+#                 - You must specify the correct spelling of the material, case does not matter (I handle it for you)
+##########################
+global:
+  lock: 0.00
+  unlock: 0.00
+  use: 0.00
+material:
