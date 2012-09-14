@@ -42,9 +42,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 public class CostConfiguration {
 	private final FileConfiguration config;
 	private final HashMap<Material, CostNode> nodes = new HashMap<Material, CostNode>();
-	private double globalLock;
-	private double globalUnlock;
-	private double globalUse;
+	private double globalLock, globalUnlock, globalUse;
 
 	public CostConfiguration(File costYml) {
 		config = YamlConfiguration.loadConfiguration(costYml);
