@@ -27,12 +27,9 @@
 package com.almuramc.aqualock.bukkit.configuration;
 
 import java.io.File;
-import java.util.HashMap;
 
 import com.almuramc.aqualock.bukkit.AqualockPlugin;
-import com.almuramc.aqualock.bukkit.node.CostNode;
 
-import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 
 public class AqualockConfiguration {

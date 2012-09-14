@@ -52,7 +52,6 @@ public class LockUtil {
 	}
 
 	/**
-	 *
 	 * @param owner
 	 * @param coowners
 	 * @param passcode
@@ -69,7 +68,7 @@ public class LockUtil {
 			//TODO call change
 			return;
 		}
-			//If the server has an economy system, use it
+		//If the server has an economy system, use it
 		if (AqualockPlugin.getEconomies() != null) {
 			//Check if they need to be charged for this lock
 			if (EconomyUtil.shouldChargeForLock(player)) {
@@ -120,7 +119,6 @@ public class LockUtil {
 	}
 
 	/**
-	 *
 	 * @param playerName
 	 * @param passcode
 	 * @param location
@@ -193,7 +191,6 @@ public class LockUtil {
 	}
 
 	/**
-	 *
 	 * @param playerName
 	 * @param owner
 	 * @param coowners
@@ -209,7 +206,6 @@ public class LockUtil {
 		}
 
 		Lock lock = registry.getLock(location.getWorld().getUID(), location.getBlockX(), location.getBlockY(), location.getBlockZ());
-
 	}
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////
