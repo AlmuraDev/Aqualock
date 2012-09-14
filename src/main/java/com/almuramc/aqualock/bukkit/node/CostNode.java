@@ -31,11 +31,11 @@ import org.bukkit.Material;
 /**
  * A "Cost" node
  */
-public class CostNode {
-	private final Material material;
+public final class CostNode {
+	private Material material;
 	private double lock, unlock, use;
 
-	public CostNode(final Material material, double lock, double unlock, double use) {
+	public CostNode(Material material, double lock, double unlock, double use) {
 		this.material = material;
 		this.lock = lock;
 		this.unlock = unlock;
@@ -50,23 +50,11 @@ public class CostNode {
 		return lock;
 	}
 
-	public void setLock(double lock) {
-		this.lock = lock;
-	}
-
 	public double getUnlock() {
 		return unlock;
 	}
 
-	public void setUnlock(double unlock) {
-		this.unlock = unlock;
-	}
-
 	public double getUse() {
 		return use;
-	}
-
-	public void setUse(double use) {
-		this.use = use;
 	}
 }
