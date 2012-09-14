@@ -74,8 +74,7 @@ public class CostConfiguration {
 				continue;
 			}
 			if (nodes.containsKey(keyed)) {
-				Bukkit.getLogger().log(Level.WARNING, AqualockPlugin.getPrefix() + " Found " + key + " in cost.yml but is a duplicate! Skipping...");
-				continue;
+				Bukkit.getLogger().log(Level.WARNING, AqualockPlugin.getPrefix() + " Found " + key + " in cost.yml but is a duplicate! Overwriting...");
 			}
 			ConfigurationSection node = material.getConfigurationSection(key);
 			nodes.put(keyed, new CostNode(keyed, node.getDouble("lock", globalLock), node.getDouble("unlock", globalUnlock), node.getDouble("use", globalUse)));

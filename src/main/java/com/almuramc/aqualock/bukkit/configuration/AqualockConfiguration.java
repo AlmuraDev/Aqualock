@@ -48,4 +48,8 @@ public class AqualockConfiguration {
 	public void reload() {
 		costConfig.reload();
 	}
+
+	public final CostConfiguration getCosts() {
+		return costConfig;
+	}
 }
