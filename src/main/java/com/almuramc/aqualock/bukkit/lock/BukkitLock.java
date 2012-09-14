@@ -35,7 +35,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.bukkit.Location;
 
 /**
- * Basic Bukkit-like Material lock extension that stores block data.
+ * Basic Bukkit-like lock extension that stores block data.
  */
 public class BukkitLock extends BasicLock {
 	private String passcode;

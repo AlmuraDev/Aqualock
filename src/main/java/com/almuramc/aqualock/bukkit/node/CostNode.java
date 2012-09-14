@@ -24,31 +24,49 @@
  * <http://www.gnu.org/licenses/> for the GNU General Public License and
  * the GNU Lesser Public License.
  */
-package com.almuramc.aqualock.bukkit.configuration;
-
-import java.io.File;
-import java.util.HashMap;
-
-import com.almuramc.aqualock.bukkit.AqualockPlugin;
-import com.almuramc.aqualock.bukkit.node.CostNode;
+package com.almuramc.aqualock.bukkit.node;
 
 import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
 
-public class AqualockConfiguration {
-	private final FileConfiguration config;
-	private final CostConfiguration costConfig;
+/**
+ * A "Cost" node
+ */
+public class CostNode {
+	private final Material material;
+	private double lock, unlock, use;
 
-	public AqualockConfiguration(AqualockPlugin plugin) {
-		config = plugin.getConfig();
-		File costYml = new File(plugin.getDataFolder(), "cost.yml");
-		if (!costYml.exists()) {
-			plugin.saveResource("cost.yml", true);
-		}
-		costConfig = new CostConfiguration(costYml);
+	public CostNode(final Material material, double lock, double unlock, double use) {
+		this.material = material;
+		this.lock = lock;
+		this.unlock = unlock;
+		this.use = use;
 	}
 
-	public void reload() {
-		costConfig.reload();
+	public Material getMaterial() {
+		return material;
+	}
+
+	public double getLock() {
+		return lock;
+	}
+
+	public void setLock(double lock) {
+		this.lock = lock;
+	}
+
+	public double getUnlock() {
+		return unlock;
+	}
+
+	public void setUnlock(double unlock) {
+		this.unlock = unlock;
+	}
+
+	public double getUse() {
+		return use;
+	}
+
+	public void setUse(double use) {
+		this.use = use;
 	}
 }
