@@ -35,6 +35,7 @@ import com.almuramc.bolt.lock.Lock;
 import com.almuramc.bolt.lock.type.BasicLock;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -62,10 +63,11 @@ public class AqualockCommands implements CommandExecutor {
 		}
 		Player player = (Player) commandSender;
 		//TODO Possibly see if they enter params after lock? This suffices for now.
+		Location target = BlockUtil.getTarget(player, null, 4).getLocation();
 		if (strings[0].equalsIgnoreCase("lock")) {
-			LockUtil.lock(player.getName(), BlockUtil.getTarget(player, null, 4).getLocation());
+			LockUtil.lock(player.getName(), target);
 		} else if (strings[0].equalsIgnoreCase("unlock")) {
-			LockUtil.unlock(player.getName(), BlockUtil.getTarget(player, null, 4).getLocation());
+			LockUtil.unlock(player.getName(), target);
 		}
 		return false;
 	}
