@@ -29,6 +29,8 @@ package com.almuramc.aqualock.bukkit.command;
 import java.util.logging.Level;
 
 import com.almuramc.aqualock.bukkit.AqualockPlugin;
+import com.almuramc.aqualock.bukkit.util.BlockUtil;
+import com.almuramc.aqualock.bukkit.util.LockUtil;
 import com.almuramc.bolt.lock.Lock;
 import com.almuramc.bolt.lock.type.BasicLock;
 
@@ -59,50 +61,12 @@ public class AqualockCommands implements CommandExecutor {
 			return false;
 		}
 		Player player = (Player) commandSender;
+		//TODO Possibly see if they enter params after lock? This suffices for now.
 		if (strings[0].equalsIgnoreCase("lock")) {
-			onLock(player);
+			LockUtil.lock(player.getName(), BlockUtil.getTarget(player, null, 4).getLocation());
 		} else if (strings[0].equalsIgnoreCase("unlock")) {
-			onUnlock(player);
+			LockUtil.unlock(player.getName(), BlockUtil.getTarget(player, null, 4).getLocation());
 		}
 		return false;
-	}
-
-	public boolean onLock(Player player) {
-		Block lookingAt = player.getEyeLocation().getBlock();
-		boolean contains = false;
-		if (plugin.getRegistry().contains(lookingAt.getWorld().getUID(), lookingAt.getX() + 1, lookingAt.getY(), lookingAt.getZ())) {
-			if (!plugin.getRegistry().getLock(lookingAt.getWorld().getUID(), lookingAt.getX() + 1, lookingAt.getY(), lookingAt.getZ()).getOwner().equals(player.getName())) {
-				player.kickPlayer("Aqualock says its not nice to lock other's locks!");
-				return true;
-			}
-
-			contains = true;
-		}
-		BasicLock lock = new BasicLock(player.getName(), null, player.getWorld().getUID(), lookingAt.getX() + 1, lookingAt.getY(), lookingAt.getZ());
-		plugin.getRegistry().addLock(lock);
-		plugin.getBackend().addLock(lock);
-		if (contains) {
-			player.sendMessage(plugin.getPrefix() + "Updated lock at x: " + lock.getX() + ", y: " + lock.getY() + ", z: " + lock.getZ());
-		} else {
-			player.sendMessage(plugin.getPrefix() + "Locked voxel at x: " + lock.getX() + ", y: " + lock.getY() + ", z: " + lock.getZ());
-		}
-		return true;
-	}
-
-	public boolean onUnlock(Player player) {
-		Block lookingAt = player.getEyeLocation().getBlock();
-		if (plugin.getRegistry().contains(lookingAt.getWorld().getUID(), lookingAt.getX() + 1, lookingAt.getY(), lookingAt.getZ())) {
-			Lock lock = plugin.getRegistry().getLock(lookingAt.getWorld().getUID(), lookingAt.getX() + 1, lookingAt.getY(), lookingAt.getZ());
-			if (lock.getOwner().equals(player.getName())) {
-				plugin.getRegistry().removeLock(lock);
-				plugin.getBackend().removeLock(lock);
-				player.sendMessage(plugin.getPrefix() + "Removed lock at x: " + lock.getX() + ", y: " + lock.getY() + ", z: " + lock.getZ());
-			} else {
-				player.kickPlayer("Aqualock says its not nice to unlock other's locks!");
-			}
-		} else {
-			player.sendMessage(plugin.getPrefix() + "Did not find a lock at this location!");
-		}
-		return true;
 	}
 }
