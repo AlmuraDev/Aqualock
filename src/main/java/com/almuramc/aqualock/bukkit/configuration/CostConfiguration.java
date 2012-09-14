@@ -55,9 +55,9 @@ public class CostConfiguration {
 		if (global == null) {
 			throw new IllegalStateException("Missing global section in your cost.yml.");
 		}
-		globalLock = global.getDouble("global.lock", 0.0);
-		globalUnlock = global.getDouble("global.unlock", 0.0);
-		globalUse = global.getDouble("global.use", 0.0);
+		globalLock = global.getDouble("lock", 0.0);
+		globalUnlock = global.getDouble("unlock", 0.0);
+		globalUse = global.getDouble("use", 0.0);
 		//Now, we read in any material costs (if any)
 		ConfigurationSection material = config.getConfigurationSection("material");
 		if (material == null) {
