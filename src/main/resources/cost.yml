@@ -7,6 +7,7 @@
 #   dirt:
 #     lock: 10.00
 #     unlock: 10.00
+#     update: 10.00
 #     use: 10.00
 #
 # Things to note:
@@ -16,5 +17,6 @@
 global:
   lock: 0.00
   unlock: 0.00
+  update: 0.00
   use: 0.00
 material:

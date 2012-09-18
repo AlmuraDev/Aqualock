@@ -27,6 +27,7 @@
 package com.almuramc.aqualock.bukkit;
 
 import com.almuramc.aqualock.bukkit.command.AqualockCommands;
+import com.almuramc.aqualock.bukkit.configuration.AqualockConfiguration;
 import com.almuramc.bolt.lock.Lock;
 import com.almuramc.bolt.registry.CommonRegistry;
 import com.almuramc.bolt.storage.SqlStorage;
@@ -46,6 +47,7 @@ public class AqualockPlugin extends JavaPlugin {
 	private static Storage backend;
 	private static Permission permission;
 	private static Economy economy;
+	private static AqualockConfiguration configuration;
 
 	static {
 		registry = new CommonRegistry();
@@ -71,6 +73,7 @@ public class AqualockPlugin extends JavaPlugin {
 		}
 		this.getCommand("aqualock").setExecutor(new AqualockCommands(this));
 		this.getServer().getPluginManager().registerEvents(new AqualockListener(this), this);
+		configuration = new AqualockConfiguration(this);
 	}
 
 	public static CommonRegistry getRegistry() {
@@ -79,6 +82,10 @@ public class AqualockPlugin extends JavaPlugin {
 
 	public static Storage getBackend() {
 		return backend;
+	}
+
+	public static AqualockConfiguration getConfiguration() {
+		return configuration;
 	}
 
 	public static String getPrefix() {

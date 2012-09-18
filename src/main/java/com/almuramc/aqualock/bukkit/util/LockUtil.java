@@ -62,13 +62,17 @@ public class LockUtil {
 	public static void lock(String playerName, List<String> coowners, String passcode, Location location, byte data) {
 		checkLocation(location);
 		Player player = checkNameAndGetPlayer(playerName);
+		if (!PermissionUtil.canLock(player)) {
+			//TODO send message that they have no perms to lock
+			return;
+		}
 		if (coowners == null) {
 			coowners = Collections.emptyList();
 		}
 		BukkitLock lock = new BukkitLock(playerName, coowners, passcode, location, data);
 		//Make sure we aren't relocking blocks
 		if (registry.contains(lock)) {
-			//TODO call change
+			update(playerName, coowners, passcode, location, data);
 			return;
 		}
 		//If the server has an economy system, use it
@@ -129,6 +133,10 @@ public class LockUtil {
 	public static void unlock(String playerName, String passcode, Location location) {
 		checkLocation(location);
 		Player player = checkNameAndGetPlayer(playerName);
+		if (!PermissionUtil.canUnlock(player)) {
+			//TODO send message that they have no perms to unlock
+			return;
+		}
 
 		Lock lock = registry.getLock(location.getWorld().getUID(), location.getBlockX(), location.getBlockY(), location.getBlockZ());
 
@@ -166,7 +174,7 @@ public class LockUtil {
 						//TODO message
 						return;
 					} else {
-						double cost = EconomyUtil.getCostForUnlock(player);
+						double cost = EconomyUtil.getCostForUnlock(player, location.getBlock().getType());
 						//Find out if they have the money.
 						if (EconomyUtil.hasEnough(player, cost)) {
 							//TODO If the cost was zero then say something like "Unlocking was free!"
@@ -202,6 +210,11 @@ public class LockUtil {
 	 */
 	public static void update(String playerName, List<String> coowners, String passcode, Location location, byte data) {
 		checkLocation(location);
+		Player player = checkNameAndGetPlayer(playerName);
+		if (!PermissionUtil.canUse(player)) {
+			//TODO send message that they have no perms to update
+			return;
+		}
 		if (coowners == null) {
 			coowners = Collections.emptyList();
 		}
@@ -212,9 +225,8 @@ public class LockUtil {
 		}
 
 		Lock lock = registry.getLock(location.getWorld().getUID(), location.getBlockX(), location.getBlockY(), location.getBlockZ());
-		Player player = checkNameAndGetPlayer(playerName);
 		//The player updating the lock is neither an owner or a co-owner nor has the permission
-		if ((!lock.getOwner().equals(playerName) || !lock.getCoOwners().contains(playerName)) && !PermissionUtil.canChange(player)) {
+		if ((!lock.getOwner().equals(playerName) || !lock.getCoOwners().contains(playerName)) && !PermissionUtil.canUpdate(player)) {
 			//TODO message the user that they can't change a lock they are neither an owner, co-owner, or don't have the permission.
 			return;
 		}
@@ -233,7 +245,7 @@ public class LockUtil {
 					//TODO message
 					return;
 				} else {
-					double cost = EconomyUtil.getCostForUpdate(player);
+					double cost = EconomyUtil.getCostForUpdate(player, location.getBlock().getType());
 					//Find out if they have the money.
 					if (EconomyUtil.hasEnough(player, cost)) {
 						//TODO If the cost was zero then say something like "Updating was free!"
@@ -266,6 +278,50 @@ public class LockUtil {
 		backend.addLock(lock);
 	}
 
+	public static void use(String playerName, Location location) {
+		checkLocation(location);
+		Player player = checkNameAndGetPlayer(playerName);
+		//First check if the registry has a lock at this location, if not then return
+		if (!registry.contains(location.getWorld().getUID(), location.getBlockX(), location.getBlockY(), location.getBlockZ())) {
+			return;
+		}
+		Lock lock = registry.getLock(location.getWorld().getUID(), location.getBlockX(), location.getBlockY(), location.getBlockZ());
+		if ((!lock.getOwner().equals(playerName) || !lock.getCoOwners().contains(playerName)) && !PermissionUtil.canUse(player)) {
+			//TODO Tell them that they don't have privileges to use at this location and return
+			return;
+		}
+		//If the server has an economy system, use it
+		if (AqualockPlugin.getEconomies() != null) {
+			//Check if they need to be charged for this lock
+			if (EconomyUtil.shouldChargeForUse(player)) {
+				//No account? Let the player know some message and return
+				if (!EconomyUtil.hasAccount(player)) {
+					//TODO message
+					return;
+				} else {
+					double cost = EconomyUtil.getCostForUse(player, location.getBlock().getType());
+					//Find out if they have the money.
+					if (EconomyUtil.hasEnough(player, cost)) {
+						//TODO If the cost was zero then say something like "Using was free!"
+						if (cost == 0) {
+							//player.sendMessage
+							//TODO If cost was less than zero then say something like "Using gave you monies!"
+						} else if (cost < 0) {
+							//player.sendMessage
+							//TODO Tell the user how much they were charged
+						} else {
+							//player.sendMessage
+						}
+						EconomyUtil.apply(player, cost);
+						//Don't have enough? Tell them that and return
+					} else {
+						//TODO message
+						return;
+					}
+				}
+			}
+		}
+	}
 	////////////////////////////////////////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////Overriden Methods///////////////////////////////////////////////
 	//////////////////////////////////////Don't touch these!//////////////////////////////////////////////

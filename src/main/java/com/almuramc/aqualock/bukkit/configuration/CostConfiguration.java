@@ -42,7 +42,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 public class CostConfiguration {
 	private final FileConfiguration config;
 	private final HashMap<Material, CostNode> nodes = new HashMap<Material, CostNode>();
-	private double globalLock, globalUnlock, globalUse;
+	private double globalLock, globalUnlock, globalUpdate, globalUse;
 
 	public CostConfiguration(File costYml) {
 		config = YamlConfiguration.loadConfiguration(costYml);
@@ -55,6 +55,7 @@ public class CostConfiguration {
 		}
 		globalLock = global.getDouble("lock", 0.0);
 		globalUnlock = global.getDouble("unlock", 0.0);
+		globalUpdate = global.getDouble("update", 0.0);
 		globalUse = global.getDouble("use", 0.0);
 		//Now, we read in any material costs (if any)
 		ConfigurationSection material = config.getConfigurationSection("material");
@@ -75,7 +76,7 @@ public class CostConfiguration {
 				Bukkit.getLogger().log(Level.WARNING, AqualockPlugin.getPrefix() + " Found " + key + " in cost.yml but is a duplicate! Overwriting...");
 			}
 			ConfigurationSection node = material.getConfigurationSection(key);
-			nodes.put(keyed, new CostNode(keyed, node.getDouble("lock", globalLock), node.getDouble("unlock", globalUnlock), node.getDouble("use", globalUse)));
+			nodes.put(keyed, new CostNode(keyed, node.getDouble("lock", globalLock), node.getDouble("unlock", globalUnlock), node.getDouble("update", globalUpdate), node.getDouble("use", globalUse)));
 		}
 	}
 
@@ -97,6 +98,14 @@ public class CostConfiguration {
 		}
 		CostNode node = nodes.get(material);
 		return node == null ? globalUnlock : node.getUnlock();
+	}
+
+	public double getUpdateCost(Material material) {
+		if (material == null) {
+			return globalUpdate;
+		}
+		CostNode node = nodes.get(material);
+		return node == null ? globalUpdate : node.getUpdate();
 	}
 
 	public double getUseCost(Material material) {

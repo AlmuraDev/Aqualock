@@ -30,6 +30,7 @@ import com.almuramc.aqualock.bukkit.AqualockPlugin;
 
 import net.milkbowl.vault.economy.Economy;
 
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 
@@ -41,69 +42,31 @@ public class EconomyUtil {
 	}
 
 	public static boolean hasAccount(Player player) {
-		if (economy.hasAccount(player.getName())) {
-			return true;
-		}
-		return false;
+		return economy.hasAccount(player.getName());
 	}
 
 	public static boolean hasEnough(Player player, double amount) {
-		if (economy.has(player.getName(), amount)) {
-			return true;
-		}
-		return false;
+		return economy.has(player.getName(), amount);
 	}
 
 	public static void apply(Player player, double amount) {
 		economy.withdrawPlayer(player.getName(), amount);
 	}
 
-	public static double getCostForLock(Player player) {
-		for (PermissionAttachmentInfo perm : player.getEffectivePermissions()) {
-			if (perm.getPermission().contains("aqualock.lock.cost.")) {
-				try {
-					return Double.parseDouble(perm.getPermission().split("aqualock.lock.cost.")[1]);
-				} catch (Exception ignore) {
-				}
-			}
-		}
-		return 0;
+	public static double getCostForLock(Player player, Material material) {
+		return shouldChargeForLock(player) ? AqualockPlugin.getConfiguration().getCosts().getLockCost(material) : 0.0;
 	}
 
-	public static double getCostForUnlock(Player player) {
-		for (PermissionAttachmentInfo perm : player.getEffectivePermissions()) {
-			if (perm.getPermission().contains("aqualock.unlock.cost.")) {
-				try {
-					return Double.parseDouble(perm.getPermission().split("aqualock.unlock.cost.")[1]);
-				} catch (Exception ignore) {
-				}
-			}
-		}
-		return 0;
+	public static double getCostForUnlock(Player player, Material material) {
+		return shouldChargeForUnlock(player) ? AqualockPlugin.getConfiguration().getCosts().getUnlockCost(material) : 0.0;
 	}
 
-	public static double getCostForUse(Player player) {
-		for (PermissionAttachmentInfo perm : player.getEffectivePermissions()) {
-			if (perm.getPermission().contains("aqualock.use.cost.")) {
-				try {
-					return Double.parseDouble(perm.getPermission().split("aqualock.use.cost.")[1]);
-				} catch (Exception ignore) {
-				}
-			}
-		}
-		return 0;
+	public static double getCostForUse(Player player, Material material) {
+		return shouldChargeForUse(player) ? AqualockPlugin.getConfiguration().getCosts().getUseCost(material) : 0.0;
 	}
 
-	public static double getCostForUpdate(Player player) {
-		for (PermissionAttachmentInfo perm : player.getEffectivePermissions()) {
-			if (perm.getPermission().contains("aqualock.update.cost.")) {
-				try {
-					return Double.parseDouble(perm.getPermission().split("aqualock.update.cost.")[1]);
-				} catch (Exception ignore) {
-				}
-			}
-		}
-		return 0;
+	public static double getCostForUpdate(Player player, Material material) {
+		return shouldChargeForUpdate(player) ? AqualockPlugin.getConfiguration().getCosts().getUpdateCost(material) : 0.0;
 	}
 
 	public static boolean shouldChargeForLock(Player player) {
