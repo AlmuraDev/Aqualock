@@ -51,8 +51,16 @@ public class BukkitLock extends BasicLock {
 		return passcode;
 	}
 
+	public void setPasscode(String passcode) {
+		this.passcode = passcode;
+	}
+
 	public byte getData() {
 		return data;
+	}
+
+	public void setData(byte data) {
+		this.data = data;
 	}
 
 	@Override

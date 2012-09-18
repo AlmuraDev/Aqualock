@@ -55,4 +55,8 @@ public class PermissionUtil {
 	public static boolean canUnlock(Player player) {
 		return has(player, player.getWorld(), "aqualock.unlock") || has(player, player.getWorld(), "aqualock.admin");
 	}
+
+	public static boolean canChange(Player player) {
+		return has(player, player.getWorld(), "aqualock.change") || has(player, player.getWorld(), "aqualock.admin");
+	}
 }

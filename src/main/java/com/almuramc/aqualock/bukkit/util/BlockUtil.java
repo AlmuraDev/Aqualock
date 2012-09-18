@@ -34,6 +34,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.material.Door;
+import org.bukkit.material.MaterialData;
 
 /**
  * Class with helper functions that deal with blocks
@@ -54,31 +55,36 @@ public class BlockUtil {
 	}
 
 	public static boolean isDoubleDoor(Block block) {
-		if (!(block instanceof Door)) {
+		Class<? extends MaterialData> clazz = block.getType().getData();
+		if (!((clazz.equals(Door.class) || clazz.getSuperclass().equals(Door.class)))) {
 			return false;
 		}
 		return isDoubleDoorRelativeLeft(block) || isDoubleDoorRelativeRight(block);
 	}
 
 	private static boolean isDoubleDoorRelativeRight(Block block) {
-		if (!(block instanceof Door)) {
+		Class<? extends MaterialData> clazz = block.getType().getData();
+		if (!((clazz.equals(Door.class) || clazz.getSuperclass().equals(Door.class)))) {
 			return false;
 		}
 		Block right = block.getRelative(BlockFace.WEST);
 		boolean isDouble = false;
-		if (right instanceof Door) {
+		clazz = right.getType().getData();
+		if (clazz.equals(Door.class) || clazz.getSuperclass().equals(Door.class)) {
 			isDouble = true;
 		}
 		return isDouble;
 	}
 
 	private static boolean isDoubleDoorRelativeLeft(Block block) {
-		if (!(block instanceof Door)) {
+		Class<? extends MaterialData> clazz = block.getType().getData();
+		if (!((clazz.equals(Door.class) || clazz.getSuperclass().equals(Door.class)))) {
 			return false;
 		}
 		Block left = block.getRelative(BlockFace.EAST);
 		boolean isDouble = false;
-		if (left instanceof Door) {
+		clazz = left.getType().getData();
+		if (clazz.equals(Door.class) || clazz.getSuperclass().equals(Door.class)) {
 			isDouble = true;
 		}
 		return isDouble;

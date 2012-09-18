@@ -26,6 +26,7 @@
  */
 package com.almuramc.aqualock.bukkit.util;
 
+import java.util.Collections;
 import java.util.List;
 
 import com.almuramc.aqualock.bukkit.AqualockPlugin;
@@ -52,17 +53,19 @@ public class LockUtil {
 	}
 
 	/**
-	 * @param owner
+	 * @param playerName
 	 * @param coowners
 	 * @param passcode
 	 * @param location
 	 * @param data
 	 */
-	public static void lock(String owner, List<String> coowners, String passcode, Location location, byte data) {
+	public static void lock(String playerName, List<String> coowners, String passcode, Location location, byte data) {
 		checkLocation(location);
-		Player player = checkNameAndGetPlayer(owner);
-
-		BukkitLock lock = new BukkitLock(owner, coowners, passcode, location, data);
+		Player player = checkNameAndGetPlayer(playerName);
+		if (coowners == null) {
+			coowners = Collections.emptyList();
+		}
+		BukkitLock lock = new BukkitLock(playerName, coowners, passcode, location, data);
 		//Make sure we aren't relocking blocks
 		if (registry.contains(lock)) {
 			//TODO call change
@@ -192,20 +195,75 @@ public class LockUtil {
 
 	/**
 	 * @param playerName
-	 * @param owner
 	 * @param coowners
 	 * @param passcode
 	 * @param location
 	 * @param data
 	 */
-	public static void update(String playerName, String owner, List<String> coowners, String passcode, Location location, byte data) {
+	public static void update(String playerName, List<String> coowners, String passcode, Location location, byte data) {
+		checkLocation(location);
+		if (coowners == null) {
+			coowners = Collections.emptyList();
+		}
 		//First check if the registry has a lock at this location, if not then lock.
 		if (!registry.contains(location.getWorld().getUID(), location.getBlockX(), location.getBlockY(), location.getBlockZ())) {
-			lock(owner, coowners, passcode, location, data);
+			lock(playerName, coowners, passcode, location, data);
 			return;
 		}
 
 		Lock lock = registry.getLock(location.getWorld().getUID(), location.getBlockX(), location.getBlockY(), location.getBlockZ());
+		Player player = checkNameAndGetPlayer(playerName);
+		//The player updating the lock is neither an owner or a co-owner nor has the permission
+		if ((!lock.getOwner().equals(playerName) || !lock.getCoOwners().contains(playerName)) && !PermissionUtil.canChange(player)) {
+			//TODO message the user that they can't change a lock they are neither an owner, co-owner, or don't have the permission.
+			return;
+		}
+		if (lock instanceof BukkitLock) {
+			if (!((BukkitLock) lock).getPasscode().equals(passcode)) {
+				//TODO message the user that passcode failed.
+				return;
+			}
+		}
+		//If the server has an economy system, use it
+		if (AqualockPlugin.getEconomies() != null) {
+			//Check if they need to be charged for this lock
+			if (EconomyUtil.shouldChargeForUpdate(player)) {
+				//No account? Let the player know some message and return
+				if (!EconomyUtil.hasAccount(player)) {
+					//TODO message
+					return;
+				} else {
+					double cost = EconomyUtil.getCostForUpdate(player);
+					//Find out if they have the money.
+					if (EconomyUtil.hasEnough(player, cost)) {
+						//TODO If the cost was zero then say something like "Updating was free!"
+						if (cost == 0) {
+							//player.sendMessage
+							//TODO If cost was less than zero then say something like "Updating gave you monies!"
+						} else if (cost < 0) {
+							//player.sendMessage
+							//TODO Tell the user how much they were charged
+						} else {
+							//player.sendMessage
+						}
+						EconomyUtil.apply(player, cost);
+						//Don't have enough? Tell them that and return
+					} else {
+						//TODO message
+						return;
+					}
+				}
+			}
+		}
+		lock.setOwner(playerName);
+		lock.setCoOwners(coowners);
+		if (lock instanceof BukkitLock) {
+			((BukkitLock) lock).setPasscode(passcode);
+			((BukkitLock) lock).setData(data);
+		}
+		//Update backend and registry
+		registry.addLock(lock);
+		backend.addLock(lock);
 	}
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -230,6 +288,21 @@ public class LockUtil {
 
 	public static void unlock(String playerName, Location location) {
 		unlock(playerName, "", location);
+	}
+
+	public static void update(String playerName, List<String> coowners, String passcode, Location location) {
+		checkLocation(location);
+		update(playerName, coowners, passcode, location, location.getBlock().getData());
+	}
+
+	public static void update(String playerName, List<String> coowners, Location location) {
+		checkLocation(location);
+		update(playerName, coowners, "", location, location.getBlock().getData());
+	}
+
+	public static void update(String playerName, Location location) {
+		checkLocation(location);
+		update(playerName, null, location);
 	}
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////

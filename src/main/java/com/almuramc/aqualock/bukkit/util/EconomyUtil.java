@@ -94,6 +94,18 @@ public class EconomyUtil {
 		return 0;
 	}
 
+	public static double getCostForUpdate(Player player) {
+		for (PermissionAttachmentInfo perm : player.getEffectivePermissions()) {
+			if (perm.getPermission().contains("aqualock.update.cost.")) {
+				try {
+					return Double.parseDouble(perm.getPermission().split("aqualock.update.cost.")[1]);
+				} catch (Exception ignore) {
+				}
+			}
+		}
+		return 0;
+	}
+
 	public static boolean shouldChargeForLock(Player player) {
 		return PermissionUtil.has(player, player.getWorld(), "aqualock.lock.cost") && !PermissionUtil.has(player, player.getWorld(), "aqualock.admin");
 	}
@@ -104,5 +116,9 @@ public class EconomyUtil {
 
 	public static boolean shouldChargeForUse(Player player) {
 		return PermissionUtil.has(player, player.getWorld(), "aqualock.use.cost") && !PermissionUtil.has(player, player.getWorld(), "aqualock.admin");
+	}
+
+	public static boolean shouldChargeForUpdate(Player player) {
+		return PermissionUtil.has(player, player.getWorld(), "aqualock.update.cost") && !PermissionUtil.has(player, player.getWorld(), "aqualock.admin");
 	}
 }

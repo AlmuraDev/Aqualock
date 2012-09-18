@@ -36,6 +36,7 @@ import com.alta189.simplesave.sqlite.SQLiteConfiguration;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -61,7 +62,7 @@ public class AqualockPlugin extends JavaPlugin {
 			throw new RuntimeException("Failed to intialize Vault for permissions!");
 		}
 		if (!setupEconomy()) {
-			throw new RuntimeException("Failed to intialize Vault for economy!");
+			Bukkit.getLogger().info(getPrefix() + "Failed to initialize Vault for economy, skipping...");
 		}
 		backend = new SqlStorage(new SQLiteConfiguration(), getDataFolder());
 		backend.onLoad();
