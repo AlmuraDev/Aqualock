@@ -84,7 +84,7 @@ public class LockUtil {
 					//TODO message
 					return;
 				} else {
-					double cost = EconomyUtil.getCostForLock(player);
+					double cost = EconomyUtil.getCostForLock(player, location.getBlock().getType());
 					//Find out if they have the money.
 					if (EconomyUtil.hasEnough(player, cost)) {
 						//TODO If the cost was zero then say something like "Locking was free!"
