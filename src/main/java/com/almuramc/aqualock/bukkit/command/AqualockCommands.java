@@ -65,6 +65,8 @@ public class AqualockCommands implements CommandExecutor {
 			LockUtil.lock(player.getName(), target);
 		} else if (strings[0].equalsIgnoreCase("unlock")) {
 			LockUtil.unlock(player.getName(), target);
+		} else if (strings[0].equalsIgnoreCase("update")) {
+			LockUtil.update(player.getName(), target);
 		}
 		return false;
 	}
