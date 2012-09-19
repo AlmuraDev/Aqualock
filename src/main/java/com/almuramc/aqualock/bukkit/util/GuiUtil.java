@@ -44,4 +44,13 @@ public class GuiUtil {
 		}
 		player.getMainScreen().attachPopupScreen(fetch(player));
 	}
+
+	public static void close(SpoutPlayer player) {
+		if (player == null) {
+			throw new IllegalArgumentException("Player cannot be null!");
+		}
+		if (player.getMainScreen().getActivePopup() instanceof AquaPanel) {
+			player.getMainScreen().getActivePopup().close();
+		}
+	}
 }
