@@ -72,6 +72,5 @@ public class AquaPanel extends GenericPopup {
 		close.shiftXPos(150).shiftYPos(95);
 
 		attachWidgets(plugin, border, label, gt, close);
-		player.getMainScreen().attachPopupScreen(this);
 	}
 }
