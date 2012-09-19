@@ -31,6 +31,7 @@ import java.util.logging.Level;
 import com.almuramc.aqualock.bukkit.AqualockPlugin;
 import com.almuramc.aqualock.bukkit.display.AquaPanel;
 import com.almuramc.aqualock.bukkit.util.BlockUtil;
+import com.almuramc.aqualock.bukkit.util.GuiUtil;
 import com.almuramc.aqualock.bukkit.util.LockUtil;
 
 import org.getspout.spoutapi.player.SpoutPlayer;
@@ -71,7 +72,7 @@ public class AqualockCommands implements CommandExecutor {
 		} else if (strings[0].equalsIgnoreCase("update")) {
 			LockUtil.update(player.getName(), target);
 		} else if (strings[0].equalsIgnoreCase("gui")) {
-			((SpoutPlayer) player).getMainScreen().attachPopupScreen(new AquaPanel(plugin, (SpoutPlayer) player));
+			GuiUtil.open(player);
 		}
 		return false;
 	}

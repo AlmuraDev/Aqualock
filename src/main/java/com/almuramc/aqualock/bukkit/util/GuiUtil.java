@@ -34,6 +34,8 @@ import com.almuramc.aqualock.bukkit.display.AquaPanel;
 
 import org.getspout.spoutapi.player.SpoutPlayer;
 
+import org.bukkit.entity.Player;
+
 public class GuiUtil {
 	private static final HashMap<UUID, AquaPanel> store = new HashMap<UUID, AquaPanel>();
 	private static final AqualockPlugin plugin;
@@ -65,20 +67,27 @@ public class GuiUtil {
 		}
 	}
 
-	public static void open(SpoutPlayer player) {
+	public static void open(Player player) {
 		if (player == null) {
 			throw new IllegalArgumentException("Player cannot be null!");
 		}
-		player.getMainScreen().attachPopupScreen(fetch(player));
+		if (!(player instanceof SpoutPlayer)) {
+			throw new IllegalStateException("Player isn't an instance of SpoutPlayer, SpoutPlugin missing or encountering an issue!");
+		}
+		((SpoutPlayer) player).getMainScreen().attachPopupScreen(fetch((SpoutPlayer) player));
 	}
 
-	public static void close(SpoutPlayer player) {
+	public static void close(Player player) {
 		if (player == null) {
 			throw new IllegalArgumentException("Player cannot be null!");
 		}
-		if (player.getMainScreen().getActivePopup() instanceof AquaPanel) {
-			store(player, (AquaPanel) player.getMainScreen().getActivePopup());
-			player.getMainScreen().getActivePopup().close();
+		if (!(player instanceof SpoutPlayer)) {
+			throw new IllegalStateException("Player isn't an instance of SpoutPlayer, SpoutPlugin missing or encountering an issue!");
+		}
+		SpoutPlayer spoutPlayer = (SpoutPlayer) player;
+		if (spoutPlayer.getMainScreen().getActivePopup() instanceof AquaPanel) {
+			store(spoutPlayer, (AquaPanel) spoutPlayer.getMainScreen().getActivePopup());
+			spoutPlayer.getMainScreen().getActivePopup().close();
 		}
 	}
 }
