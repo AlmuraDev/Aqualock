@@ -29,6 +29,7 @@ package com.almuramc.aqualock.bukkit.command;
 import java.util.logging.Level;
 
 import com.almuramc.aqualock.bukkit.AqualockPlugin;
+import com.almuramc.aqualock.bukkit.display.AquaPanel;
 import com.almuramc.aqualock.bukkit.util.BlockUtil;
 import com.almuramc.aqualock.bukkit.util.LockUtil;
 
@@ -38,6 +39,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.getspout.spoutapi.player.SpoutPlayer;
 
 public class AqualockCommands implements CommandExecutor {
 	private final AqualockPlugin plugin;
@@ -67,6 +69,8 @@ public class AqualockCommands implements CommandExecutor {
 			LockUtil.unlock(player.getName(), target);
 		} else if (strings[0].equalsIgnoreCase("update")) {
 			LockUtil.update(player.getName(), target);
+		} else if (strings[0].equalsIgnoreCase("gui")) {
+			((SpoutPlayer) player).getMainScreen().attachPopupScreen(new AquaPanel(plugin, (SpoutPlayer) player));
 		}
 		return false;
 	}

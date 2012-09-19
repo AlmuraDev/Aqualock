@@ -48,7 +48,12 @@ public class AqualockPlugin extends JavaPlugin {
 	private static Permission permission;
 	private static Economy economy;
 	private static AqualockConfiguration configuration;
-
+	private static AqualockPlugin instance;
+	
+	public static AqualockPlugin getInstance() {
+		return instance;
+	}
+	
 	static {
 		registry = new CommonRegistry();
 	}

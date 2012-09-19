@@ -26,5 +26,60 @@
  */
 package com.almuramc.aqualock.bukkit.display;
 
-public class AquaPanel {
+import java.util.List;
+
+import org.bukkit.entity.Player;
+import org.getspout.spoutapi.gui.GenericButton;
+import org.getspout.spoutapi.gui.GenericLabel;
+import org.getspout.spoutapi.gui.GenericPopup;
+import org.getspout.spoutapi.gui.GenericTexture;
+import org.getspout.spoutapi.gui.ListWidget;
+import org.getspout.spoutapi.gui.RenderPriority;
+import org.getspout.spoutapi.gui.WidgetAnchor;
+import org.getspout.spoutapi.player.SpoutPlayer;
+
+import com.almuramc.aqualock.bukkit.AqualockPlugin;
+
+public class AquaPanel extends GenericPopup {
+
+	private AqualockPlugin instance;
+	private SpoutPlayer player;
+	private GenericTexture gt;
+	//private String string1;
+	//private int windowtype = 1;
+	//private MyComboBox combo1;
+	//private ListWidget list1;
+	//private GenericButton button1;
+	
+
+	public AquaPanel(AqualockPlugin instance, SpoutPlayer player) {
+		this.instance = instance;
+		this.player = player;
+		
+		GenericTexture border = new GenericTexture("http://www.almuramc.com/images/playerplus.png");
+		border.setAnchor(WidgetAnchor.CENTER_CENTER);
+		border.setPriority(RenderPriority.High);
+		border.setWidth(420).setHeight(345);
+		border.shiftXPos(-205).shiftYPos(-120);
+
+		GenericLabel label = new GenericLabel();
+		label.setText("Aqualock");
+		label.setAnchor(WidgetAnchor.CENTER_CENTER);
+		label.shiftXPos(-50).shiftYPos(-112);	
+		label.setScale(1.2F).setWidth(-1).setHeight(-1);
+
+		gt = new GenericTexture();
+		gt.setAnchor(WidgetAnchor.CENTER_CENTER);
+		gt.setHeight(150).setWidth(150);
+		gt.shiftXPos(10).shiftYPos(-90);		
+
+		CloseButton close = new CloseButton(instance);
+		close.setAnchor(WidgetAnchor.CENTER_CENTER);
+		close.setHeight(20).setWidth(50);
+		close.shiftXPos(150).shiftYPos(95);
+
+		attachWidgets(instance, border, label, gt, close);
+		player.getMainScreen().attachPopupScreen(this);
+
+	}
 }
