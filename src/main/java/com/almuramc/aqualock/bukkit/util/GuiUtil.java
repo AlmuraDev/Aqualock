@@ -20,14 +20,14 @@ public class GuiUtil {
 		plugin = temp;
 	}
 
-	public static AquaPanel fetch(SpoutPlayer player) {
+	private static AquaPanel fetch(SpoutPlayer player) {
 		if (player == null) {
 			throw new IllegalArgumentException("Player cannot be null!");
 		}
 		return store.containsKey(player.getUniqueId()) ? store.get(player.getUniqueId()) : new AquaPanel(plugin, player);
 	}
 
-	public static void store(SpoutPlayer player, AquaPanel panel) {
+	private static void store(SpoutPlayer player, AquaPanel panel) {
 		if (player == null) {
 			throw new IllegalArgumentException("Player cannot be null!");
 		}
@@ -50,6 +50,7 @@ public class GuiUtil {
 			throw new IllegalArgumentException("Player cannot be null!");
 		}
 		if (player.getMainScreen().getActivePopup() instanceof AquaPanel) {
+			store(player, (AquaPanel) player.getMainScreen().getActivePopup());
 			player.getMainScreen().getActivePopup().close();
 		}
 	}
