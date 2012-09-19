@@ -26,23 +26,17 @@
  */
 package com.almuramc.aqualock.bukkit.display;
 
-import java.util.List;
+import com.almuramc.aqualock.bukkit.AqualockPlugin;
 
-import org.bukkit.entity.Player;
-import org.getspout.spoutapi.gui.GenericButton;
 import org.getspout.spoutapi.gui.GenericLabel;
 import org.getspout.spoutapi.gui.GenericPopup;
 import org.getspout.spoutapi.gui.GenericTexture;
-import org.getspout.spoutapi.gui.ListWidget;
 import org.getspout.spoutapi.gui.RenderPriority;
 import org.getspout.spoutapi.gui.WidgetAnchor;
 import org.getspout.spoutapi.player.SpoutPlayer;
 
-import com.almuramc.aqualock.bukkit.AqualockPlugin;
-
 public class AquaPanel extends GenericPopup {
-
-	private AqualockPlugin instance;
+	private final AqualockPlugin plugin;
 	private SpoutPlayer player;
 	private GenericTexture gt;
 	//private String string1;
@@ -50,12 +44,11 @@ public class AquaPanel extends GenericPopup {
 	//private MyComboBox combo1;
 	//private ListWidget list1;
 	//private GenericButton button1;
-	
 
-	public AquaPanel(AqualockPlugin instance, SpoutPlayer player) {
-		this.instance = instance;
+	public AquaPanel(AqualockPlugin plugin, SpoutPlayer player) {
+		this.plugin = plugin;
 		this.player = player;
-		
+
 		GenericTexture border = new GenericTexture("http://www.almuramc.com/images/playerplus.png");
 		border.setAnchor(WidgetAnchor.CENTER_CENTER);
 		border.setPriority(RenderPriority.High);
@@ -65,21 +58,20 @@ public class AquaPanel extends GenericPopup {
 		GenericLabel label = new GenericLabel();
 		label.setText("Aqualock");
 		label.setAnchor(WidgetAnchor.CENTER_CENTER);
-		label.shiftXPos(-50).shiftYPos(-112);	
+		label.shiftXPos(-50).shiftYPos(-112);
 		label.setScale(1.2F).setWidth(-1).setHeight(-1);
 
 		gt = new GenericTexture();
 		gt.setAnchor(WidgetAnchor.CENTER_CENTER);
 		gt.setHeight(150).setWidth(150);
-		gt.shiftXPos(10).shiftYPos(-90);		
+		gt.shiftXPos(10).shiftYPos(-90);
 
-		CloseButton close = new CloseButton(instance);
+		CloseButton close = new CloseButton(plugin);
 		close.setAnchor(WidgetAnchor.CENTER_CENTER);
 		close.setHeight(20).setWidth(50);
 		close.shiftXPos(150).shiftYPos(95);
 
-		attachWidgets(instance, border, label, gt, close);
+		attachWidgets(plugin, border, label, gt, close);
 		player.getMainScreen().attachPopupScreen(this);
-
 	}
 }

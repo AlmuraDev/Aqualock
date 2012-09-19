@@ -32,7 +32,6 @@ import net.milkbowl.vault.economy.Economy;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.permissions.PermissionAttachmentInfo;
 
 public class EconomyUtil {
 	private static final Economy economy;

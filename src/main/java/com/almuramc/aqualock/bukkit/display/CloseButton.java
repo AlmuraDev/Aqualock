@@ -30,22 +30,17 @@
  */
 package com.almuramc.aqualock.bukkit.display;
 
+import com.almuramc.aqualock.bukkit.AqualockPlugin;
+
 import org.getspout.spoutapi.event.screen.ButtonClickEvent;
 import org.getspout.spoutapi.gui.GenericButton;
 
-import com.almuramc.aqualock.bukkit.AqualockPlugin;
-
 public class CloseButton extends GenericButton {
+	private final AqualockPlugin plugin;
 
-	private AqualockPlugin i;
-
-	public CloseButton(AqualockPlugin i) {
+	public CloseButton(AqualockPlugin plugin) {
 		super("Close");
-		this.i = i;
-	}
-
-	public CloseButton(boolean openMain) {
-		super("Close");
+		this.plugin = plugin;
 	}
 
 	@Override
