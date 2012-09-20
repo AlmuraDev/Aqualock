@@ -35,7 +35,10 @@ import com.almuramc.bolt.lock.Lock;
 import com.almuramc.bolt.registry.CommonRegistry;
 import com.almuramc.bolt.storage.Storage;
 
+import net.milkbowl.vault.Vault;
+
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -63,7 +66,7 @@ public class LockUtil {
 		checkLocation(location);
 		Player player = checkNameAndGetPlayer(playerName);
 		if (!PermissionUtil.canLock(player)) {
-			//TODO send message that they have no perms to lock
+			player.sendMessage(AqualockPlugin.getPrefix() + "You do not have permission to lock!");
 			return;
 		}
 		if (coowners == null) {
@@ -81,26 +84,21 @@ public class LockUtil {
 			if (EconomyUtil.shouldChargeForLock(player)) {
 				//No account? Let the player know some message and return
 				if (!EconomyUtil.hasAccount(player)) {
-					//TODO message
+					player.sendMessage(AqualockPlugin.getPrefix() + "Locks cost money and you do not have a wallet!");
 					return;
 				} else {
 					double cost = EconomyUtil.getCostForLock(player, location.getBlock().getType());
 					//Find out if they have the money.
 					if (EconomyUtil.hasEnough(player, cost)) {
-						//TODO If the cost was zero then say something like "Locking was free!"
-						if (cost == 0) {
-							//player.sendMessage
-							//TODO If cost was less than zero then say something like "Locking gave you monies!"
-						} else if (cost < 0) {
-							//player.sendMessage
-							//TODO Tell the user how much they were charged
-						} else {
-							//player.sendMessage
+						if (cost < 0) {
+							player.sendMessage(AqualockPlugin.getPrefix() + "You gained $" + ChatColor.GREEN + cost + " from locking");
+						} else if (cost > 0) {
+							player.sendMessage(AqualockPlugin.getPrefix() + "You lost $" + ChatColor.GREEN + cost + " from locking");
 						}
 						EconomyUtil.apply(player, cost);
 						//Don't have enough? Tell them that and return
 					} else {
-						//TODO message
+						player.sendMessage(AqualockPlugin.getPrefix() + "This lock costs $" + ChatColor.GREEN + cost + " and you do not have enough!");
 						return;
 					}
 				}
@@ -115,12 +113,14 @@ public class LockUtil {
 				//If the lock created in this method's location is not the location of this iteration then its the second door, lock it.
 				if (!b.getLocation().equals(location)) {
 					BukkitLock other = new BukkitLock(lock.getOwner(), lock.getCoOwners(), lock.getPasscode(), b.getLocation(), b.getData());
+					player.sendMessage(AqualockPlugin.getPrefix() + "Detected a door at " + b.getLocation().toString() + "so locking it as well");
 					registry.addLock(other);
 					backend.addLock(other);
 				}
 			}
 		}
 		//After all that is said and done, add the lock made to the registry and backend.
+		player.sendMessage(AqualockPlugin.getPrefix() + "You locked " + location.toString());
 		registry.addLock(lock);
 		backend.addLock(lock);
 	}
@@ -134,14 +134,14 @@ public class LockUtil {
 		checkLocation(location);
 		Player player = checkNameAndGetPlayer(playerName);
 		if (!PermissionUtil.canUnlock(player)) {
-			//TODO send message that they have no perms to unlock
+			player.sendMessage(AqualockPlugin.getPrefix() + "You do not have permission to unlock!");
 			return;
 		}
 
 		Lock lock = registry.getLock(location.getWorld().getUID(), location.getBlockX(), location.getBlockY(), location.getBlockZ());
 
 		if (lock == null) {
-			//TODO Tell the user there was no lock at this location...
+			player.sendMessage(AqualockPlugin.getPrefix() + "You attempted to unlock this block but Aqualock cannot find a lock here.");
 			return;
 		} else {
 			String owner = lock.getOwner();
@@ -149,7 +149,7 @@ public class LockUtil {
 			if (!owner.equals(playerName)) {
 				//They aren't a co-owner either, so return and print a message
 				if (!lock.getCoOwners().contains(playerName)) {
-					//TODO message
+					player.sendMessage(AqualockPlugin.getPrefix() + "You are not an Owner or Co-Owner, your unlock has been denied.");
 					//TODO Hurt them?
 					return;
 				}
@@ -160,7 +160,7 @@ public class LockUtil {
 			if (lock instanceof BukkitLock) {
 				//Is a Bukkit lock but the passcode passed in fails so fail to unlock (even if it was the owner...)
 				if (!((BukkitLock) lock).getPasscode().equals(passcode)) {
-					//TODO message
+					player.sendMessage(AqualockPlugin.getPrefix() + "Incorrect passcode for unlock, please try again.");
 					return;
 				}
 			}
@@ -171,26 +171,21 @@ public class LockUtil {
 				if (EconomyUtil.shouldChargeForUnlock(player)) {
 					//No account? Let the player know some message and return
 					if (!EconomyUtil.hasAccount(player)) {
-						//TODO message
+						player.sendMessage(AqualockPlugin.getPrefix() + "Unlocks cost money and you do not have a wallet!");
 						return;
 					} else {
 						double cost = EconomyUtil.getCostForUnlock(player, location.getBlock().getType());
 						//Find out if they have the money.
 						if (EconomyUtil.hasEnough(player, cost)) {
-							//TODO If the cost was zero then say something like "Unlocking was free!"
-							if (cost == 0) {
-								//player.sendMessage
-								//TODO If cost was less than zero then say something like "Unlocking gave you monies!"
-							} else if (cost < 0) {
-								//player.sendMessage
-								//TODO Tell the user how much they were charged
-							} else {
-								//player.sendMessage
+							if (cost < 0) {
+								player.sendMessage(AqualockPlugin.getPrefix() + "You gained $" + ChatColor.GREEN + cost + " from unlocking.");
+							} else if (cost > 0) {
+								player.sendMessage(AqualockPlugin.getPrefix() + "You lost $" + ChatColor.GREEN + cost + " from unlocking.");
 							}
 							EconomyUtil.apply(player, cost);
 							//Don't have enough? Tell them that and return
 						} else {
-							//TODO message
+							player.sendMessage(AqualockPlugin.getPrefix() + "This unlock costs $" + ChatColor.GREEN + cost + " and you do not have enough!");
 							return;
 						}
 					}
