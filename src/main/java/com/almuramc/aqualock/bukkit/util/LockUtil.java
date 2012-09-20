@@ -75,7 +75,7 @@ public class LockUtil {
 		BukkitLock lock = new BukkitLock(playerName, coowners, passcode, location, data);
 		//Make sure we aren't relocking blocks
 		if (registry.contains(lock)) {
-			update(playerName, coowners, passcode, location, data);
+			player.sendMessage(AqualockPlugin.getPrefix() + "This location has a lock. Did you mean to update instead?");
 			return;
 		}
 		//If the server has an economy system, use it
@@ -206,8 +206,8 @@ public class LockUtil {
 	public static void update(String playerName, List<String> coowners, String passcode, Location location, byte data) {
 		checkLocation(location);
 		Player player = checkNameAndGetPlayer(playerName);
-		if (!PermissionUtil.canUse(player)) {
-			//TODO send message that they have no perms to update
+		if (!PermissionUtil.canUpdate(player)) {
+			player.sendMessage(AqualockPlugin.getPrefix() + "You do not have permission to update!");
 			return;
 		}
 		if (coowners == null) {
@@ -215,19 +215,18 @@ public class LockUtil {
 		}
 		//First check if the registry has a lock at this location, if not then lock.
 		if (!registry.contains(location.getWorld().getUID(), location.getBlockX(), location.getBlockY(), location.getBlockZ())) {
-			lock(playerName, coowners, passcode, location, data);
+			player.sendMessage(AqualockPlugin.getPrefix() + "There is no lock at this location. Did you want to lock instead?");
 			return;
 		}
-
 		Lock lock = registry.getLock(location.getWorld().getUID(), location.getBlockX(), location.getBlockY(), location.getBlockZ());
 		//The player updating the lock is neither an owner or a co-owner nor has the permission
-		if ((!lock.getOwner().equals(playerName) || !lock.getCoOwners().contains(playerName)) && !PermissionUtil.canUpdate(player)) {
-			//TODO message the user that they can't change a lock they are neither an owner, co-owner, or don't have the permission.
+		if ((!lock.getOwner().equals(playerName) || !lock.getCoOwners().contains(playerName))) {
+			player.sendMessage(AqualockPlugin.getPrefix() + "Incorrect passcode for update, please try again.");
 			return;
 		}
 		if (lock instanceof BukkitLock) {
 			if (!((BukkitLock) lock).getPasscode().equals(passcode)) {
-				//TODO message the user that passcode failed.
+				player.sendMessage(AqualockPlugin.getPrefix() + "Incorrect passcode for update, please try again.");
 				return;
 			}
 		}
@@ -237,26 +236,21 @@ public class LockUtil {
 			if (EconomyUtil.shouldChargeForUpdate(player)) {
 				//No account? Let the player know some message and return
 				if (!EconomyUtil.hasAccount(player)) {
-					//TODO message
+					player.sendMessage(AqualockPlugin.getPrefix() + "Updates cost money and you do not have a wallet!");
 					return;
 				} else {
 					double cost = EconomyUtil.getCostForUpdate(player, location.getBlock().getType());
 					//Find out if they have the money.
 					if (EconomyUtil.hasEnough(player, cost)) {
-						//TODO If the cost was zero then say something like "Updating was free!"
-						if (cost == 0) {
-							//player.sendMessage
-							//TODO If cost was less than zero then say something like "Updating gave you monies!"
-						} else if (cost < 0) {
-							//player.sendMessage
-							//TODO Tell the user how much they were charged
-						} else {
-							//player.sendMessage
+						if (cost < 0) {
+							player.sendMessage(AqualockPlugin.getPrefix() + "You gained $" + ChatColor.GREEN + cost + " from updating.");
+						} else if (cost > 0) {
+							player.sendMessage(AqualockPlugin.getPrefix() + "You lost $" + ChatColor.GREEN + cost + " from updating.");
 						}
 						EconomyUtil.apply(player, cost);
 						//Don't have enough? Tell them that and return
 					} else {
-						//TODO message
+						player.sendMessage(AqualockPlugin.getPrefix() + "This update costs $" + ChatColor.GREEN + cost + " and you do not have enough!");
 						return;
 					}
 				}
