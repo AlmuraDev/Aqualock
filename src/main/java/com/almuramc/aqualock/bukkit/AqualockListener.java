@@ -83,20 +83,6 @@ public class AqualockListener implements Listener {
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
-	public void onBlockPlace(BlockPlaceEvent event) {
-		Player placer = event.getPlayer();
-		Block placing = event.getBlock();
-		Registry registry = plugin.getRegistry();
-		if (registry.contains(placing.getWorld().getUID(), placing.getX(), placing.getY(), placing.getZ())) {
-			Lock lock = registry.getLock(placing.getWorld().getUID(), placing.getX(), placing.getY(), placing.getZ());
-			if (!lock.getOwner().equals(placer.getName()) || !(lock.getCoOwners().contains(placer.getName()))) {
-				placer.sendMessage("[" + ChatColor.AQUA + "Aqualock" + ChatColor.WHITE + "] This voxel is locked.");
-				event.setCancelled(true);
-			}
-		}
-	}
-
-	@EventHandler(priority = EventPriority.MONITOR)
 	public void onBlockFromTo(BlockFromToEvent event) {
 		Block to = event.getToBlock();
 		Block from = event.getBlock();

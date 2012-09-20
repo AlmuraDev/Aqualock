@@ -48,6 +48,7 @@ public class AqualockPlugin extends JavaPlugin {
 	private static Permission permission;
 	private static Economy economy;
 	private static AqualockConfiguration configuration;
+	private static AqualockPlugin instance;
 
 	static {
 		registry = new CommonRegistry();
@@ -74,6 +75,15 @@ public class AqualockPlugin extends JavaPlugin {
 		this.getCommand("aqualock").setExecutor(new AqualockCommands(this));
 		this.getServer().getPluginManager().registerEvents(new AqualockListener(this), this);
 		configuration = new AqualockConfiguration(this);
+	}
+
+	@Override
+	public void onLoad() {
+		instance = this;
+	}
+
+	public static AqualockPlugin getInstance() {
+		return instance;
 	}
 
 	public static CommonRegistry getRegistry() {

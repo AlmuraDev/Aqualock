@@ -38,22 +38,12 @@ import org.bukkit.entity.Player;
 
 public class GuiUtil {
 	private static final HashMap<UUID, AquaPanel> store = new HashMap<UUID, AquaPanel>();
-	private static final AqualockPlugin plugin;
-
-	static {
-		AqualockPlugin temp = null;
-		try {
-			temp = AqualockPlugin.class.newInstance();
-		} catch (Exception ignore) {
-		}
-		plugin = temp;
-	}
 
 	private static AquaPanel fetch(SpoutPlayer player) {
 		if (player == null) {
 			throw new IllegalArgumentException("Player cannot be null!");
 		}
-		return store.containsKey(player.getUniqueId()) ? store.get(player.getUniqueId()) : new AquaPanel(plugin, player);
+		return store.containsKey(player.getUniqueId()) ? store.get(player.getUniqueId()) : new AquaPanel(AqualockPlugin.getInstance(), player);
 	}
 
 	private static void store(SpoutPlayer player, AquaPanel panel) {

@@ -12,3 +12,31 @@ commands:
     aqualock:
         description: Manage Aqualock
         usage: /aqualock [command] [arguments]
+permissions:
+    aqualock.admin:
+        description: Gives you the ability to access, change, or remove any lock as well as exempt from costs.
+        default: op
+    aqualock.lock:
+        description: Gives you the ability to lock blocks.
+        default: true
+    aqualock.unlock:
+        description: Gives you the ability to unlock blocks. This will have no effect for blocks the user isn't an owner of.
+        default: true
+    aqualock.update:
+        description: Gives you the ability to update charateristics of locks. This will have no effect for blocks the user isn't an owner of.
+        default: true
+    aqualock.use:
+        description: Gives you the ability to interact with lock blocks. This will have no effect for blocks the user isn't an owner of.
+        default: true
+    aqualock.lock.cost:
+        description: Charges you for locking blocks.
+        default: true
+    aqualock.unlock.cost:
+        description: Charges you for unlocking blocks. This will have no effect for blocks the user isn't an owner of.
+        default: true
+    aqualock.update.cost:
+        description: Charges you for updating blocks. This will have no effect for blocks the user isn't an owner of.
+        default: true
+    aqualock.use.cost:
+        description: Charges you for interacting with blocks. This will have no effect for blocks the user isn't an owner of or co-owners isn't set to everyone.
+        default: true
