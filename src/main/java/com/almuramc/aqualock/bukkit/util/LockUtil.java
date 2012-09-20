@@ -91,14 +91,14 @@ public class LockUtil {
 					//Find out if they have the money.
 					if (EconomyUtil.hasEnough(player, cost)) {
 						if (cost < 0) {
-							player.sendMessage(AqualockPlugin.getPrefix() + "You gained $" + ChatColor.GREEN + cost + " from locking");
+							player.sendMessage(AqualockPlugin.getPrefix() + "You gained $" + ChatColor.GREEN + cost + ChatColor.WHITE + " from locking");
 						} else if (cost > 0) {
-							player.sendMessage(AqualockPlugin.getPrefix() + "You lost $" + ChatColor.GREEN + cost + " from locking");
+							player.sendMessage(AqualockPlugin.getPrefix() + "You lost $" + ChatColor.GREEN + cost + ChatColor.WHITE + " from locking");
 						}
 						EconomyUtil.apply(player, cost);
 						//Don't have enough? Tell them that and return
 					} else {
-						player.sendMessage(AqualockPlugin.getPrefix() + "This lock costs $" + ChatColor.GREEN + cost + " and you do not have enough!");
+						player.sendMessage(AqualockPlugin.getPrefix() + "This lock costs $" + ChatColor.GREEN + cost + ChatColor.WHITE + " and you do not have enough!");
 						return;
 					}
 				}
@@ -178,14 +178,14 @@ public class LockUtil {
 						//Find out if they have the money.
 						if (EconomyUtil.hasEnough(player, cost)) {
 							if (cost < 0) {
-								player.sendMessage(AqualockPlugin.getPrefix() + "You gained $" + ChatColor.GREEN + cost + " from unlocking.");
+								player.sendMessage(AqualockPlugin.getPrefix() + "You gained $" + ChatColor.GREEN + cost + ChatColor.WHITE + " from unlocking.");
 							} else if (cost > 0) {
-								player.sendMessage(AqualockPlugin.getPrefix() + "You lost $" + ChatColor.GREEN + cost + " from unlocking.");
+								player.sendMessage(AqualockPlugin.getPrefix() + "You lost $" + ChatColor.GREEN + cost + ChatColor.WHITE + " from unlocking.");
 							}
 							EconomyUtil.apply(player, cost);
 							//Don't have enough? Tell them that and return
 						} else {
-							player.sendMessage(AqualockPlugin.getPrefix() + "This unlock costs $" + ChatColor.GREEN + cost + " and you do not have enough!");
+							player.sendMessage(AqualockPlugin.getPrefix() + "This unlock costs $" + ChatColor.GREEN + cost + ChatColor.WHITE + " and you do not have enough!");
 							return;
 						}
 					}
@@ -243,14 +243,14 @@ public class LockUtil {
 					//Find out if they have the money.
 					if (EconomyUtil.hasEnough(player, cost)) {
 						if (cost < 0) {
-							player.sendMessage(AqualockPlugin.getPrefix() + "You gained $" + ChatColor.GREEN + cost + " from updating.");
+							player.sendMessage(AqualockPlugin.getPrefix() + "You gained $" + ChatColor.GREEN + cost + ChatColor.WHITE + " from updating.");
 						} else if (cost > 0) {
-							player.sendMessage(AqualockPlugin.getPrefix() + "You lost $" + ChatColor.GREEN + cost + " from updating.");
+							player.sendMessage(AqualockPlugin.getPrefix() + "You lost $" + ChatColor.GREEN + cost + ChatColor.WHITE + " from updating.");
 						}
 						EconomyUtil.apply(player, cost);
 						//Don't have enough? Tell them that and return
 					} else {
-						player.sendMessage(AqualockPlugin.getPrefix() + "This update costs $" + ChatColor.GREEN + cost + " and you do not have enough!");
+						player.sendMessage(AqualockPlugin.getPrefix() + "This update costs $" + ChatColor.GREEN + cost + ChatColor.WHITE + " and you do not have enough!");
 						return;
 					}
 				}
