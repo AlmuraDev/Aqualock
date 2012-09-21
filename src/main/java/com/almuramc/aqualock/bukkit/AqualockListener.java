@@ -79,6 +79,8 @@ public class AqualockListener implements Listener {
 				breaker.sendMessage("[" + ChatColor.AQUA + "Aqualock" + ChatColor.WHITE + "] This voxel is locked.");
 				event.setCancelled(true);
 			}
+			registry.removeLock(lock);
+			AqualockPlugin.getBackend().removeLock(lock);
 		}
 	}
 
