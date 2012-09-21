@@ -29,6 +29,7 @@ package com.almuramc.aqualock.bukkit;
 import java.util.List;
 
 import com.almuramc.aqualock.bukkit.util.BlockUtil;
+import com.almuramc.aqualock.bukkit.util.PermissionUtil;
 import com.almuramc.bolt.lock.Lock;
 import com.almuramc.bolt.registry.Registry;
 
@@ -48,7 +49,10 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.EntityBlockFormEvent;
 import org.bukkit.event.block.LeavesDecayEvent;
 import org.bukkit.event.block.SignChangeEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.weather.LightningStrikeEvent;
+import org.bukkit.material.Door;
+import org.bukkit.material.MaterialData;
 
 public class AqualockListener implements Listener {
 	private final AqualockPlugin plugin;
@@ -122,6 +126,35 @@ public class AqualockListener implements Listener {
 		Registry registry = plugin.getRegistry();
 		if (registry.contains(decaying.getWorld().getUID(), decaying.getX(), decaying.getY(), decaying.getZ())) {
 			event.setCancelled(true);
+		}
+	}
+
+	@EventHandler(priority = EventPriority.MONITOR)
+	public void onPlayerInteract(PlayerInteractEvent event) {
+		Player interacter = event.getPlayer();
+		Block interacted = event.getClickedBlock();
+		Registry registry = plugin.getRegistry();
+		if (registry.contains(interacted.getWorld().getUID(), interacted.getX(), interacted.getY(), interacted.getZ())) {
+			if (!PermissionUtil.canUse(interacter)) {
+				interacter.sendMessage(plugin.getPrefix() + "You lack the permission to use locks!");
+				event.setCancelled(true);
+			}
+			Lock lock = registry.getLock(interacted.getWorld().getUID(), interacted.getX(), interacted.getY(), interacted.getZ());
+			if (!lock.getOwner().equals(interacter.getName()) || !(lock.getCoOwners().contains(interacter.getName()))) {
+				interacter.sendMessage(plugin.getPrefix() + "You are neither an owner nor co-owner so you may not interact with this locked block!");
+				event.setCancelled(true);
+			}
+			if (BlockUtil.isDoubleDoor(interacted)) {
+				interacter.sendMessage(plugin.getPrefix() + "Interacting a door");
+				Door door = new Door(interacted.getType(), interacted.getData());
+				if (door.isOpen()) {
+					BlockUtil.toggleDoubleDoor(interacted, true);
+					interacter.sendMessage(plugin.getPrefix() + "Door you interacted with was opened");
+				} else {
+					BlockUtil.toggleDoubleDoor(interacted, false);
+					interacter.sendMessage(plugin.getPrefix() + "Door you interacted with was closed");
+				}
+			}
 		}
 	}
 
