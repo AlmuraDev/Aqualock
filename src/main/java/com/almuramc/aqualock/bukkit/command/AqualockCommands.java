@@ -34,6 +34,7 @@ import com.almuramc.aqualock.bukkit.util.BlockUtil;
 import com.almuramc.aqualock.bukkit.util.GuiUtil;
 import com.almuramc.aqualock.bukkit.util.LockUtil;
 import com.almuramc.aqualock.bukkit.util.PermissionUtil;
+import com.almuramc.bolt.registry.Registry;
 
 import org.getspout.spoutapi.player.SpoutPlayer;
 
@@ -78,7 +79,22 @@ public class AqualockCommands implements CommandExecutor {
 		} else if (strings[0].equalsIgnoreCase("gui")) {
 			GuiUtil.open(player);
 			return true;
+		} else if (strings[0].equalsIgnoreCase("check")) {
+			check(player, target);
+			return true;
 		}
 		return false;
+	}
+
+	private void check(Player player, Location loc) {
+		if (player == null || loc == null) {
+			return;
+		}
+		Registry reg = AqualockPlugin.getRegistry();
+		if (reg.contains(loc.getWorld().getUID(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ())) {
+			player.sendMessage(AqualockPlugin.getPrefix() + "Found lock: " + reg.getLock(loc.getWorld().getUID(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()).toString());
+			return;
+		}
+		player.sendMessage(AqualockPlugin.getPrefix() + "Location: " + loc.toString() + " has no lock.");
 	}
 }
