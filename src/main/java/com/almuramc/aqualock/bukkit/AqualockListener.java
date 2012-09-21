@@ -133,6 +133,9 @@ public class AqualockListener implements Listener {
 	public void onPlayerInteract(PlayerInteractEvent event) {
 		Player interacter = event.getPlayer();
 		Block interacted = event.getClickedBlock();
+		if (interacted == null) {
+			return;
+		}
 		Registry registry = plugin.getRegistry();
 		if (registry.contains(interacted.getWorld().getUID(), interacted.getX(), interacted.getY(), interacted.getZ())) {
 			if (!PermissionUtil.canUse(interacter)) {
