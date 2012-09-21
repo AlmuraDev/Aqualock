@@ -56,6 +56,7 @@ public class BlockUtil {
 
 	public static boolean isDoubleDoor(Block block) {
 		Class<? extends MaterialData> clazz = block.getType().getData();
+		System.out.println(clazz.toString());
 		if (!((clazz.equals(Door.class) || clazz.getSuperclass().equals(Door.class)))) {
 			return false;
 		}
