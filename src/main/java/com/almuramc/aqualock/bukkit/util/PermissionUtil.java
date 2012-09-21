@@ -49,18 +49,34 @@ public class PermissionUtil {
 	}
 
 	public static boolean canLock(Player player) {
-		return has(player, player.getWorld(), "aqualock.lock") || has(player, player.getWorld(), "aqualock.admin");
+		boolean can = has(player, player.getWorld(), "aqualock.lock") || has(player, player.getWorld(), "aqualock.admin");
+		if (!can) {
+			player.sendMessage(AqualockPlugin.getPrefix() + "You do not have permission to lock!");
+		}
+		return can;
 	}
 
 	public static boolean canUnlock(Player player) {
-		return has(player, player.getWorld(), "aqualock.unlock") || has(player, player.getWorld(), "aqualock.admin");
+		boolean can = has(player, player.getWorld(), "aqualock.unlock") || has(player, player.getWorld(), "aqualock.admin");
+		if (!can) {
+			player.sendMessage(AqualockPlugin.getPrefix() + "You do not have permission to unlock!");
+		}
+		return can;
 	}
 
 	public static boolean canUpdate(Player player) {
-		return has(player, player.getWorld(), "aqualock.update") || has(player, player.getWorld(), "aqualock.admin");
+		boolean can = has(player, player.getWorld(), "aqualock.update") || has(player, player.getWorld(), "aqualock.admin");
+		if (!can) {
+			player.sendMessage(AqualockPlugin.getPrefix() + "You do not have permission to update!");
+		}
+		return can;
 	}
 
 	public static boolean canUse(Player player) {
-		return has(player, player.getWorld(), "aqualock.use") || has(player, player.getWorld(), "aqualock.admin");
+		boolean can = has(player, player.getWorld(), "aqualock.use") || has(player, player.getWorld(), "aqualock.admin");
+		if (!can) {
+			player.sendMessage(AqualockPlugin.getPrefix() + "You do not have permission to use!");
+		}
+		return can;
 	}
 }

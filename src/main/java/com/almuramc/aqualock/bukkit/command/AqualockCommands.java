@@ -33,6 +33,7 @@ import com.almuramc.aqualock.bukkit.display.AquaPanel;
 import com.almuramc.aqualock.bukkit.util.BlockUtil;
 import com.almuramc.aqualock.bukkit.util.GuiUtil;
 import com.almuramc.aqualock.bukkit.util.LockUtil;
+import com.almuramc.aqualock.bukkit.util.PermissionUtil;
 
 import org.getspout.spoutapi.player.SpoutPlayer;
 
@@ -66,13 +67,13 @@ public class AqualockCommands implements CommandExecutor {
 		//TODO Possibly see if they enter params after lock? This suffices for now.
 		Location target = BlockUtil.getTarget(player, null, 4).getLocation();
 		if (strings[0].equalsIgnoreCase("lock")) {
-			LockUtil.lock(player.getName(), target);
+			if (PermissionUtil.canLock(player)) LockUtil.lock(player.getName(), target);
 			return true;
 		} else if (strings[0].equalsIgnoreCase("unlock")) {
-			LockUtil.unlock(player.getName(), target);
+			if (PermissionUtil.canUnlock(player)) LockUtil.unlock(player.getName(), target);
 			return true;
 		} else if (strings[0].equalsIgnoreCase("update")) {
-			LockUtil.update(player.getName(), target);
+			if (PermissionUtil.canUpdate(player)) LockUtil.update(player.getName(), target);
 			return true;
 		} else if (strings[0].equalsIgnoreCase("gui")) {
 			GuiUtil.open(player);

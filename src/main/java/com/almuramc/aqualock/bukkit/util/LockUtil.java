@@ -65,10 +65,6 @@ public class LockUtil {
 	public static void lock(String playerName, List<String> coowners, String passcode, Location location, byte data) {
 		checkLocation(location);
 		Player player = checkNameAndGetPlayer(playerName);
-		if (!PermissionUtil.canLock(player)) {
-			player.sendMessage(AqualockPlugin.getPrefix() + "You do not have permission to lock!");
-			return;
-		}
 		if (coowners == null) {
 			coowners = Collections.emptyList();
 		}
@@ -133,10 +129,6 @@ public class LockUtil {
 	public static void unlock(String playerName, String passcode, Location location) {
 		checkLocation(location);
 		Player player = checkNameAndGetPlayer(playerName);
-		if (!PermissionUtil.canUnlock(player)) {
-			player.sendMessage(AqualockPlugin.getPrefix() + "You do not have permission to unlock!");
-			return;
-		}
 
 		Lock lock = registry.getLock(location.getWorld().getUID(), location.getBlockX(), location.getBlockY(), location.getBlockZ());
 
@@ -206,10 +198,6 @@ public class LockUtil {
 	public static void update(String playerName, List<String> coowners, String passcode, Location location, byte data) {
 		checkLocation(location);
 		Player player = checkNameAndGetPlayer(playerName);
-		if (!PermissionUtil.canUpdate(player)) {
-			player.sendMessage(AqualockPlugin.getPrefix() + "You do not have permission to update!");
-			return;
-		}
 		if (coowners == null) {
 			coowners = Collections.emptyList();
 		}
@@ -275,7 +263,7 @@ public class LockUtil {
 			return;
 		}
 		Lock lock = registry.getLock(location.getWorld().getUID(), location.getBlockX(), location.getBlockY(), location.getBlockZ());
-		if ((!lock.getOwner().equals(playerName) || !lock.getCoOwners().contains(playerName)) && !PermissionUtil.canUse(player)) {
+		if ((!lock.getOwner().equals(playerName) || !lock.getCoOwners().contains(playerName))) {
 			//TODO Tell them that they don't have privileges to use at this location and return
 			return;
 		}
