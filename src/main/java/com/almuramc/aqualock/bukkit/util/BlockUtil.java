@@ -57,7 +57,7 @@ public class BlockUtil {
 	public static boolean isDoubleDoor(Block block) {
 		Class<? extends MaterialData> clazz = block.getType().getData();
 		System.out.println(clazz.toString());
-		if (!((clazz.equals(Door.class) || clazz.getSuperclass().equals(Door.class)))) {
+		if (!clazz.isAssignableFrom(Door.class)) {
 			return false;
 		}
 		return isDoubleDoorRelativeLeft(block) || isDoubleDoorRelativeRight(block);
@@ -65,7 +65,7 @@ public class BlockUtil {
 
 	private static boolean isDoubleDoorRelativeRight(Block block) {
 		Class<? extends MaterialData> clazz = block.getType().getData();
-		if (!((clazz.equals(Door.class) || clazz.getSuperclass().equals(Door.class)))) {
+		if (!clazz.isAssignableFrom(Door.class)) {
 			return false;
 		}
 		Block right = block.getRelative(BlockFace.WEST);
@@ -79,7 +79,7 @@ public class BlockUtil {
 
 	private static boolean isDoubleDoorRelativeLeft(Block block) {
 		Class<? extends MaterialData> clazz = block.getType().getData();
-		if (!((clazz.equals(Door.class) || clazz.getSuperclass().equals(Door.class)))) {
+		if (!clazz.isAssignableFrom(Door.class)) {
 			return false;
 		}
 		Block left = block.getRelative(BlockFace.EAST);
