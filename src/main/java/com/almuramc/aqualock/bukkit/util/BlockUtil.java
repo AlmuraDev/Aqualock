@@ -56,7 +56,6 @@ public class BlockUtil {
 
 	public static boolean isDoubleDoor(Block block) {
 		Class<? extends MaterialData> clazz = block.getType().getData();
-		System.out.println(clazz.toString());
 		if (!clazz.isAssignableFrom(Door.class)) {
 			return false;
 		}
@@ -64,31 +63,21 @@ public class BlockUtil {
 	}
 
 	private static boolean isDoubleDoorRelativeRight(Block block) {
-		Class<? extends MaterialData> clazz = block.getType().getData();
+		Block right = block.getRelative(BlockFace.EAST);
+		Class<? extends MaterialData> clazz = right.getType().getData();
 		if (!clazz.isAssignableFrom(Door.class)) {
 			return false;
 		}
-		Block right = block.getRelative(BlockFace.WEST);
-		boolean isDouble = false;
-		clazz = right.getType().getData();
-		if (clazz.equals(Door.class) || clazz.getSuperclass().equals(Door.class)) {
-			isDouble = true;
-		}
-		return isDouble;
+		return true;
 	}
 
 	private static boolean isDoubleDoorRelativeLeft(Block block) {
-		Class<? extends MaterialData> clazz = block.getType().getData();
+		Block left = block.getRelative(BlockFace.WEST);
+		Class<? extends MaterialData> clazz = left.getType().getData();
 		if (!clazz.isAssignableFrom(Door.class)) {
 			return false;
 		}
-		Block left = block.getRelative(BlockFace.EAST);
-		boolean isDouble = false;
-		clazz = left.getType().getData();
-		if (clazz.equals(Door.class) || clazz.getSuperclass().equals(Door.class)) {
-			isDouble = true;
-		}
-		return isDouble;
+		return true;
 	}
 
 	public static List<Block> getDoubleDoor(Block block) {
