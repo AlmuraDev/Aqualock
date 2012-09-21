@@ -26,6 +26,9 @@
  */
 package com.almuramc.aqualock.bukkit;
 
+import java.util.List;
+
+import com.almuramc.aqualock.bukkit.util.BlockUtil;
 import com.almuramc.bolt.lock.Lock;
 import com.almuramc.bolt.registry.Registry;
 
@@ -78,6 +81,18 @@ public class AqualockListener implements Listener {
 			if (!lock.getOwner().equals(breaker.getName()) || !(lock.getCoOwners().contains(breaker.getName()))) {
 				breaker.sendMessage("[" + ChatColor.AQUA + "Aqualock" + ChatColor.WHITE + "] This voxel is locked.");
 				event.setCancelled(true);
+			}
+			if (BlockUtil.isDoubleDoor(breaking)) {
+				List<Block> blocks = BlockUtil.getDoubleDoor(breaking);
+				for (Block b : blocks) {
+					if (!b.equals(breaking)) {
+						Lock l = registry.getLock(breaking.getWorld().getUID(), b.getX(), b.getY(), b.getZ());
+						if (l != null) {
+							registry.removeLock(l);
+							AqualockPlugin.getBackend().removeLock(l);
+						}
+					}
+				}
 			}
 			registry.removeLock(lock);
 			AqualockPlugin.getBackend().removeLock(lock);
