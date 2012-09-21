@@ -136,6 +136,7 @@ public class AqualockListener implements Listener {
 		if (interacted == null) {
 			return;
 		}
+		System.out.println(interacted.toString());
 		Registry registry = plugin.getRegistry();
 		if (registry.contains(interacted.getWorld().getUID(), interacted.getX(), interacted.getY(), interacted.getZ())) {
 			if (!PermissionUtil.canUse(interacter)) {
