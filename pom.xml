@@ -49,7 +49,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.getspout</groupId>
-			<artifactId>spoutpluginapi</artifactId>
+			<artifactId>spoutplugin</artifactId>
 			<version>dev-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>

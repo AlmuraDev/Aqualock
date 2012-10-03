@@ -152,14 +152,9 @@ public class AqualockListener implements Listener {
 			interacter.sendMessage(plugin.getPrefix() + "Going to check if its a door...");
 			if (BlockUtil.isDoubleDoor(interacted)) {
 				interacter.sendMessage(plugin.getPrefix() + "Interacting a door");
-				Door door = new Door(interacted.getType(), interacted.getData());
-				if (door.isOpen()) {
-					BlockUtil.toggleDoubleDoor(interacted, true);
-					interacter.sendMessage(plugin.getPrefix() + "Door you interacted with was opened");
-				} else {
-					BlockUtil.toggleDoubleDoor(interacted, false);
-					interacter.sendMessage(plugin.getPrefix() + "Door you interacted with was closed");
-				}
+				List<Block> doors = BlockUtil.getDoubleDoor(interacted);
+				Door source = new Door(doors.get(0).getType(), doors.get(0).getData());
+				BlockUtil.toggleDoubleDoors(doors, source.isOpen() ? true : false);
 			}
 		}
 	}

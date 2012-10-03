@@ -120,7 +120,7 @@ public class AqualockPlugin extends JavaPlugin {
 
 	private boolean setupEconomy() {
 		RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
-		economy = rsp.getProvider();
+		economy = rsp == null ? null : rsp.getProvider() == null ? null : rsp.getProvider();
 		return economy != null;
 	}
 }
