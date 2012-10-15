@@ -106,13 +106,14 @@ public class LockUtil {
 		player.sendMessage(AqualockPlugin.getPrefix() + "You locked " + location.toString());
 		registry.addLock(lock);
 		backend.addLock(lock);
-		if (BlockUtil.isDoubleDoor(location.getBlock())) {
+		if (BlockUtil.isDoubleDoor(location)) {
 			//Get the double door blocks
-			List<Block> doors = BlockUtil.getDoubleDoor(location.getBlock());
+			List<Location> doors = BlockUtil.getDoubleDoor(location);
 			//Loop through the blocks (will be 2 iterations)
-			for (Block b : doors) {
+			for (Location loc : doors) {
 				//If the lock created in this method's location is not the location of this iteration then its the second door, lock it.
-				if (!b.getLocation().equals(location)) {
+				if (!loc.equals(location)) {
+					final Block b = loc.getBlock();
 					BukkitLock other = new BukkitLock(lock.getOwner(), lock.getCoOwners(), lock.getPasscode(), b.getLocation(), b.getData());
 					player.sendMessage(AqualockPlugin.getPrefix() + "Detected a door at " + b.getLocation().toString() + "so locking it as well");
 					registry.addLock(other);

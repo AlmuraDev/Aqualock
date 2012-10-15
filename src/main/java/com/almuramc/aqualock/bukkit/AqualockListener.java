@@ -34,6 +34,7 @@ import com.almuramc.bolt.lock.Lock;
 import com.almuramc.bolt.registry.Registry;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -86,10 +87,11 @@ public class AqualockListener implements Listener {
 				breaker.sendMessage("[" + ChatColor.AQUA + "Aqualock" + ChatColor.WHITE + "] This voxel is locked.");
 				event.setCancelled(true);
 			}
-			if (BlockUtil.isDoubleDoor(breaking)) {
-				List<Block> blocks = BlockUtil.getDoubleDoor(breaking);
-				for (Block b : blocks) {
-					if (!b.equals(breaking)) {
+			if (BlockUtil.isDoubleDoor(breaking.getLocation())) {
+				List<Location> locations = BlockUtil.getDoubleDoor(breaking.getLocation());
+				for (Location loc : locations) {
+					if (!loc.getBlock().equals(breaking)) {
+						final Block b = loc.getBlock();
 						Lock l = registry.getLock(breaking.getWorld().getUID(), b.getX(), b.getY(), b.getZ());
 						if (l != null) {
 							registry.removeLock(l);
@@ -156,10 +158,10 @@ public class AqualockListener implements Listener {
 				return;
 			}
 			interacter.sendMessage(plugin.getPrefix() + "Going to check if its a door...");
-			final List<Block> doors = BlockUtil.getDoubleDoor(interacted);
+			final List<Location> doors = BlockUtil.getDoubleDoor(interacted.getLocation());
 			if (!doors.isEmpty()) {
 				interacter.sendMessage(plugin.getPrefix() + "Interacting a double door");
-				BlockUtil.toggleDoubleDoors(BlockUtil.getDoubleDoor(interacted), new Door(interacted.getType(), interacted.getData()).isOpen() ? false : true);
+				BlockUtil.toggleDoubleDoors(doors, new Door(interacted.getType(), interacted.getData()).isOpen() ? true : false);
 			}
 		}
 	}

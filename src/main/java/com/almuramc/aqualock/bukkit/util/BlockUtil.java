@@ -34,6 +34,7 @@ import java.util.List;
 import org.yaml.snakeyaml.events.CollectionStartEvent;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -72,8 +73,8 @@ public class BlockUtil {
 	 * @param block The block to check
 	 * @return true if a part of a double door, false if not
 	 */
-	public static boolean isDoubleDoor(Block block) {
-		return !getDoubleDoor(block).isEmpty();
+	public static boolean isDoubleDoor(Location location) {
+		return !getDoubleDoor(location).isEmpty();
 	}
 
 	/**
@@ -84,13 +85,14 @@ public class BlockUtil {
 	 * @param block The block to determine if in a double door
 	 * @return Empty list if not in a double door or the 4 blocks comprising the double door.
 	 */
-	public static List<Block> getDoubleDoor(Block block) {
+	public static List<Location> getDoubleDoor(Location location) {
 		//Passed in block is not a double door
+		final Block block = location.getBlock();
 		if (!isDoorMaterial(block.getType())) {
 			return Collections.emptyList();
 		}
 		Bukkit.getLogger().info(">>>INTERACTED DOOR.");
-		final ArrayList<Block> doors = new ArrayList<Block>(4);
+		final ArrayList<Location> doors = new ArrayList<Location>(4);
 		//Now we need to do a check around this block to find out if its in a double door
 		Door source = new Door(block.getType(), block.getData());
 		//Check the immediate east and west of this block
@@ -100,11 +102,11 @@ public class BlockUtil {
 			if (!isDoorMaterial(west.getType(), block.getType())) {
 				return Collections.emptyList();
 			}
-			doors.add(west);
+			doors.add(west.getLocation());
 			Bukkit.getLogger().info(">>>WEST is a door.");
 		} else {
 			Bukkit.getLogger().info(">>>EAST is a door.");
-			doors.add(east);
+			doors.add(east.getLocation());
 		}
 		//If we are this far then we know 2 of the four blocks are doors
 		if (source.isTopHalf()) {
@@ -114,7 +116,7 @@ public class BlockUtil {
 				return Collections.emptyList();
 			}
 			Bukkit.getLogger().info(">>>BOTTOM is a door.");
-			doors.add(bottom);
+			doors.add(bottom.getLocation());
 			//At this point we know that 3 of the 4 blocks are doors, lets seek out the 4th block
 			Block bottomEast = bottom.getRelative(BlockFace.EAST);
 			//Check if the diagonally down eastern block from the source is a door and the block directly above it is the eastern door. If so its block 4 and its a double door
@@ -123,11 +125,11 @@ public class BlockUtil {
 				if (!isDoorMaterial(bottomWest.getType(), block.getType()) || !bottomWest.getRelative(BlockFace.UP).equals(west)) {
 					return Collections.emptyList();
 				}
-				doors.add(bottomWest);
+				doors.add(bottomWest.getLocation());
 				Bukkit.getLogger().info(">>>BOTTOM-WEST is a door.");
 			} else {
 				Bukkit.getLogger().info(">>>BOTTOM-EAST is a door.");
-				doors.add(bottomEast);
+				doors.add(bottomEast.getLocation());
 			}
 		} else {
 			Block top = block.getRelative(BlockFace.UP);
@@ -136,7 +138,7 @@ public class BlockUtil {
 				return Collections.emptyList();
 			}
 			Bukkit.getLogger().info(">>>TOP is a door.");
-			doors.add(top);
+			doors.add(top.getLocation());
 			//At this point we know that 3 of the 4 blocks are doors, lets seek out the 4th block
 			Block topEast = top.getRelative(BlockFace.EAST);
 			//Check if the diagonally top eastern block from the source is a door and the block directly below it is the eastern door. If so its block 4 and its a double door
@@ -146,10 +148,10 @@ public class BlockUtil {
 					return Collections.emptyList();
 				}
 				Bukkit.getLogger().info(">>>TOP-WEST is a door.");
-				doors.add(topWest);
+				doors.add(topWest.getLocation());
 			} else {
 				Bukkit.getLogger().info(">>>TOP-EAST is a door.");
-				doors.add(topEast);
+				doors.add(topEast.getLocation());
 			}
 		}
 		return doors;
@@ -161,10 +163,14 @@ public class BlockUtil {
 	 * @param doors List of blocks that should have data toggled
 	 * @param open Flag to determine if the blocks should have the "open" databit turned "off" or "on"
 	 */
-	public static void toggleDoubleDoors(List<Block> doors, boolean open) {
-		for (Block block : doors) {
-			Door door = new Door(block.getType(), block.getData());
+	public static void toggleDoubleDoors(List<Location> doors, boolean open) {
+		System.out.println("Toggling Double Door");
+		for (Location loc : doors) {
+			Door door = (Door) loc.getBlock().getState().getData();
 			door.setOpen(open);
+			loc.getBlock().setData(door.getData());
+//			loc.getBlock().getState().update(true);
+			System.out.println(loc.toString());
 		}
 	}
 
