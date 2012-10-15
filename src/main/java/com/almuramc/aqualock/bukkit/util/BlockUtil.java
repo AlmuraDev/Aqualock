@@ -162,9 +162,6 @@ public class BlockUtil {
 				continue;
 			}
 			Door door = (Door) loc.getBlock().getState().getData();
-			if (door.isTopHalf()) {
-				continue;
-			}
 			door.setOpen(open);
 			loc.getBlock().setData(door.getData());
 		}
