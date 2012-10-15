@@ -101,6 +101,11 @@ public class LockUtil {
 			}
 		}
 		//Is it a double door? Lets lock both doors
+		System.out.println(location.getBlock());
+		//After all that is said and done, add the lock made to the registry and backend.
+		player.sendMessage(AqualockPlugin.getPrefix() + "You locked " + location.toString());
+		registry.addLock(lock);
+		backend.addLock(lock);
 		if (BlockUtil.isDoubleDoor(location.getBlock())) {
 			//Get the double door blocks
 			List<Block> doors = BlockUtil.getDoubleDoor(location.getBlock());
@@ -115,10 +120,6 @@ public class LockUtil {
 				}
 			}
 		}
-		//After all that is said and done, add the lock made to the registry and backend.
-		player.sendMessage(AqualockPlugin.getPrefix() + "You locked " + location.toString());
-		registry.addLock(lock);
-		backend.addLock(lock);
 	}
 
 	/**

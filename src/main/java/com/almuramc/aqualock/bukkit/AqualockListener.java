@@ -143,18 +143,23 @@ public class AqualockListener implements Listener {
 			if (!PermissionUtil.canUse(interacter)) {
 				interacter.sendMessage(plugin.getPrefix() + "You lack the permission to use locks!");
 				event.setCancelled(true);
+				return;
 			}
 			Lock lock = registry.getLock(interacted.getWorld().getUID(), interacted.getX(), interacted.getY(), interacted.getZ());
-			if (!lock.getOwner().equals(interacter.getName()) || !(lock.getCoOwners().contains(interacter.getName()))) {
-				interacter.sendMessage(plugin.getPrefix() + "You are neither an owner nor co-owner so you may not interact with this locked block!");
+			if (!lock.getOwner().equals(interacter.getName())) {
+				if (!(lock.getCoOwners().contains(interacter.getName()))) {
+					interacter.sendMessage(plugin.getPrefix() + "You are not a co-owner so you may not interact with this locked block!");
+				} else {
+					interacter.sendMessage(plugin.getPrefix() + "You are neither an owner or co-owner so you may not interact with this locked block!");
+				}
 				event.setCancelled(true);
+				return;
 			}
 			interacter.sendMessage(plugin.getPrefix() + "Going to check if its a door...");
-			if (BlockUtil.isDoubleDoor(interacted)) {
-				interacter.sendMessage(plugin.getPrefix() + "Interacting a door");
-				List<Block> doors = BlockUtil.getDoubleDoor(interacted);
-				Door source = new Door(doors.get(0).getType(), doors.get(0).getData());
-				BlockUtil.toggleDoubleDoors(doors, source.isOpen() ? true : false);
+			final List<Block> doors = BlockUtil.getDoubleDoor(interacted);
+			if (!doors.isEmpty()) {
+				interacter.sendMessage(plugin.getPrefix() + "Interacting a double door");
+				BlockUtil.toggleDoubleDoors(BlockUtil.getDoubleDoor(interacted), new Door(interacted.getType(), interacted.getData()).isOpen() ? false : true);
 			}
 		}
 	}
