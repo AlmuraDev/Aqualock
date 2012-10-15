@@ -31,6 +31,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
+import com.almuramc.aqualock.bukkit.AqualockPlugin;
+
 import org.yaml.snakeyaml.events.CollectionStartEvent;
 
 import org.bukkit.Bukkit;
@@ -91,7 +93,6 @@ public class BlockUtil {
 		if (!isDoorMaterial(block.getType())) {
 			return Collections.emptyList();
 		}
-		Bukkit.getLogger().info(">>>INTERACTED DOOR.");
 		final ArrayList<Location> doors = new ArrayList<Location>(4);
 		//Now we need to do a check around this block to find out if its in a double door
 		Door source = new Door(block.getType(), block.getData());
@@ -103,9 +104,7 @@ public class BlockUtil {
 				return Collections.emptyList();
 			}
 			doors.add(west.getLocation());
-			Bukkit.getLogger().info(">>>WEST is a door.");
 		} else {
-			Bukkit.getLogger().info(">>>EAST is a door.");
 			doors.add(east.getLocation());
 		}
 		//If we are this far then we know 2 of the four blocks are doors
@@ -115,7 +114,6 @@ public class BlockUtil {
 			if (!isDoorMaterial(bottom.getType(), block.getType())) {
 				return Collections.emptyList();
 			}
-			Bukkit.getLogger().info(">>>BOTTOM is a door.");
 			doors.add(bottom.getLocation());
 			//At this point we know that 3 of the 4 blocks are doors, lets seek out the 4th block
 			Block bottomEast = bottom.getRelative(BlockFace.EAST);
@@ -126,9 +124,7 @@ public class BlockUtil {
 					return Collections.emptyList();
 				}
 				doors.add(bottomWest.getLocation());
-				Bukkit.getLogger().info(">>>BOTTOM-WEST is a door.");
 			} else {
-				Bukkit.getLogger().info(">>>BOTTOM-EAST is a door.");
 				doors.add(bottomEast.getLocation());
 			}
 		} else {
@@ -137,7 +133,6 @@ public class BlockUtil {
 			if (!isDoorMaterial(top.getType(), block.getType())) {
 				return Collections.emptyList();
 			}
-			Bukkit.getLogger().info(">>>TOP is a door.");
 			doors.add(top.getLocation());
 			//At this point we know that 3 of the 4 blocks are doors, lets seek out the 4th block
 			Block topEast = top.getRelative(BlockFace.EAST);
@@ -147,10 +142,8 @@ public class BlockUtil {
 				if (!isDoorMaterial(topWest.getType(), block.getType()) || !topWest.getRelative(BlockFace.DOWN).equals(west)) {
 					return Collections.emptyList();
 				}
-				Bukkit.getLogger().info(">>>TOP-WEST is a door.");
 				doors.add(topWest.getLocation());
 			} else {
-				Bukkit.getLogger().info(">>>TOP-EAST is a door.");
 				doors.add(topEast.getLocation());
 			}
 		}
@@ -164,13 +157,18 @@ public class BlockUtil {
 	 * @param open Flag to determine if the blocks should have the "open" databit turned "off" or "on"
 	 */
 	public static void toggleDoubleDoors(List<Location> doors, boolean open) {
-		System.out.println("Toggling Double Door");
 		for (Location loc : doors) {
+			if (!AqualockPlugin.getRegistry().contains(loc.getWorld().getUID(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ())) {
+				continue;
+			}
+			//skip first iteration of this loop, its the source block and already has the data
 			Door door = (Door) loc.getBlock().getState().getData();
-			door.setOpen(open);
+			if (door.isTopHalf()) {
+				door.setOpen(!open);
+			} else {
+				door.setOpen(open);
+			}
 			loc.getBlock().setData(door.getData());
-//			loc.getBlock().getState().update(true);
-			System.out.println(loc.toString());
 		}
 	}
 
@@ -179,12 +177,9 @@ public class BlockUtil {
 	}
 
 	private static boolean isDoorMaterial(Material material, Material toMatch) {
-		System.out.println("ToMatch: " + toMatch);
 		if (toMatch == null) {
 			toMatch = material;
 		}
-		System.out.println("ToMatch: " + toMatch);
-		System.out.println("Material: " + material);
 		if ((material.equals(Material.WOODEN_DOOR) || material.equals(Material.IRON_DOOR_BLOCK)) && toMatch.equals(material)) {
 			return true;
 		}

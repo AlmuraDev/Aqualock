@@ -138,10 +138,8 @@ public class AqualockListener implements Listener {
 		if (interacted == null) {
 			return;
 		}
-		interacter.sendMessage(plugin.getPrefix() + "Interacted: " + interacted.toString());
 		Registry registry = plugin.getRegistry();
 		if (registry.contains(interacted.getWorld().getUID(), interacted.getX(), interacted.getY(), interacted.getZ())) {
-			interacter.sendMessage(plugin.getPrefix() + "Interacted has a lock");
 			if (!PermissionUtil.canUse(interacter)) {
 				interacter.sendMessage(plugin.getPrefix() + "You lack the permission to use locks!");
 				event.setCancelled(true);
@@ -157,11 +155,16 @@ public class AqualockListener implements Listener {
 				event.setCancelled(true);
 				return;
 			}
-			interacter.sendMessage(plugin.getPrefix() + "Going to check if its a door...");
 			final List<Location> doors = BlockUtil.getDoubleDoor(interacted.getLocation());
 			if (!doors.isEmpty()) {
-				interacter.sendMessage(plugin.getPrefix() + "Interacting a double door");
-				BlockUtil.toggleDoubleDoors(doors, new Door(interacted.getType(), interacted.getData()).isOpen() ? true : false);
+				final Door door = (Door) interacted.getLocation().getBlock().getState().getData();
+				boolean open;
+				if (door.isTopHalf()) {
+					open = door.isOpen();
+				} else {
+					open = !door.isOpen();
+				}
+				BlockUtil.toggleDoubleDoors(doors, open);
 			}
 		}
 	}
