@@ -161,13 +161,11 @@ public class BlockUtil {
 			if (!AqualockPlugin.getRegistry().contains(loc.getWorld().getUID(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ())) {
 				continue;
 			}
-			//skip first iteration of this loop, its the source block and already has the data
 			Door door = (Door) loc.getBlock().getState().getData();
 			if (door.isTopHalf()) {
-				door.setOpen(!open);
-			} else {
-				door.setOpen(open);
+				continue;
 			}
+			door.setOpen(open);
 			loc.getBlock().setData(door.getData());
 		}
 	}

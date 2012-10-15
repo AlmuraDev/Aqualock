@@ -36,6 +36,7 @@ import com.almuramc.bolt.registry.Registry;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -160,7 +161,7 @@ public class AqualockListener implements Listener {
 				final Door door = (Door) interacted.getLocation().getBlock().getState().getData();
 				boolean open;
 				if (door.isTopHalf()) {
-					open = door.isOpen();
+					open = !((Door) interacted.getLocation().getBlock().getRelative(BlockFace.DOWN).getState().getData()).isOpen();
 				} else {
 					open = !door.isOpen();
 				}
