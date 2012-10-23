@@ -88,8 +88,8 @@ public class AqualockListener implements Listener {
 				breaker.sendMessage("[" + ChatColor.AQUA + "Aqualock" + ChatColor.WHITE + "] This voxel is locked.");
 				event.setCancelled(true);
 			}
-			if (BlockUtil.isDoubleDoor(breaking.getLocation())) {
-				List<Location> locations = BlockUtil.getDoubleDoor(breaking.getLocation());
+			if (BlockUtil.isDoubleDoor(breaking.getLocation(), event.getBlock().getFace(breaker.getLocation().getBlock()))) {
+				List<Location> locations = BlockUtil.getDoubleDoor(breaking.getLocation(), event.getBlock().getFace(breaker.getLocation().getBlock()));
 				for (Location loc : locations) {
 					if (!loc.getBlock().equals(breaking)) {
 						final Block b = loc.getBlock();
@@ -156,7 +156,7 @@ public class AqualockListener implements Listener {
 				event.setCancelled(true);
 				return;
 			}
-			final List<Location> doors = BlockUtil.getDoubleDoor(interacted.getLocation());
+			final List<Location> doors = BlockUtil.getDoubleDoor(interacted.getLocation(), event.getBlockFace());
 			Door state = (Door) interacted.getState().getData();
 			if (state.isTopHalf()) {
 				final Block bottom = interacted.getRelative(BlockFace.DOWN);

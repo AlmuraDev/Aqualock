@@ -106,9 +106,9 @@ public class LockUtil {
 		player.sendMessage(AqualockPlugin.getPrefix() + "You locked " + location.toString());
 		registry.addLock(lock);
 		backend.addLock(lock);
-		if (BlockUtil.isDoubleDoor(location)) {
+		if (BlockUtil.isDoubleDoor(location, location.getBlock().getFace(player.getLocation().getBlock()))) {
 			//Get the double door blocks
-			List<Location> doors = BlockUtil.getDoubleDoor(location);
+			List<Location> doors = BlockUtil.getDoubleDoor(location, location.getBlock().getFace(player.getLocation().getBlock()));
 			//Loop through the blocks (will be 2 iterations)
 			for (Location loc : doors) {
 				//If the lock created in this method's location is not the location of this iteration then its the second door, lock it.

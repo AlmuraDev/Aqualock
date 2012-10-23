@@ -76,8 +76,8 @@ public class BlockUtil {
 	 * Returns if the block is apart of a double door.
 	 * @return true if a part of a double door, false if not
 	 */
-	public static boolean isDoubleDoor(Location location) {
-		return !getDoubleDoor(location).isEmpty();
+	public static boolean isDoubleDoor(Location location, BlockFace clicked) {
+		return !getDoubleDoor(location, clicked).isEmpty();
 	}
 
 	/**
@@ -87,7 +87,7 @@ public class BlockUtil {
 	 * If the list returned is empty, it isn't a double door.
 	 * @return Empty list if not in a double door or the 4 blocks comprising the double door.
 	 */
-	public static List<Location> getDoubleDoor(Location location) {
+	public static List<Location> getDoubleDoor(Location location, BlockFace clicked) {
 		//Passed in block is not a double door
 		final Block block = location.getBlock();
 		if (!isDoorMaterial(block.getType())) {
@@ -97,9 +97,18 @@ public class BlockUtil {
 		doors.add(block.getLocation());
 		//Now we need to do a check around this block to find out if its in a double door
 		Door source = new Door(block.getType(), block.getData());
+		BlockFace checkLeft;
+		BlockFace checkRight;
+		if (clicked.equals(BlockFace.NORTH) || clicked.equals(BlockFace.SOUTH)) {
+			checkLeft = BlockFace.WEST;
+			checkRight = BlockFace.EAST;
+		} else {
+			checkLeft = BlockFace.SOUTH;
+			checkRight = BlockFace.NORTH;
+		}
 		//Check the immediate east and west of this block
-		Block east = block.getRelative(BlockFace.EAST);
-		Block west = block.getRelative(BlockFace.WEST);
+		Block east = block.getRelative(checkLeft);
+		Block west = block.getRelative(checkRight);
 		if (!isDoorMaterial(east.getType(), block.getType())) {
 			if (!isDoorMaterial(west.getType(), block.getType())) {
 				return Collections.emptyList();
@@ -117,10 +126,10 @@ public class BlockUtil {
 			}
 			doors.add(bottom.getLocation());
 			//At this point we know that 3 of the 4 blocks are doors, lets seek out the 4th block
-			Block bottomEast = bottom.getRelative(BlockFace.EAST);
+			Block bottomEast = bottom.getRelative(checkLeft);
 			//Check if the diagonally down eastern block from the source is a door and the block directly above it is the eastern door. If so its block 4 and its a double door
 			if (!isDoorMaterial(bottomEast.getType(), block.getType()) || !bottomEast.getRelative(BlockFace.UP).equals(east)) {
-				Block bottomWest = bottom.getRelative(BlockFace.WEST);
+				Block bottomWest = bottom.getRelative(checkRight);
 				if (!isDoorMaterial(bottomWest.getType(), block.getType()) || !bottomWest.getRelative(BlockFace.UP).equals(west)) {
 					return Collections.emptyList();
 				}
@@ -136,10 +145,10 @@ public class BlockUtil {
 			}
 			doors.add(top.getLocation());
 			//At this point we know that 3 of the 4 blocks are doors, lets seek out the 4th block
-			Block topEast = top.getRelative(BlockFace.EAST);
+			Block topEast = top.getRelative(checkLeft);
 			//Check if the diagonally top eastern block from the source is a door and the block directly below it is the eastern door. If so its block 4 and its a double door
 			if (!isDoorMaterial(topEast.getType(), block.getType()) || !topEast.getRelative(BlockFace.DOWN).equals(east)) {
-				Block topWest = top.getRelative(BlockFace.WEST);
+				Block topWest = top.getRelative(checkRight);
 				if (!isDoorMaterial(topWest.getType(), block.getType()) || !topWest.getRelative(BlockFace.DOWN).equals(west)) {
 					return Collections.emptyList();
 				}
