@@ -169,6 +169,7 @@ public class AqualockListener implements Listener {
 					if (block.equals(interacted) || block.equals(interacted.getRelative(BlockFace.UP)) || block.equals(interacted.getRelative(BlockFace.DOWN))) {
 						continue;
 					}
+					System.out.println("Block face clicked: " + event.getBlockFace());
 					System.out.println("Block data: " + block.getData());
 					if (open) {
 						BlockUtil.closeDoor(block);
