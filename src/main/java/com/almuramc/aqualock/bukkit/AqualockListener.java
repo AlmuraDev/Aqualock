@@ -157,15 +157,26 @@ public class AqualockListener implements Listener {
 				return;
 			}
 			final List<Location> doors = BlockUtil.getDoubleDoor(interacted.getLocation());
-			if (!doors.isEmpty()) {
-				final Door door = (Door) interacted.getLocation().getBlock().getState().getData();
-				boolean open;
-				if (door.isTopHalf()) {
-					open = !((Door) interacted.getLocation().getBlock().getRelative(BlockFace.DOWN).getState().getData()).isOpen();
-				} else {
-					open = !door.isOpen();
+			Door state = (Door) interacted.getState().getData();
+			if (state.isTopHalf()) {
+				final Block bottom = interacted.getRelative(BlockFace.DOWN);
+				state = (Door) bottom.getState().getData();
+			}
+			boolean open = state.isOpen();
+			if (doors != null) {
+				for (Location loc : doors) {
+					final Block block = loc.getBlock();
+					if (block.equals(interacted) || block.equals(interacted.getRelative(BlockFace.UP)) || block.equals(interacted.getRelative(BlockFace.DOWN))) {
+						continue;
+					}
+					System.out.println("Block data: " + block.getData());
+					if (open) {
+						BlockUtil.closeDoor(block);
+					} else {
+						BlockUtil.openDoor(block);
+					}
 				}
-				BlockUtil.toggleDoubleDoors(doors, open);
+				System.out.println("----------------------");
 			}
 		}
 	}

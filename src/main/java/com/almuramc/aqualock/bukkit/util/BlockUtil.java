@@ -36,10 +36,12 @@ import com.almuramc.aqualock.bukkit.AqualockPlugin;
 import org.yaml.snakeyaml.events.CollectionStartEvent;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
 import org.bukkit.material.Door;
 
@@ -72,7 +74,6 @@ public class BlockUtil {
 
 	/**
 	 * Returns if the block is apart of a double door.
-	 * @param block The block to check
 	 * @return true if a part of a double door, false if not
 	 */
 	public static boolean isDoubleDoor(Location location) {
@@ -84,7 +85,6 @@ public class BlockUtil {
 	 * Note: the search for double door blocks is 2D and based on the material of the source block passed in.
 	 *
 	 * If the list returned is empty, it isn't a double door.
-	 * @param block The block to determine if in a double door
 	 * @return Empty list if not in a double door or the 4 blocks comprising the double door.
 	 */
 	public static List<Location> getDoubleDoor(Location location) {
@@ -94,6 +94,7 @@ public class BlockUtil {
 			return Collections.emptyList();
 		}
 		final ArrayList<Location> doors = new ArrayList<Location>(4);
+		doors.add(block.getLocation());
 		//Now we need to do a check around this block to find out if its in a double door
 		Door source = new Door(block.getType(), block.getData());
 		//Check the immediate east and west of this block
@@ -150,23 +151,6 @@ public class BlockUtil {
 		return doors;
 	}
 
-	/**
-	 * Toggles blocks passed in to the close data state of blocks. This will have adverse affects on blocks that are not
-	 * doors and can cause unexpected results.
-	 * @param doors List of blocks that should have data toggled
-	 * @param open Flag to determine if the blocks should have the "open" databit turned "off" or "on"
-	 */
-	public static void toggleDoubleDoors(List<Location> doors, boolean open) {
-		for (Location loc : doors) {
-			if (!AqualockPlugin.getRegistry().contains(loc.getWorld().getUID(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ())) {
-				continue;
-			}
-			Door door = (Door) loc.getBlock().getState().getData();
-			door.setOpen(open);
-			loc.getBlock().setData(door.getData());
-		}
-	}
-
 	private static boolean isDoorMaterial(Material material) {
 		return isDoorMaterial(material, null);
 	}
@@ -179,5 +163,42 @@ public class BlockUtil {
 			return true;
 		}
 		return false;
+	}
+
+	public static boolean isDoorClosed(Block block) {
+		byte data = block.getData();
+		if ((data & 0x8) == 0x8) {
+			block = block.getRelative(BlockFace.DOWN);
+			data = block.getData();
+		}
+		return ((data & 0x4) == 0);
+	}
+
+	public static void openDoor(Block block) {
+		byte data = block.getData();
+		if ((data & 0x8) == 0x8) {
+			block = block.getRelative(BlockFace.DOWN);
+			data = block.getData();
+		}
+		if (isDoorClosed(block)) {
+			data = (byte) (data | 0x4);
+			block.setData(data, true);
+			block.getState().update(true);
+			block.getWorld().playEffect(block.getLocation(), Effect.DOOR_TOGGLE, 0);
+		}
+	}
+
+	public static void closeDoor(Block block) {
+		byte data = block.getData();
+		if ((data & 0x8) == 0x8) {
+			block = block.getRelative(BlockFace.DOWN);
+			data = block.getData();
+		}
+		if (!isDoorClosed(block)) {
+			data = (byte) (data & 0xb);
+			block.setData(data, true);
+			block.getState().update(true);
+			block.getWorld().playEffect(block.getLocation(), Effect.DOOR_TOGGLE, 0);
+		}
 	}
 }
