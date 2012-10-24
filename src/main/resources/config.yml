@@ -1,1 +1,4 @@
+#in seconds
 double-door-close-timer: 5
+#Only whole numbers
+damage-on-breaking-locks: 2
