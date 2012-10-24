@@ -32,24 +32,46 @@ import com.almuramc.aqualock.bukkit.AqualockPlugin;
 
 import org.bukkit.configuration.file.FileConfiguration;
 
-public class AqualockConfiguration {
+public final class AqualockConfiguration {
+	private final AqualockPlugin plugin;
+	//Configurations
 	private final FileConfiguration config;
 	private final CostConfiguration costConfig;
+	private final LanguageConfiguration langConfig;
 
 	public AqualockConfiguration(AqualockPlugin plugin) {
+		this.plugin = plugin;
+		//Read in default config.yml
 		config = plugin.getConfig();
+		//Setup cost file
 		File costYml = new File(plugin.getDataFolder(), "cost.yml");
 		if (!costYml.exists()) {
 			plugin.saveResource("cost.yml", true);
 		}
 		costConfig = new CostConfiguration(costYml);
+		//Setup language file
+		File langYml = new File(plugin.getDataFolder(), "lang.yml");
+		if (!langYml.exists()) {
+			plugin.saveResource("lang.yml", true);
+		}
+		langConfig = new LanguageConfiguration(langYml);
 	}
 
-	public void reload() {
+	public final void reload() {
+		plugin.reloadConfig();
 		costConfig.reload();
+		langConfig.reload();
+	}
+
+	public final FileConfiguration getBuiltin() {
+		return config;
 	}
 
 	public final CostConfiguration getCosts() {
 		return costConfig;
+	}
+
+	public final LanguageConfiguration getMessages() {
+		return langConfig;
 	}
 }

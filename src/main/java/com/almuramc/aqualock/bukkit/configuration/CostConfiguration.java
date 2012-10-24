@@ -46,6 +46,7 @@ public class CostConfiguration {
 
 	public CostConfiguration(File costYml) {
 		config = YamlConfiguration.loadConfiguration(costYml);
+		construct();
 	}
 
 	private final void construct() {
