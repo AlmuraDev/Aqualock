@@ -9,20 +9,13 @@
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * As an exception, all classes which do not reference GPL licensed code
- * are hereby licensed under the GNU Lesser Public License, as described
- * in Almura Development License.
- *
  * Aqualock is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License,
- * the GNU Lesser Public License (for classes that fulfill the exception)
- * and the Almura Development License along with this program. If not, see
- * <http://www.gnu.org/licenses/> for the GNU General Public License and
- * the GNU Lesser Public License.
+ * You should have received a copy of the GNU General Public License. If not,
+ * see <http://www.gnu.org/licenses/> for the GNU General Public License.
  */
 package com.almuramc.aqualock.bukkit;
 
@@ -71,7 +64,7 @@ public class AqualockListener implements Listener {
 		if (registry.contains(damaged.getWorld().getUID(), damaged.getX(), damaged.getY(), damaged.getZ())) {
 			Lock lock = registry.getLock(damaged.getWorld().getUID(), damaged.getX(), damaged.getY(), damaged.getZ());
 			if (!lock.getOwner().equals(damager.getName()) || !(lock.getCoOwners().contains(damager.getName()))) {
-				damager.sendMessage("[" + ChatColor.AQUA + "Aqualock" + ChatColor.WHITE + "] This voxel is locked.");
+				damager.sendMessage(plugin.getPrefix() + "This voxel is locked.");
 				event.setCancelled(true);
 			}
 		}
@@ -85,7 +78,7 @@ public class AqualockListener implements Listener {
 		if (registry.contains(breaking.getWorld().getUID(), breaking.getX(), breaking.getY(), breaking.getZ())) {
 			Lock lock = registry.getLock(breaking.getWorld().getUID(), breaking.getX(), breaking.getY(), breaking.getZ());
 			if (!lock.getOwner().equals(breaker.getName()) || !(lock.getCoOwners().contains(breaker.getName()))) {
-				breaker.sendMessage("[" + ChatColor.AQUA + "Aqualock" + ChatColor.WHITE + "] This voxel is locked.");
+				breaker.sendMessage(plugin.getPrefix() + "This voxel is locked.");
 				event.setCancelled(true);
 			}
 			if (BlockUtil.isDoubleDoor(breaking.getLocation(), event.getBlock().getFace(breaker.getLocation().getBlock()))) {
@@ -190,7 +183,7 @@ public class AqualockListener implements Listener {
 		if (registry.contains(theSign.getWorld().getUID(), theSign.getX(), theSign.getY(), theSign.getZ())) {
 			Lock lock = registry.getLock(theSign.getWorld().getUID(), theSign.getX(), theSign.getY(), theSign.getZ());
 			if (!lock.getOwner().equals(writer.getName()) || !(lock.getCoOwners().contains(writer.getName()))) {
-				writer.sendMessage("[" + ChatColor.AQUA + "Aqualock" + ChatColor.WHITE + "] This voxel is locked.");
+				writer.sendMessage(plugin.getPrefix() + "This voxel is locked.");
 				event.setCancelled(true);
 			}
 		}
@@ -217,7 +210,7 @@ public class AqualockListener implements Listener {
 			if (former != null) {
 				Lock lock = registry.getLock(formed.getWorld().getUID(), formed.getX(), formed.getY(), formed.getZ());
 				if (!lock.getOwner().equals(former.getName()) || !(lock.getCoOwners().contains(former.getName()))) {
-					former.sendMessage("[" + ChatColor.AQUA + "Aqualock" + ChatColor.WHITE + "] This voxel is locked.");
+					former.sendMessage(plugin.getPrefix() + "This voxel is locked.");
 				}
 			}
 			event.setCancelled(true);
