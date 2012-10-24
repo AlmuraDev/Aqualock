@@ -56,10 +56,6 @@ public final class AqualockConfiguration {
 		langConfig.reload();
 	}
 
-	public final FileConfiguration getBuiltin() {
-		return config;
-	}
-
 	public final CostConfiguration getCosts() {
 		return costConfig;
 	}
