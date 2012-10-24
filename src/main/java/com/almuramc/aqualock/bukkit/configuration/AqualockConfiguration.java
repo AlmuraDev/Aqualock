@@ -67,4 +67,12 @@ public final class AqualockConfiguration {
 	public final LanguageConfiguration getMessages() {
 		return langConfig;
 	}
+
+	public double getDoubleDoorCloseTimer() {
+		return config.getDouble("double-door-close-timer");
+	}
+
+	public int getHurtDamageOnBreakLock() {
+		return config.getInt("damage-on-breaking-locks");
+	}
 }

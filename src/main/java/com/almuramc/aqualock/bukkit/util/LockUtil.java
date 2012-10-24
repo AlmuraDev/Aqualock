@@ -28,8 +28,6 @@ import com.almuramc.bolt.lock.Lock;
 import com.almuramc.bolt.registry.CommonRegistry;
 import com.almuramc.bolt.storage.Storage;
 
-import net.milkbowl.vault.Vault;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;

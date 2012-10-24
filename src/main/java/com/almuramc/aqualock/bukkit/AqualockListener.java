@@ -26,7 +26,6 @@ import com.almuramc.aqualock.bukkit.util.PermissionUtil;
 import com.almuramc.bolt.lock.Lock;
 import com.almuramc.bolt.registry.Registry;
 
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -40,14 +39,12 @@ import org.bukkit.event.block.BlockFormEvent;
 import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockPistonExtendEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.EntityBlockFormEvent;
 import org.bukkit.event.block.LeavesDecayEvent;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.weather.LightningStrikeEvent;
 import org.bukkit.material.Door;
-import org.bukkit.material.MaterialData;
 
 public class AqualockListener implements Listener {
 	private final AqualockPlugin plugin;

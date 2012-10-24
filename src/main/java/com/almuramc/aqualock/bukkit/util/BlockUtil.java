@@ -24,17 +24,11 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
-import com.almuramc.aqualock.bukkit.AqualockPlugin;
-
-import org.yaml.snakeyaml.events.CollectionStartEvent;
-
-import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
 import org.bukkit.material.Door;
 
@@ -76,7 +70,7 @@ public class BlockUtil {
 	/**
 	 * Gets a list containing all blocks a part of a double door. The list will have no fewer or no more than 4 elements.
 	 * Note: the search for double door blocks is 2D and based on the material of the source block passed in.
-	 *
+	 * <p/>
 	 * If the list returned is empty, it isn't a double door.
 	 * @return Empty list if not in a double door or the 4 blocks comprising the double door.
 	 */

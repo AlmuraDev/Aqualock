@@ -60,5 +60,53 @@ public class LanguageConfiguration {
 		nodes.clear();
 		construct();
 	}
+
+	public String getCostNotEnoughLockMessage() {
+		return nodes.get("cost-not-enough-lock");
+	}
+
+	public String getCostEnoughLockMessage() {
+		return nodes.get("cost-enough-lock");
+	}
+
+	public String getCostMoreThanEnoughLockMessage() {
+		return nodes.get("cost-more-than-enough-lock");
+	}
+
+	public String getCostNotEnoughUnLockMessage() {
+		return nodes.get("cost-not-enough-unlock");
+	}
+
+	public String getCostEnoughUnLockMessage() {
+		return nodes.get("cost-enough-unlock");
+	}
+
+	public String getCostMoreThanEnoughUnLockMessage() {
+		return nodes.get("cost-more-than-enough-unlock");
+	}
+
+	public String getCostNotEnoughUseMessage() {
+		return nodes.get("cost-not-enough-use");
+	}
+
+	public String getCostEnoughUseMessage() {
+		return nodes.get("cost-enough-use");
+	}
+
+	public String getCostMoreThanEnoughUseMessage() {
+		return nodes.get("cost-more-than-enough-lock");
+	}
+
+	public String getNoPermsToLockMessage() {
+		return nodes.get("no-permissions-lock");
+	}
+
+	public String getNoPermsToUnlockMessage() {
+		return nodes.get("no-permissions-unlock");
+	}
+
+	public String getNoPermsToUseMessage() {
+		return nodes.get("no-permissions-use");
+	}
 }
 
