@@ -26,13 +26,19 @@
  */
 package com.almuramc.aqualock.bukkit.input;
 
+import java.util.HashMap;
+import java.util.UUID;
+
 import com.almuramc.aqualock.bukkit.AqualockPlugin;
+import com.almuramc.aqualock.bukkit.display.AquaPanel;
 
 import org.getspout.spoutapi.event.input.KeyBindingEvent;
 import org.getspout.spoutapi.keyboard.BindingExecutionDelegate;
+import org.getspout.spoutapi.player.SpoutPlayer;
 
 public class AquaPanelDelegate implements BindingExecutionDelegate {
 	private final AqualockPlugin plugin;
+	private final HashMap<UUID, AquaPanel> panels = new HashMap<UUID, AquaPanel>();
 
 	public AquaPanelDelegate(AqualockPlugin plugin) {
 		this.plugin = plugin;
@@ -40,7 +46,14 @@ public class AquaPanelDelegate implements BindingExecutionDelegate {
 
 	@Override
 	public void keyPressed(KeyBindingEvent keyBindingEvent) {
-
+		final SpoutPlayer player = keyBindingEvent.getPlayer();
+		if (!panels.containsKey(player.getUniqueId())) {
+			final AquaPanel panel = new AquaPanel(plugin, player);
+			panels.put(player.getUniqueId(), panel);
+			player.getMainScreen().attachPopupScreen(panel);
+			return;
+		}
+		player.getMainScreen().attachPopupScreen(panels.get(player.getUniqueId()));
 	}
 
 	@Override
