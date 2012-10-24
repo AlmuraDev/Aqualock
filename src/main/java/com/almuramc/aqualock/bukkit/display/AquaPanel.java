@@ -30,8 +30,8 @@ import org.getspout.spoutapi.player.SpoutPlayer;
 
 public class AquaPanel extends GenericPopup {
 	private final AqualockPlugin plugin;
-	private SpoutPlayer player;
-	private GenericTexture gt;
+	private final SpoutPlayer player;
+	private final GenericTexture gt;
 	//private String string1;
 	//private int windowtype = 1;
 	//private MyComboBox combo1;
@@ -42,13 +42,13 @@ public class AquaPanel extends GenericPopup {
 		this.plugin = plugin;
 		this.player = player;
 
-		GenericTexture border = new GenericTexture("http://www.almuramc.com/images/playerplus.png");
+		final GenericTexture border = new GenericTexture("http://www.almuramc.com/images/playerplus.png");
 		border.setAnchor(WidgetAnchor.CENTER_CENTER);
-		border.setPriority(RenderPriority.High);
+		border.setPriority(RenderPriority.Lowest);
 		border.setWidth(420).setHeight(345);
 		border.shiftXPos(-205).shiftYPos(-120);
 
-		GenericLabel label = new GenericLabel();
+		final GenericLabel label = new GenericLabel();
 		label.setText("Aqualock");
 		label.setAnchor(WidgetAnchor.CENTER_CENTER);
 		label.shiftXPos(-50).shiftYPos(-112);
@@ -59,7 +59,7 @@ public class AquaPanel extends GenericPopup {
 		gt.setHeight(150).setWidth(150);
 		gt.shiftXPos(10).shiftYPos(-90);
 
-		CloseButton close = new CloseButton(plugin);
+		final CloseButton close = new CloseButton(plugin);
 		close.setAnchor(WidgetAnchor.CENTER_CENTER);
 		close.setHeight(20).setWidth(50);
 		close.shiftXPos(150).shiftYPos(95);

@@ -32,7 +32,7 @@ import org.getspout.spoutapi.player.SpoutPlayer;
 
 public class AquaPanelDelegate implements BindingExecutionDelegate {
 	private final AqualockPlugin plugin;
-	private final HashMap<UUID, AquaPanel> panels = new HashMap<UUID, AquaPanel>();
+	private static final HashMap<UUID, AquaPanel> panels = new HashMap<UUID, AquaPanel>();
 
 	public AquaPanelDelegate(AqualockPlugin plugin) {
 		this.plugin = plugin;
