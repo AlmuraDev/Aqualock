@@ -33,6 +33,7 @@ import com.almuramc.aqualock.bukkit.AqualockPlugin;
 import com.almuramc.aqualock.bukkit.display.AquaPanel;
 
 import org.getspout.spoutapi.event.input.KeyBindingEvent;
+import org.getspout.spoutapi.gui.ScreenType;
 import org.getspout.spoutapi.keyboard.BindingExecutionDelegate;
 import org.getspout.spoutapi.player.SpoutPlayer;
 
@@ -47,16 +48,23 @@ public class AquaPanelDelegate implements BindingExecutionDelegate {
 	@Override
 	public void keyPressed(KeyBindingEvent keyBindingEvent) {
 		final SpoutPlayer player = keyBindingEvent.getPlayer();
+		//Do not let them close another screen with this keybinding from this event
+		if (!player.getMainScreen().getScreenType().equals(ScreenType.GAME_SCREEN)) {
+			return;
+		}
+		//Check for GUI cache, create new cache if necessary, attach new panel
 		if (!panels.containsKey(player.getUniqueId())) {
 			final AquaPanel panel = new AquaPanel(plugin, player);
 			panels.put(player.getUniqueId(), panel);
 			player.getMainScreen().attachPopupScreen(panel);
 			return;
 		}
+		//Has a cached panel, so attach it
 		player.getMainScreen().attachPopupScreen(panels.get(player.getUniqueId()));
 	}
 
 	@Override
 	public void keyReleased(KeyBindingEvent keyBindingEvent) {
+		//Does nothing
 	}
 }
