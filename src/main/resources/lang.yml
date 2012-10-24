@@ -1,0 +1,14 @@
+language:
+    cost-not-enough-lock: 
+    cost-enough-lock:
+    cost-more-than-enough-lock:
+    cost-not-enough-unlock: 
+    cost-enough-unlock:
+    cost-more-than-enough-unlock:
+    cost-not-enough-use: 
+    cost-enough-use:
+    cost-more-than-enough-use:
+    no-permissions-lock:
+    no-permissions-unlock:
+    no-permissions-use:
+    
