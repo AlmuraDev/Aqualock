@@ -37,8 +37,8 @@ import org.getspout.spoutapi.player.SpoutPlayer;
 public class AquaPanel extends GenericPopup {
 	private final AqualockPlugin plugin;
 	private final SpoutPlayer player;
-	final GenericTextField guideField, guideInvisible;
-	final GenericLabel guideName, guideDate, pagelabel;
+	//final GenericTextField guideField, guideInvisible;
+	//final GenericLabel guideName, guideDate, pagelabel;
 	final GenericButton close;
 
 	public AquaPanel(AqualockPlugin plugin, SpoutPlayer player) {
@@ -46,68 +46,23 @@ public class AquaPanel extends GenericPopup {
 		this.player = player;
 		this.plugin = plugin;
 
-		GenericLabel label = new GenericLabel();
-		label.setText(plugin.getConfig().getString("PromptTitle"));
-		label.setAnchor(WidgetAnchor.CENTER_CENTER);
-		label.shiftXPos(-35).shiftYPos(-122);
-		label.setScale(1.2F).setWidth(-1).setHeight(-1);
-
-		guideName = new GenericLabel("TheGuideNameHere");
-		guideName.setWidth(-1).setHeight(-1);
-		guideName.setAnchor(WidgetAnchor.CENTER_CENTER);
-		guideName.shiftXPos(-200).shiftYPos(-105);
-		guideName.setScale(1.3F);
-
-		guideInvisible = new GenericTextField();
-		guideInvisible.setWidth(150).setHeight(18);
-		guideInvisible.setAnchor(WidgetAnchor.CENTER_CENTER);
-		guideInvisible.shiftXPos(-200).shiftYPos(-110);
-		guideInvisible.setMaximumCharacters(30);
-		guideInvisible.setMaximumLines(1);
-		guideInvisible.setVisible(false);
-
-		guideDate = new GenericLabel("Updated: " + new SimpleDateFormat("HH:mm dd-MM").format(Calendar.getInstance().getTime()));
-		guideDate.setWidth(-1).setHeight(-1);
-		guideDate.setAnchor(WidgetAnchor.CENTER_CENTER);
-		guideDate.shiftXPos(-200).shiftYPos(90);
-
-		GenericTexture border = new GenericTexture(plugin.getConfig().getString("GUITexture"));
+		GenericTexture border = new GenericTexture("http://www.almuramc.com/images/playerplus.png");
 		border.setAnchor(WidgetAnchor.CENTER_CENTER);
 		border.setPriority(RenderPriority.High);
 		border.setWidth(626).setHeight(240);
 		border.shiftXPos(-220).shiftYPos(-128);
-
-		guideField = new GenericTextField();
-		guideField.setText("first guide goes here"); // The default text
-		guideField.setAnchor(WidgetAnchor.CENTER_CENTER);
-		guideField.setBorderColor(new Color(1.0F, 1.0F, 1.0F, 1.0F)); // White border
-		guideField.setMaximumCharacters(1000);
-		guideField.setMaximumLines(13);
-		guideField.setHeight(160).setWidth(377);
-		guideField.shiftXPos(-195).shiftYPos(-83);
-		guideField.setMargin(0);
 
 		close = new CloseButton(plugin);
 		close.setAuto(true);
 		close.setAnchor(WidgetAnchor.CENTER_CENTER);
 		close.setHeight(18).setWidth(40);
 		close.shiftXPos(142).shiftYPos(87);
-
-		pagelabel = new GenericLabel();
-		pagelabel.setText(Integer.toString(2));
-		pagelabel.setAnchor(WidgetAnchor.CENTER_CENTER);
-		pagelabel.shiftXPos(66).shiftYPos(92);
-		pagelabel.setPriority(RenderPriority.Normal);
-		pagelabel.setWidth(5).setHeight(18);
+	
 
 		this.setTransparent(true);
-		attachWidget(plugin, label);
 		attachWidget(plugin, border);
-		attachWidget(plugin, guideField);
 		attachWidget(plugin, close);
-		attachWidget(plugin, pagelabel);
-		attachWidget(plugin, guideName);
-		attachWidget(plugin, guideInvisible);
-		attachWidget(plugin, guideDate);
+		
+		player.getMainScreen().attachPopupScreen(this);
 	}
 }
