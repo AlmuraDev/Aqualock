@@ -17,23 +17,23 @@
  * You should have received a copy of the GNU General Public License. If not,
  * see <http://www.gnu.org/licenses/> for the GNU General Public License.
  */
-package com.almuramc.aqualock.bukkit.display;
+package com.almuramc.aqualock.bukkit.display.button;
 
 import com.almuramc.aqualock.bukkit.AqualockPlugin;
 
 import org.getspout.spoutapi.event.screen.ButtonClickEvent;
 import org.getspout.spoutapi.gui.GenericButton;
 
-public class CloseButton extends GenericButton {
+public class ApplyButton extends GenericButton {
 	private final AqualockPlugin plugin;
 
-	public CloseButton(AqualockPlugin plugin) {
-		super("Close");
+	public ApplyButton(AqualockPlugin plugin) {
+		super("Apply");
 		this.plugin = plugin;
 	}
 
 	@Override
 	public void onButtonClick(ButtonClickEvent event) {
-		event.getPlayer().getMainScreen().closePopup();
+		//TODO save to the lock backend
 	}
 }

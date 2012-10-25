@@ -45,15 +45,15 @@ public class AquaPanelDelegate implements BindingExecutionDelegate {
 		if (!player.getMainScreen().getScreenType().equals(ScreenType.GAME_SCREEN)) {
 			return;
 		}
-//		//Check for GUI cache, create new cache if necessary, attach new panel
-//		if (!panels.containsKey(player.getUniqueId())) {
-		AquaPanel panel = new AquaPanel(plugin, player);
-//			panels.put(player.getUniqueId(), panel);
-			//player.getMainScreen().attachPopupScreen(panel);
-//			return;
-//		}
+		//Check for GUI cache, create new cache if necessary, attach new panel
+		if (!panels.containsKey(player.getUniqueId())) {
+			AquaPanel panel = new AquaPanel(plugin);
+			panels.put(player.getUniqueId(), panel);
+			player.getMainScreen().attachPopupScreen(panel);
+			return;
+		}
 		//Has a cached panel, so attach it
-		//player.getMainScreen().attachPopupScreen(panels.get(player.getUniqueId()));
+		player.getMainScreen().attachPopupScreen(panels.get(player.getUniqueId()));
 	}
 
 	@Override
