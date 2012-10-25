@@ -19,10 +19,16 @@
  */
 package com.almuramc.aqualock.bukkit.display;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 import com.almuramc.aqualock.bukkit.AqualockPlugin;
 
+import org.getspout.spoutapi.gui.Color;
+import org.getspout.spoutapi.gui.GenericButton;
 import org.getspout.spoutapi.gui.GenericLabel;
 import org.getspout.spoutapi.gui.GenericPopup;
+import org.getspout.spoutapi.gui.GenericTextField;
 import org.getspout.spoutapi.gui.GenericTexture;
 import org.getspout.spoutapi.gui.RenderPriority;
 import org.getspout.spoutapi.gui.WidgetAnchor;
@@ -31,39 +37,77 @@ import org.getspout.spoutapi.player.SpoutPlayer;
 public class AquaPanel extends GenericPopup {
 	private final AqualockPlugin plugin;
 	private final SpoutPlayer player;
-	private final GenericTexture gt;
-	//private String string1;
-	//private int windowtype = 1;
-	//private MyComboBox combo1;
-	//private ListWidget list1;
-	//private GenericButton button1;
+	final GenericTextField guideField, guideInvisible;
+	final GenericLabel guideName, guideDate, pagelabel;
+	final GenericButton close;
 
 	public AquaPanel(AqualockPlugin plugin, SpoutPlayer player) {
-		this.plugin = plugin;
+		super();
 		this.player = player;
+		this.plugin = plugin;
 
-		final GenericTexture border = new GenericTexture("http://www.almuramc.com/images/playerplus.png");
-		border.setAnchor(WidgetAnchor.CENTER_CENTER);
-		border.setPriority(RenderPriority.Lowest);
-		border.setWidth(420).setHeight(345);
-		border.shiftXPos(-205).shiftYPos(-120);
-
-		final GenericLabel label = new GenericLabel();
-		label.setText("Aqualock");
+		GenericLabel label = new GenericLabel();
+		label.setText(plugin.getConfig().getString("PromptTitle"));
 		label.setAnchor(WidgetAnchor.CENTER_CENTER);
-		label.shiftXPos(-50).shiftYPos(-112);
+		label.shiftXPos(-35).shiftYPos(-122);
 		label.setScale(1.2F).setWidth(-1).setHeight(-1);
 
-		gt = new GenericTexture();
-		gt.setAnchor(WidgetAnchor.CENTER_CENTER);
-		gt.setHeight(150).setWidth(150);
-		gt.shiftXPos(10).shiftYPos(-90);
+		guideName = new GenericLabel("TheGuideNameHere");
+		guideName.setWidth(-1).setHeight(-1);
+		guideName.setAnchor(WidgetAnchor.CENTER_CENTER);
+		guideName.shiftXPos(-200).shiftYPos(-105);
+		guideName.setScale(1.3F);
 
-		final CloseButton close = new CloseButton(plugin);
+		guideInvisible = new GenericTextField();
+		guideInvisible.setWidth(150).setHeight(18);
+		guideInvisible.setAnchor(WidgetAnchor.CENTER_CENTER);
+		guideInvisible.shiftXPos(-200).shiftYPos(-110);
+		guideInvisible.setMaximumCharacters(30);
+		guideInvisible.setMaximumLines(1);
+		guideInvisible.setVisible(false);
+
+		guideDate = new GenericLabel("Updated: " + new SimpleDateFormat("HH:mm dd-MM").format(Calendar.getInstance().getTime()));
+		guideDate.setWidth(-1).setHeight(-1);
+		guideDate.setAnchor(WidgetAnchor.CENTER_CENTER);
+		guideDate.shiftXPos(-200).shiftYPos(90);
+
+		GenericTexture border = new GenericTexture(plugin.getConfig().getString("GUITexture"));
+		border.setAnchor(WidgetAnchor.CENTER_CENTER);
+		border.setPriority(RenderPriority.High);
+		border.setWidth(626).setHeight(240);
+		border.shiftXPos(-220).shiftYPos(-128);
+
+		guideField = new GenericTextField();
+		guideField.setText("first guide goes here"); // The default text
+		guideField.setAnchor(WidgetAnchor.CENTER_CENTER);
+		guideField.setBorderColor(new Color(1.0F, 1.0F, 1.0F, 1.0F)); // White border
+		guideField.setMaximumCharacters(1000);
+		guideField.setMaximumLines(13);
+		guideField.setHeight(160).setWidth(377);
+		guideField.shiftXPos(-195).shiftYPos(-83);
+		guideField.setMargin(0);
+
+		close = new CloseButton(plugin);
+		close.setAuto(true);
 		close.setAnchor(WidgetAnchor.CENTER_CENTER);
-		close.setHeight(20).setWidth(50);
-		close.shiftXPos(150).shiftYPos(95);
+		close.setHeight(18).setWidth(40);
+		close.shiftXPos(142).shiftYPos(87);
 
-		attachWidgets(plugin, border, label, gt, close);
+		pagelabel = new GenericLabel();
+		pagelabel.setText(Integer.toString(2));
+		pagelabel.setAnchor(WidgetAnchor.CENTER_CENTER);
+		pagelabel.shiftXPos(66).shiftYPos(92);
+		pagelabel.setPriority(RenderPriority.Normal);
+		pagelabel.setWidth(5).setHeight(18);
+
+		this.setTransparent(true);
+		attachWidget(plugin, label);
+		attachWidget(plugin, border);
+		attachWidget(plugin, guideField);
+		attachWidget(plugin, close);
+		attachWidget(plugin, pagelabel);
+		attachWidget(plugin, guideName);
+		attachWidget(plugin, guideInvisible);
+		attachWidget(plugin, guideDate);
 	}
 }
