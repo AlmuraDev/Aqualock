@@ -41,6 +41,7 @@ import com.almuramc.aqualock.bukkit.display.label.UseCostLabel;
 import com.almuramc.aqualock.bukkit.display.label.UserLabel;
 import com.almuramc.bolt.lock.Lock;
 
+import org.getspout.spoutapi.gui.Color;
 import org.getspout.spoutapi.gui.GenericButton;
 import org.getspout.spoutapi.gui.GenericCheckBox;
 import org.getspout.spoutapi.gui.GenericLabel;
@@ -48,6 +49,7 @@ import org.getspout.spoutapi.gui.GenericPopup;
 import org.getspout.spoutapi.gui.GenericTextField;
 import org.getspout.spoutapi.gui.GenericTexture;
 import org.getspout.spoutapi.gui.RenderPriority;
+import org.getspout.spoutapi.gui.Widget;
 import org.getspout.spoutapi.gui.WidgetAnchor;
 
 import org.bukkit.Location;
@@ -93,9 +95,9 @@ public class AquaPanel extends GenericPopup {
 		usersField
 				.setMaximumLines(5)
 				.setMaximumCharacters(100)
-				.setTabIndex(3)
+				.setTabIndex(2)
 				.setAnchor(WidgetAnchor.CENTER_CENTER)
-				.setHeight(13)
+				.setHeight(14)
 				.setWidth(165)
 				.shiftXPos(15)
 				.shiftYPos(60);
@@ -106,14 +108,14 @@ public class AquaPanel extends GenericPopup {
 				.setHeight(11)
 				.setWidth(40)
 				.shiftXPos(15)
-				.shiftYPos(43);
+				.shiftYPos(45);
 		coownersField = new CoOwnerField();
 		coownersField
 				.setMaximumLines(5)
 				.setMaximumCharacters(100)
-				.setTabIndex(2)
+				.setTabIndex(1)
 				.setAnchor(WidgetAnchor.CENTER_CENTER)
-				.setHeight(13)
+				.setHeight(14)
 				.setWidth(165)
 				.shiftXPos(15)
 				.shiftYPos(23);
@@ -128,10 +130,10 @@ public class AquaPanel extends GenericPopup {
 		costToUseField = new UseCostField();
 		costToUseField
 				.setAnchor(WidgetAnchor.CENTER_CENTER)
-				.setHeight(13)
+				.setHeight(14)
 				.setWidth(40)
 				.shiftXPos(-70)
-				.shiftYPos(60);
+				.shiftYPos(57);
 		costToUseLabel = new UseCostLabel("Cost to use:");
 		costToUseLabel
 				.setAuto(true)
@@ -143,10 +145,10 @@ public class AquaPanel extends GenericPopup {
 		damageOnFailField = new DamageField();
 		damageOnFailField
 				.setAnchor(WidgetAnchor.CENTER_CENTER)
-				.setHeight(13)
+				.setHeight(14)
 				.setWidth(40)
 				.shiftXPos(-70)
-				.shiftYPos(43);
+				.shiftYPos(40);
 		damageOnFailLabel = new DamageLabel("Damage on fail:");
 		damageOnFailLabel
 				.setAuto(true)
@@ -155,7 +157,7 @@ public class AquaPanel extends GenericPopup {
 				.setWidth(40)
 				.shiftXPos(-146)
 				.shiftYPos(43);
-		costToCreateOutputLabel = new CreateCostValueLabel("Test3:");
+		costToCreateOutputLabel = new CreateCostValueLabel("");
 		costToCreateOutputLabel
 				.setAuto(true)
 				.setAnchor(WidgetAnchor.CENTER_CENTER)
@@ -182,10 +184,10 @@ public class AquaPanel extends GenericPopup {
 		passwordField = new PasswordField();
 		passwordField
 				.setAnchor(WidgetAnchor.CENTER_CENTER)
-				.setHeight(13)
+				.setHeight(14)
 				.setWidth(107)
 				.shiftXPos(70)
-				.shiftYPos(-20);
+				.shiftYPos(-24);
 		passwordLabel = new PasswordLabel("Password:");
 		passwordLabel
 				.setAuto(true)
@@ -196,11 +198,13 @@ public class AquaPanel extends GenericPopup {
 				.shiftYPos(-20);
 		ownerField = new OwnerField();
 		ownerField
+				.setMaximumCharacters(18)
+				.setMaximumLines(1)
 				.setAnchor(WidgetAnchor.CENTER_CENTER)
-				.setHeight(13)
+				.setHeight(14)
 				.setWidth(107)
 				.shiftXPos(70)
-				.shiftYPos(-40);
+				.shiftYPos(-44);
 		ownerLabel = new OwnerLabel("Owner:");
 		ownerLabel
 				.setAuto(true)
@@ -225,6 +229,33 @@ public class AquaPanel extends GenericPopup {
 	 */
 	public void populate(Lock lock) {
 		if (lock == null) {
+			for (Widget widget : getAttachedWidgets()) {
+				if (widget instanceof GenericTextField && (!(widget instanceof OwnerField))) {
+					((GenericTextField) widget).setText("");
+				} else if (widget instanceof GenericCheckBox) {
+					((GenericCheckBox) widget).setChecked(false);
+				} else if (widget instanceof OwnerField) {
+					((OwnerField) widget).setText(getPlayer().getName());
+				} else if (widget instanceof CreateCostValueLabel) {
+					final double value = plugin.getConfiguration().getCosts().getLockCost(getLocation().getBlock().getType());
+					float r = 255, g = 255, b = 255, a = 255f;
+					if (value > 0.0) {
+						r = 1f;
+						g = 0f;
+						b = 0f;
+						a = 1f;
+					} else if (value < 0.0) {
+						r = 0f;
+						g = 128f;
+						b = 0f;
+						a = 0f;
+					}
+					((CreateCostValueLabel) widget).setText(Double.toString(value).replaceAll("[^\\d.]", ""));
+					((CreateCostValueLabel) widget).setTextColor(new Color(r, g, b, a));
+				}
+			}
+			costToCreateLabel.setText("Cost to create:");
+			this.setDirty(true);
 			return;
 		}
 		ownerField.setText(lock.getOwner());
@@ -235,11 +266,27 @@ public class AquaPanel extends GenericPopup {
 			if (i > 0) {
 				output.append(", ");
 			}
-			System.out.println(coowners.get(i));
 			output.append(coowners.get(i));
 		}
 		coownersField.setText(output.toString());
-		costToCreateOutputLabel.setText(Double.toString(plugin.getConfiguration().getCosts().getUnlockCost(org.bukkit.Material.AIR)));
+		//Change label names for modifying locks
+		costToCreateLabel.setText("Cost to change:");
+		final double value = plugin.getConfiguration().getCosts().getUpdateCost(getLocation().getBlock().getType());
+		float r = 255, g = 255, b = 255, a = 255f;
+		if (value > 0.0) {
+			r = 1f;
+			g = 0f;
+			b = 0f;
+			a = 1f;
+		} else if (value < 0.0) {
+			r = 0f;
+			g = 128f;
+			b = 0f;
+			a = 0f;
+		}
+		costToCreateOutputLabel.setText(Double.toString(value).replaceAll("[^\\d.]", ""));
+		costToCreateOutputLabel.setTextColor(new Color(r, g, b, a));
+		this.setDirty(true);
 	}
 
 	public Location getLocation() {

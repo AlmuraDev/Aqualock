@@ -21,6 +21,7 @@ package com.almuramc.aqualock.bukkit.display.checkbox;
 
 import com.almuramc.aqualock.bukkit.display.AquaPanel;
 import com.almuramc.aqualock.bukkit.display.field.CoOwnerField;
+import com.almuramc.aqualock.bukkit.display.field.UserField;
 
 import org.getspout.spoutapi.event.screen.ButtonClickEvent;
 import org.getspout.spoutapi.gui.GenericCheckBox;
@@ -36,14 +37,14 @@ public class EveryoneCheckbox extends GenericCheckBox {
 		final AquaPanel panel = (AquaPanel) getScreen();
 		if (isChecked()) {
 			for (Widget widget : panel.getAttachedWidgets()) {
-				if (widget instanceof CoOwnerField) {
-					((CoOwnerField) widget).setText("Everyone");
+				if (widget instanceof UserField) {
+					((UserField) widget).setText("Everyone");
 				}
 			}
 		} else {
 			for (Widget widget : panel.getAttachedWidgets()) {
-				if (widget instanceof CoOwnerField) {
-					((CoOwnerField) widget).setText("");
+				if (widget instanceof UserField) {
+					((UserField) widget).setText("");
 				}
 			}
 		}

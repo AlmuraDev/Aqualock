@@ -24,6 +24,7 @@ import java.util.UUID;
 
 import com.almuramc.aqualock.bukkit.AqualockPlugin;
 import com.almuramc.aqualock.bukkit.display.AquaPanel;
+import com.almuramc.aqualock.bukkit.display.field.OwnerField;
 import com.almuramc.aqualock.bukkit.util.BlockUtil;
 
 import org.getspout.spoutapi.event.input.KeyBindingEvent;
@@ -70,18 +71,7 @@ public class AquaPanelDelegate implements BindingExecutionDelegate {
 		}
 		final Location loc = block.getLocation();
 		panel.setLocation(block.getLocation());
-		for (Widget widget : panel.getAttachedWidgets()) {
-			if (widget instanceof GenericTextField) {
-				((GenericTextField) widget).setText("");
-			} else if (widget instanceof GenericCheckBox) {
-				((GenericCheckBox) widget).setChecked(false);
-			}
-		}
-		panel.setDirty(true);
-		if (plugin.getRegistry().contains(loc.getWorld().getUID(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ())) {
-			panel.populate(plugin.getRegistry().getLock(loc.getWorld().getUID(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()));
-			panel.setDirty(true);
-		}
+		panel.populate(plugin.getRegistry().getLock(loc.getWorld().getUID(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()));
 	}
 
 	@Override
