@@ -52,15 +52,18 @@ public class AquaPanelDelegate implements BindingExecutionDelegate {
 		if (block == null) {
 			player.sendMessage(plugin.getPrefix() + "No valid block at the cursor could be found!");
 		}
+		AquaPanel panel;
 		//Check for GUI cache, create new cache if necessary, attach new panel
 		if (!panels.containsKey(player.getUniqueId())) {
-			AquaPanel panel = new AquaPanel(plugin);
+			panel = new AquaPanel(plugin);
 			panels.put(player.getUniqueId(), panel);
 			player.getMainScreen().attachPopupScreen(panel);
-			return;
+		} else {
+			//Has a cached panel, so attach it
+			panel = panels.get(player.getUniqueId());
+			player.getMainScreen().attachPopupScreen(panels.get(player.getUniqueId()));
 		}
-		//Has a cached panel, so attach it
-		player.getMainScreen().attachPopupScreen(panels.get(player.getUniqueId()));
+		panel.setLocation(block.getLocation());
 	}
 
 	@Override

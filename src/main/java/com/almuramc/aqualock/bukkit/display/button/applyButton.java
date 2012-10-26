@@ -51,7 +51,6 @@ public class ApplyButton extends GenericButton {
 		String owner = "";
 		List<String> coowners = null;
 		String password = "";
-		Location location = null;
 		for (Widget widget : panel.getAttachedWidgets()) {
 			final Class clazz = widget.getClass();
 			if (clazz.equals(OwnerField.class)) {
@@ -83,7 +82,7 @@ public class ApplyButton extends GenericButton {
 				coowners.add("Everyone");
 			}
 		}
-		final BukkitLock lock = new BukkitLock(owner, coowners, password, null, (byte) 0);
+		final BukkitLock lock = new BukkitLock(owner, coowners, password, panel.getLocation(), (byte) 0);
 		AqualockPlugin.getBackend().addLock(lock);
 	}
 }

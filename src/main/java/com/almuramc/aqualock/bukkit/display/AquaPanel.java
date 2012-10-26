@@ -48,6 +48,8 @@ import org.getspout.spoutapi.gui.GenericTexture;
 import org.getspout.spoutapi.gui.RenderPriority;
 import org.getspout.spoutapi.gui.WidgetAnchor;
 
+import org.bukkit.Location;
+
 public class AquaPanel extends GenericPopup {
 	private final AqualockPlugin plugin;
 	//Widgets
@@ -56,6 +58,8 @@ public class AquaPanel extends GenericPopup {
 	private final GenericLabel usersLabel, coownersLabel, costToUseLabel, damageOnFailLabel, costToCreateOutputLabel, costToCreateLabel, passwordLabel, ownerLabel;
 	private final GenericTextField usersField, coownersField, costToUseField, damageOnFailField, passwordField, ownerField;
 	private final GenericTexture borderTexture;
+	//geo
+	private Location location;
 
 	public AquaPanel(AqualockPlugin plugin) {
 		this.plugin = plugin;
@@ -207,7 +211,11 @@ public class AquaPanel extends GenericPopup {
 		attachWidgets(plugin, borderTexture, closeButton, applyButton, usersField, usersLabel, coownersField, coownersLabel,
 				costToUseField, costToUseLabel, damageOnFailField, damageOnFailLabel, costToCreateOutputLabel,
 				costToCreateLabel, everyoneCheckbox, passwordField, passwordLabel, ownerField, ownerLabel);
-		onCreate();
+		passwordField.setFocus(true);
+		passwordField.setTabIndex(0);
+		passwordField.setMaximumCharacters(15);
+		passwordField.setMaximumLines(1);
+		passwordField.setPasswordField(true);
 	}
 
 	/**
@@ -230,15 +238,11 @@ public class AquaPanel extends GenericPopup {
 		costToCreateOutputLabel.setText(Double.toString(plugin.getConfiguration().getCosts().getUnlockCost(org.bukkit.Material.AIR)));
 	}
 
-	/**
-	 * Simply here to bypass a bug in SpoutPlugin.
-	 */
-	public void onCreate() {
-		passwordField.setFocus(true);
-		passwordField.setTabIndex(0);
-		passwordField.setMaximumCharacters(15);
-		passwordField.setMaximumLines(1);
-		passwordField.setPasswordField(true);
-		this.setDirty(true);
+	public Location getLocation() {
+		return location;
+	}
+
+	public void setLocation(Location location) {
+		this.location = location;
 	}
 }
