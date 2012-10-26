@@ -63,7 +63,8 @@ public class AqualockPlugin extends JavaPlugin {
 		if (!setupEconomy()) {
 			Bukkit.getLogger().info(getPrefix() + "Failed to initialize Vault for economy, skipping...");
 		}
-		backend = new SqlStorage(new SQLiteConfiguration(), getDataFolder());
+		configuration = new AqualockConfiguration(this);
+		backend = new SqlStorage(configuration.getSqlConfiguration(), getDataFolder());
 		backend.onLoad();
 		for (Lock lock : backend.getAll()) {
 			registry.addLock(lock);
@@ -71,7 +72,6 @@ public class AqualockPlugin extends JavaPlugin {
 		this.getCommand("aqualock").setExecutor(new AqualockCommands(this));
 		this.getServer().getPluginManager().registerEvents(new AqualockListener(this), this);
 		SpoutManager.getKeyBindingManager().registerBinding("Aqua Panel", Keyboard.KEY_Y, "Opens the lock panel", new AquaPanelDelegate(this), this);
-		configuration = new AqualockConfiguration(this);
 	}
 
 	@Override

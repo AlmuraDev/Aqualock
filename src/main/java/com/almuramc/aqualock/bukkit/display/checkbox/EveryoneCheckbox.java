@@ -19,10 +19,33 @@
  */
 package com.almuramc.aqualock.bukkit.display.checkbox;
 
+import com.almuramc.aqualock.bukkit.display.AquaPanel;
+import com.almuramc.aqualock.bukkit.display.field.CoOwnerField;
+
+import org.getspout.spoutapi.event.screen.ButtonClickEvent;
 import org.getspout.spoutapi.gui.GenericCheckBox;
+import org.getspout.spoutapi.gui.Widget;
 
 public class EveryoneCheckbox extends GenericCheckBox {
 	public EveryoneCheckbox() {
 		super("Allow Everyone");
+	}
+
+	@Override
+	public void onButtonClick(ButtonClickEvent event) {
+		final AquaPanel panel = (AquaPanel) getScreen();
+		if (isChecked()) {
+			for (Widget widget : panel.getAttachedWidgets()) {
+				if (widget instanceof CoOwnerField) {
+					((CoOwnerField) widget).setText("Everyone");
+				}
+			}
+		} else {
+			for (Widget widget : panel.getAttachedWidgets()) {
+				if (widget instanceof CoOwnerField) {
+					((CoOwnerField) widget).setText("");
+				}
+			}
+		}
 	}
 }

@@ -19,6 +19,8 @@
  */
 package com.almuramc.aqualock.bukkit.display;
 
+import java.util.List;
+
 import com.almuramc.aqualock.bukkit.AqualockPlugin;
 import com.almuramc.aqualock.bukkit.display.button.ApplyButton;
 import com.almuramc.aqualock.bukkit.display.button.CloseButton;
@@ -58,7 +60,7 @@ public class AquaPanel extends GenericPopup {
 	private final GenericLabel usersLabel, coownersLabel, costToUseLabel, damageOnFailLabel, costToCreateOutputLabel, costToCreateLabel, passwordLabel, ownerLabel;
 	private final GenericTextField usersField, coownersField, costToUseField, damageOnFailField, passwordField, ownerField;
 	private final GenericTexture borderTexture;
-	//geo
+	//Geo
 	private Location location;
 
 	public AquaPanel(AqualockPlugin plugin) {
@@ -87,14 +89,13 @@ public class AquaPanel extends GenericPopup {
 				.setWidth(40)
 				.shiftXPos(90)
 				.shiftYPos(87);
-		this.setTransparent(true);
 		usersField = new UserField();
 		usersField
 				.setMaximumLines(5)
 				.setMaximumCharacters(100)
 				.setTabIndex(3)
 				.setAnchor(WidgetAnchor.CENTER_CENTER)
-				.setHeight(10)
+				.setHeight(13)
 				.setWidth(165)
 				.shiftXPos(15)
 				.shiftYPos(60);
@@ -102,7 +103,7 @@ public class AquaPanel extends GenericPopup {
 		usersLabel
 				.setAuto(true)
 				.setAnchor(WidgetAnchor.CENTER_CENTER)
-				.setHeight(10)
+				.setHeight(11)
 				.setWidth(40)
 				.shiftXPos(15)
 				.shiftYPos(43);
@@ -112,7 +113,7 @@ public class AquaPanel extends GenericPopup {
 				.setMaximumCharacters(100)
 				.setTabIndex(2)
 				.setAnchor(WidgetAnchor.CENTER_CENTER)
-				.setHeight(10)
+				.setHeight(13)
 				.setWidth(165)
 				.shiftXPos(15)
 				.shiftYPos(23);
@@ -127,7 +128,7 @@ public class AquaPanel extends GenericPopup {
 		costToUseField = new UseCostField();
 		costToUseField
 				.setAnchor(WidgetAnchor.CENTER_CENTER)
-				.setHeight(10)
+				.setHeight(13)
 				.setWidth(40)
 				.shiftXPos(-70)
 				.shiftYPos(60);
@@ -142,7 +143,7 @@ public class AquaPanel extends GenericPopup {
 		damageOnFailField = new DamageField();
 		damageOnFailField
 				.setAnchor(WidgetAnchor.CENTER_CENTER)
-				.setHeight(10)
+				.setHeight(13)
 				.setWidth(40)
 				.shiftXPos(-70)
 				.shiftYPos(43);
@@ -181,7 +182,7 @@ public class AquaPanel extends GenericPopup {
 		passwordField = new PasswordField();
 		passwordField
 				.setAnchor(WidgetAnchor.CENTER_CENTER)
-				.setHeight(12)
+				.setHeight(13)
 				.setWidth(107)
 				.shiftXPos(70)
 				.shiftYPos(-20);
@@ -196,7 +197,7 @@ public class AquaPanel extends GenericPopup {
 		ownerField = new OwnerField();
 		ownerField
 				.setAnchor(WidgetAnchor.CENTER_CENTER)
-				.setHeight(12)
+				.setHeight(13)
 				.setWidth(107)
 				.shiftXPos(70)
 				.shiftYPos(-40);
@@ -216,6 +217,7 @@ public class AquaPanel extends GenericPopup {
 		passwordField.setMaximumCharacters(15);
 		passwordField.setMaximumLines(1);
 		passwordField.setPasswordField(true);
+		this.setTransparent(true);
 	}
 
 	/**
@@ -228,11 +230,13 @@ public class AquaPanel extends GenericPopup {
 		ownerField.setText(lock.getOwner());
 		//Loop through all co-owners and build a string to insert into the field
 		final StringBuilder output = new StringBuilder();
-		for (String coowner : lock.getCoOwners()) {
-			if (coowner.length() != 0) {
-				output.append(" ,");
+		final List<String> coowners = lock.getCoOwners();
+		for (int i = 0; i < coowners.size(); i++) {
+			if (i > 0) {
+				output.append(", ");
 			}
-			output.append(coowner);
+			System.out.println(coowners.get(i));
+			output.append(coowners.get(i));
 		}
 		coownersField.setText(output.toString());
 		costToCreateOutputLabel.setText(Double.toString(plugin.getConfiguration().getCosts().getUnlockCost(org.bukkit.Material.AIR)));

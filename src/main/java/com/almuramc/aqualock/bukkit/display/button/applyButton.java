@@ -32,6 +32,7 @@ import com.almuramc.aqualock.bukkit.lock.BukkitLock;
 
 import org.getspout.spoutapi.event.screen.ButtonClickEvent;
 import org.getspout.spoutapi.gui.GenericButton;
+import org.getspout.spoutapi.gui.GenericCheckBox;
 import org.getspout.spoutapi.gui.Widget;
 
 public class ApplyButton extends GenericButton {
@@ -57,7 +58,7 @@ public class ApplyButton extends GenericButton {
 			} else if (clazz.equals(CoOwnerField.class)) {
 				coowners = new ArrayList<String>();
 				final char[] chars = ((CoOwnerField) widget).getText().toCharArray();
-				final StringBuffer temp = new StringBuffer();
+				final StringBuilder temp = new StringBuilder();
 				for (int i = 0; i < chars.length; i++) {
 					if (chars[i] == ',') {
 						coowners.add(temp.toString());
@@ -67,21 +68,18 @@ public class ApplyButton extends GenericButton {
 					if (chars[i] == ' ') {
 						continue;
 					}
-					if (i < chars.length - 1) {
+					if (i == chars.length - 1) {
 						temp.append(chars[i]);
 						coowners.add(temp.toString());
 						continue;
 					}
 					temp.append(chars[i]);
 				}
-			} else if (clazz.equals(EveryoneCheckbox.class)) {
-				coowners = new ArrayList<String>();
-				coowners.add("Everyone");
-				panel.setDirty(true);
 			}
 		}
 		final BukkitLock lock = new BukkitLock(owner, coowners, password, panel.getLocation(), (byte) 0);
 		AqualockPlugin.getBackend().addLock(lock);
 		AqualockPlugin.getRegistry().addLock(lock);
+		panel.close();
 	}
 }

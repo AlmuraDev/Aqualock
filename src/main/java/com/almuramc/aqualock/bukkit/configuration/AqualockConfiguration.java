@@ -22,6 +22,12 @@ package com.almuramc.aqualock.bukkit.configuration;
 import java.io.File;
 
 import com.almuramc.aqualock.bukkit.AqualockPlugin;
+import com.alta189.simplesave.Configuration;
+import com.alta189.simplesave.h2.H2Configuration;
+import com.alta189.simplesave.mysql.MySQLConfiguration;
+import com.alta189.simplesave.sqlite.SQLiteConfiguration;
+
+import org.yaml.snakeyaml.error.YAMLException;
 
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -66,5 +72,19 @@ public final class AqualockConfiguration {
 
 	public double getDoubleDoorCloseTimer() {
 		return config.getDouble("double-door-close-timer");
+	}
+
+	public Configuration getSqlConfiguration() {
+		final String mode = config.getString("sql-mode");
+		switch(config.getString("sql-mode")) {
+			case "sql":
+				return new MySQLConfiguration();
+			case "sqlite":
+				return new SQLiteConfiguration();
+			case "h2":
+				return new H2Configuration();
+			default:
+				throw new YAMLException("Specified sql-mode " + mode + " is invalid.");
+		}
 	}
 }
