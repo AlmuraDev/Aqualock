@@ -80,9 +80,11 @@ public class ApplyButton extends GenericButton {
 			} else if (clazz.equals(EveryoneCheckbox.class)) {
 				coowners = new ArrayList<String>();
 				coowners.add("Everyone");
+				panel.setDirty(true);
 			}
 		}
 		final BukkitLock lock = new BukkitLock(owner, coowners, password, panel.getLocation(), (byte) 0);
 		AqualockPlugin.getBackend().addLock(lock);
+		AqualockPlugin.getRegistry().addLock(lock);
 	}
 }

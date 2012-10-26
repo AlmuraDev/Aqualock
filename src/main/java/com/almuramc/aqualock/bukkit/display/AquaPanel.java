@@ -181,7 +181,7 @@ public class AquaPanel extends GenericPopup {
 		passwordField = new PasswordField();
 		passwordField
 				.setAnchor(WidgetAnchor.CENTER_CENTER)
-				.setHeight(10)
+				.setHeight(12)
 				.setWidth(107)
 				.shiftXPos(70)
 				.shiftYPos(-20);
@@ -196,7 +196,7 @@ public class AquaPanel extends GenericPopup {
 		ownerField = new OwnerField();
 		ownerField
 				.setAnchor(WidgetAnchor.CENTER_CENTER)
-				.setHeight(10)
+				.setHeight(12)
 				.setWidth(107)
 				.shiftXPos(70)
 				.shiftYPos(-40);

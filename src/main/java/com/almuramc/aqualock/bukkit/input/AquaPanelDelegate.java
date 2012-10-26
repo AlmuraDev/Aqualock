@@ -24,13 +24,18 @@ import java.util.UUID;
 
 import com.almuramc.aqualock.bukkit.AqualockPlugin;
 import com.almuramc.aqualock.bukkit.display.AquaPanel;
+import com.almuramc.aqualock.bukkit.display.checkbox.EveryoneCheckbox;
 import com.almuramc.aqualock.bukkit.util.BlockUtil;
 
 import org.getspout.spoutapi.event.input.KeyBindingEvent;
+import org.getspout.spoutapi.gui.GenericCheckBox;
+import org.getspout.spoutapi.gui.GenericTextField;
 import org.getspout.spoutapi.gui.ScreenType;
+import org.getspout.spoutapi.gui.Widget;
 import org.getspout.spoutapi.keyboard.BindingExecutionDelegate;
 import org.getspout.spoutapi.player.SpoutPlayer;
 
+import org.bukkit.Location;
 import org.bukkit.block.Block;
 
 public class AquaPanelDelegate implements BindingExecutionDelegate {
@@ -51,6 +56,7 @@ public class AquaPanelDelegate implements BindingExecutionDelegate {
 		Block block = BlockUtil.getTarget(player, null, 4);
 		if (block == null) {
 			player.sendMessage(plugin.getPrefix() + "No valid block at the cursor could be found!");
+			return;
 		}
 		AquaPanel panel;
 		//Check for GUI cache, create new cache if necessary, attach new panel
@@ -63,7 +69,20 @@ public class AquaPanelDelegate implements BindingExecutionDelegate {
 			panel = panels.get(player.getUniqueId());
 			player.getMainScreen().attachPopupScreen(panels.get(player.getUniqueId()));
 		}
+		final Location loc = block.getLocation();
 		panel.setLocation(block.getLocation());
+		for (Widget widget : panel.getAttachedWidgets()) {
+			if (widget instanceof GenericTextField) {
+				((GenericTextField) widget).setText("");
+			} else if (widget instanceof GenericCheckBox) {
+				((GenericCheckBox) widget).setChecked(false);
+			}
+		}
+		panel.setDirty(true);
+		if (plugin.getRegistry().contains(loc.getWorld().getUID(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ())) {
+			panel.populate(plugin.getRegistry().getLock(loc.getWorld().getUID(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()));
+			panel.setDirty(true);
+		}
 	}
 
 	@Override
