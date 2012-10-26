@@ -22,6 +22,22 @@ package com.almuramc.aqualock.bukkit.display;
 import com.almuramc.aqualock.bukkit.AqualockPlugin;
 import com.almuramc.aqualock.bukkit.display.button.ApplyButton;
 import com.almuramc.aqualock.bukkit.display.button.CloseButton;
+import com.almuramc.aqualock.bukkit.display.checkbox.EveryoneCheckbox;
+import com.almuramc.aqualock.bukkit.display.field.CoOwnerField;
+import com.almuramc.aqualock.bukkit.display.field.DamageField;
+import com.almuramc.aqualock.bukkit.display.field.OwnerField;
+import com.almuramc.aqualock.bukkit.display.field.PasswordField;
+import com.almuramc.aqualock.bukkit.display.field.UseCostField;
+import com.almuramc.aqualock.bukkit.display.field.UserField;
+import com.almuramc.aqualock.bukkit.display.label.CoOwnerLabel;
+import com.almuramc.aqualock.bukkit.display.label.CreateCostLabel;
+import com.almuramc.aqualock.bukkit.display.label.CreateCostValueLabel;
+import com.almuramc.aqualock.bukkit.display.label.DamageLabel;
+import com.almuramc.aqualock.bukkit.display.label.OwnerLabel;
+import com.almuramc.aqualock.bukkit.display.label.PasswordLabel;
+import com.almuramc.aqualock.bukkit.display.label.UseCostLabel;
+import com.almuramc.aqualock.bukkit.display.label.UserLabel;
+import com.almuramc.bolt.lock.Lock;
 
 import org.getspout.spoutapi.gui.GenericButton;
 import org.getspout.spoutapi.gui.GenericCheckBox;
@@ -33,16 +49,25 @@ import org.getspout.spoutapi.gui.RenderPriority;
 import org.getspout.spoutapi.gui.WidgetAnchor;
 
 public class AquaPanel extends GenericPopup {
+	private final AqualockPlugin plugin;
+	//Widgets
+	private final GenericButton closeButton, applyButton;
+	private final GenericCheckBox everyoneCheckbox;
+	private final GenericLabel usersLabel, coownersLabel, costToUseLabel, damageOnFailLabel, costToCreateOutputLabel, costToCreateLabel, passwordLabel, ownerLabel;
+	private final GenericTextField usersField, coownersField, costToUseField, damageOnFailField, passwordField, ownerField;
+	private final GenericTexture borderTexture;
+
 	public AquaPanel(AqualockPlugin plugin) {
-		final GenericTexture borderTexture = new GenericTexture("http://www.almuramc.com/images/playerplus.png");
+		this.plugin = plugin;
+		borderTexture = new GenericTexture("http://www.almuramc.com/images/playerplus.png");
 		borderTexture
 				.setAnchor(WidgetAnchor.CENTER_CENTER)
 				.setPriority(RenderPriority.High)
-				.setWidth(626)
-				.setHeight(240)
-				.shiftXPos(-220)
-				.shiftYPos(-128);
-		final GenericButton closeButton = new CloseButton(plugin);
+				.setWidth(400)
+				.setHeight(200)
+				.shiftXPos(-185)
+				.shiftYPos(-80);
+		closeButton = new CloseButton(plugin);
 		closeButton
 				.setAuto(true)
 				.setAnchor(WidgetAnchor.CENTER_CENTER)
@@ -50,7 +75,7 @@ public class AquaPanel extends GenericPopup {
 				.setWidth(40)
 				.shiftXPos(142)
 				.shiftYPos(87);
-		final GenericButton applyButton = new ApplyButton(plugin);
+		applyButton = new ApplyButton(plugin);
 		applyButton
 				.setAuto(true)
 				.setAnchor(WidgetAnchor.CENTER_CENTER)
@@ -59,124 +84,161 @@ public class AquaPanel extends GenericPopup {
 				.shiftXPos(90)
 				.shiftYPos(87);
 		this.setTransparent(true);
-		final GenericTextField usersBox = new GenericTextField();
-		usersBox
+		usersField = new UserField();
+		usersField
+				.setMaximumLines(5)
+				.setMaximumCharacters(100)
+				.setTabIndex(3)
 				.setAnchor(WidgetAnchor.CENTER_CENTER)
-				.setHeight(18)
+				.setHeight(10)
 				.setWidth(165)
 				.shiftXPos(15)
-				.shiftYPos(30);
-		final GenericLabel usersLabel = new GenericLabel("Users:");
+				.shiftYPos(60);
+		usersLabel = new UserLabel("Users:");
 		usersLabel
 				.setAuto(true)
 				.setAnchor(WidgetAnchor.CENTER_CENTER)
-				.setHeight(18)
+				.setHeight(10)
 				.setWidth(40)
 				.shiftXPos(15)
-				.shiftYPos(13);
-		final GenericTextField coownersBox = new GenericTextField();
-		coownersBox
+				.shiftYPos(43);
+		coownersField = new CoOwnerField();
+		coownersField
+				.setMaximumLines(5)
+				.setMaximumCharacters(100)
+				.setTabIndex(2)
 				.setAnchor(WidgetAnchor.CENTER_CENTER)
-				.setHeight(18)
+				.setHeight(10)
 				.setWidth(165)
 				.shiftXPos(15)
-				.shiftYPos(-13);
-		final GenericLabel coownersLabel = new GenericLabel("Co-Owners:");
+				.shiftYPos(23);
+		coownersLabel = new CoOwnerLabel("Co-Owners:");
 		coownersLabel
 				.setAuto(true)
 				.setAnchor(WidgetAnchor.CENTER_CENTER)
-				.setHeight(18)
+				.setHeight(10)
 				.setWidth(40)
 				.shiftXPos(15)
-				.shiftYPos(-29);
-		final GenericLabel costToUseOutputLabel = new GenericLabel("Test:");
-		costToUseOutputLabel
-				.setAuto(true)
+				.shiftYPos(6);
+		costToUseField = new UseCostField();
+		costToUseField
 				.setAnchor(WidgetAnchor.CENTER_CENTER)
-				.setHeight(18)
+				.setHeight(10)
 				.setWidth(40)
 				.shiftXPos(-70)
-				.shiftYPos(35);
-		final GenericLabel costToUseLabel = new GenericLabel("Cost to use:");
+				.shiftYPos(60);
+		costToUseLabel = new UseCostLabel("Cost to use:");
 		costToUseLabel
 				.setAuto(true)
 				.setAnchor(WidgetAnchor.CENTER_CENTER)
-				.setHeight(18)
+				.setHeight(10)
 				.setWidth(40)
 				.shiftXPos(-132)
-				.shiftYPos(35);
-		final GenericLabel damageOnFailOutputLabel = new GenericLabel("Test2:");
-		damageOnFailOutputLabel
-				.setAuto(true)
+				.shiftYPos(60);
+		damageOnFailField = new DamageField();
+		damageOnFailField
 				.setAnchor(WidgetAnchor.CENTER_CENTER)
-				.setHeight(18)
+				.setHeight(10)
 				.setWidth(40)
 				.shiftXPos(-70)
-				.shiftYPos(13);
-		final GenericLabel damageOnFailLabel = new GenericLabel("Damage on Fail:");
+				.shiftYPos(43);
+		damageOnFailLabel = new DamageLabel("Damage on fail:");
 		damageOnFailLabel
 				.setAuto(true)
 				.setAnchor(WidgetAnchor.CENTER_CENTER)
-				.setHeight(18)
+				.setHeight(10)
 				.setWidth(40)
 				.shiftXPos(-146)
-				.shiftYPos(13);
-		final GenericLabel costToCreateOutputLabel = new GenericLabel("Test3:");
+				.shiftYPos(43);
+		costToCreateOutputLabel = new CreateCostValueLabel("Test3:");
 		costToCreateOutputLabel
 				.setAuto(true)
 				.setAnchor(WidgetAnchor.CENTER_CENTER)
-				.setHeight(18)
+				.setHeight(10)
 				.setWidth(40)
 				.shiftXPos(-70)
-				.shiftYPos(-9);
-		final GenericLabel costToCreateLabel = new GenericLabel("Cost to create:");
+				.shiftYPos(23);
+		costToCreateLabel = new CreateCostLabel("Cost to create:");
 		costToCreateLabel
 				.setAuto(true)
 				.setAnchor(WidgetAnchor.CENTER_CENTER)
-				.setHeight(18)
+				.setHeight(10)
 				.setWidth(40)
 				.shiftXPos(-148)
-				.shiftYPos(-9);
-		final GenericCheckBox everyoneCheckbox = new EveryoneCheckbox();
+				.shiftYPos(23);
+		everyoneCheckbox = new EveryoneCheckbox();
 		everyoneCheckbox
 				.setAuto(true)
 				.setAnchor(WidgetAnchor.CENTER_CENTER)
-				.setHeight(18)
+				.setHeight(10)
 				.setWidth(40)
 				.shiftXPos(-148)
-				.shiftYPos(-45);
-		final GenericTextField passwordBox = new GenericTextField();
-		passwordBox
+				.shiftYPos(-5);
+		passwordField = new PasswordField();
+		passwordField
 				.setAnchor(WidgetAnchor.CENTER_CENTER)
-				.setHeight(18)
+				.setHeight(10)
 				.setWidth(107)
 				.shiftXPos(70)
-				.shiftYPos(-57);
-		final GenericLabel passwordLabel = new GenericLabel("Password:");
+				.shiftYPos(-20);
+		passwordLabel = new PasswordLabel("Password:");
 		passwordLabel
 				.setAuto(true)
 				.setAnchor(WidgetAnchor.CENTER_CENTER)
-				.setHeight(18)
+				.setHeight(8)
 				.setWidth(40)
 				.shiftXPos(15)
-				.shiftYPos(-50);
-		final GenericTextField ownerBox = new GenericTextField();
-		ownerBox
+				.shiftYPos(-20);
+		ownerField = new OwnerField();
+		ownerField
 				.setAnchor(WidgetAnchor.CENTER_CENTER)
-				.setHeight(18)
+				.setHeight(10)
 				.setWidth(107)
 				.shiftXPos(70)
-				.shiftYPos(-80);
-		final GenericLabel ownerLabel = new GenericLabel("Owner:");
+				.shiftYPos(-40);
+		ownerLabel = new OwnerLabel("Owner:");
 		ownerLabel
 				.setAuto(true)
 				.setAnchor(WidgetAnchor.CENTER_CENTER)
-				.setHeight(18)
+				.setHeight(10)
 				.setWidth(40)
 				.shiftXPos(15)
-				.shiftYPos(-74);
-		attachWidgets(plugin, borderTexture, closeButton, applyButton, usersBox, usersLabel, coownersBox, coownersLabel,
-				costToUseOutputLabel, costToUseLabel, damageOnFailOutputLabel, damageOnFailLabel, costToCreateOutputLabel,
-				costToCreateLabel, everyoneCheckbox, passwordBox, passwordLabel, ownerBox, ownerLabel);
+				.shiftYPos(-40);
+		attachWidgets(plugin, borderTexture, closeButton, applyButton, usersField, usersLabel, coownersField, coownersLabel,
+				costToUseField, costToUseLabel, damageOnFailField, damageOnFailLabel, costToCreateOutputLabel,
+				costToCreateLabel, everyoneCheckbox, passwordField, passwordLabel, ownerField, ownerLabel);
+		onCreate();
+	}
+
+	/**
+	 * Populates the panel with information from the backend
+	 */
+	public void populate(Lock lock) {
+		if (lock == null) {
+			return;
+		}
+		ownerField.setText(lock.getOwner());
+		//Loop through all co-owners and build a string to insert into the field
+		final StringBuilder output = new StringBuilder();
+		for (String coowner : lock.getCoOwners()) {
+			if (coowner.length() != 0) {
+				output.append(" ,");
+			}
+			output.append(coowner);
+		}
+		coownersField.setText(output.toString());
+		costToCreateOutputLabel.setText(Double.toString(plugin.getConfiguration().getCosts().getUnlockCost(org.bukkit.Material.AIR)));
+	}
+
+	/**
+	 * Simply here to bypass a bug in SpoutPlugin.
+	 */
+	public void onCreate() {
+		passwordField.setFocus(true);
+		passwordField.setTabIndex(0);
+		passwordField.setMaximumCharacters(15);
+		passwordField.setMaximumLines(1);
+		passwordField.setPasswordField(true);
+		this.setDirty(true);
 	}
 }

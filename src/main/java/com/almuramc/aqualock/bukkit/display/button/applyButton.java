@@ -19,10 +19,23 @@
  */
 package com.almuramc.aqualock.bukkit.display.button;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.almuramc.aqualock.bukkit.AqualockPlugin;
+import com.almuramc.aqualock.bukkit.display.AquaPanel;
+import com.almuramc.aqualock.bukkit.display.checkbox.EveryoneCheckbox;
+import com.almuramc.aqualock.bukkit.display.field.CoOwnerField;
+import com.almuramc.aqualock.bukkit.display.field.OwnerField;
+import com.almuramc.aqualock.bukkit.display.field.PasswordField;
+import com.almuramc.aqualock.bukkit.display.field.UseCostField;
+import com.almuramc.aqualock.bukkit.lock.BukkitLock;
 
 import org.getspout.spoutapi.event.screen.ButtonClickEvent;
 import org.getspout.spoutapi.gui.GenericButton;
+import org.getspout.spoutapi.gui.Widget;
+
+import org.bukkit.Location;
 
 public class ApplyButton extends GenericButton {
 	private final AqualockPlugin plugin;
@@ -34,6 +47,43 @@ public class ApplyButton extends GenericButton {
 
 	@Override
 	public void onButtonClick(ButtonClickEvent event) {
-		//TODO save to the lock backend
+		final AquaPanel panel = (AquaPanel) event.getScreen();
+		String owner = "";
+		List<String> coowners = null;
+		String password = "";
+		Location location = null;
+		for (Widget widget : panel.getAttachedWidgets()) {
+			final Class clazz = widget.getClass();
+			if (clazz.equals(OwnerField.class)) {
+				owner = ((OwnerField) widget).getText();
+			} else if (clazz.equals(PasswordField.class)) {
+				password = ((PasswordField) widget).getText();
+			} else if (clazz.equals(CoOwnerField.class)) {
+				coowners = new ArrayList<String>();
+				final char[] chars = ((CoOwnerField) widget).getText().toCharArray();
+				final StringBuffer temp = new StringBuffer();
+				for (int i = 0; i < chars.length; i++) {
+					if (chars[i] == ',') {
+						coowners.add(temp.toString());
+						temp.delete(0, temp.length());
+						continue;
+					}
+					if (chars[i] == ' ') {
+						continue;
+					}
+					if (i < chars.length - 1) {
+						temp.append(chars[i]);
+						coowners.add(temp.toString());
+						continue;
+					}
+					temp.append(chars[i]);
+				}
+			} else if (clazz.equals(EveryoneCheckbox.class)) {
+				coowners = new ArrayList<String>();
+				coowners.add("Everyone");
+			}
+		}
+		final BukkitLock lock = new BukkitLock(owner, coowners, password, null, (byte) 0);
+		AqualockPlugin.getBackend().addLock(lock);
 	}
 }
