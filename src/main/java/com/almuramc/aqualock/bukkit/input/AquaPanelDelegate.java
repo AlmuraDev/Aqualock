@@ -24,7 +24,6 @@ import java.util.UUID;
 
 import com.almuramc.aqualock.bukkit.AqualockPlugin;
 import com.almuramc.aqualock.bukkit.display.AquaPanel;
-import com.almuramc.aqualock.bukkit.display.checkbox.EveryoneCheckbox;
 import com.almuramc.aqualock.bukkit.util.BlockUtil;
 
 import org.getspout.spoutapi.event.input.KeyBindingEvent;
