@@ -22,8 +22,10 @@ package com.almuramc.aqualock.bukkit;
 import java.util.List;
 
 import com.almuramc.aqualock.bukkit.util.BlockUtil;
+import com.almuramc.aqualock.bukkit.util.LockUtil;
 import com.almuramc.aqualock.bukkit.util.PermissionUtil;
 import com.almuramc.bolt.lock.Lock;
+import com.almuramc.bolt.registry.CommonRegistry;
 import com.almuramc.bolt.registry.Registry;
 
 import org.bukkit.Location;
@@ -48,6 +50,11 @@ import org.bukkit.material.Door;
 
 public class AqualockListener implements Listener {
 	private final AqualockPlugin plugin;
+	private static final CommonRegistry registry;
+
+	static {
+		registry = AqualockPlugin.getRegistry();
+	}
 
 	public AqualockListener(AqualockPlugin plugin) {
 		this.plugin = plugin;
@@ -193,50 +200,40 @@ public class AqualockListener implements Listener {
 		if (event.getEntity() instanceof Player) {
 			former = (Player) event.getEntity();
 		}
-		Block formed = event.getBlock();
-		Registry registry = plugin.getRegistry();
-		if (registry.contains(formed.getWorld().getUID(), formed.getX(), formed.getY(), formed.getZ())) {
-			if (former != null) {
-				Lock lock = registry.getLock(formed.getWorld().getUID(), formed.getX(), formed.getY(), formed.getZ());
-				if (!lock.getOwner().equals(former.getName()) || !(lock.getCoOwners().contains(former.getName()))) {
-					former.sendMessage(plugin.getPrefix() + "This voxel is locked.");
+		if (former == null) {
+			return;
+		}
+		final Block formed = event.getBlock();
+		final Lock lock = registry.getLock(formed.getWorld().getUID(), formed.getX(), formed.getY(), formed.getZ());
+		if (lock != null) {
+			final String owner = lock.getOwner();
+			final List<String> coowners = lock.getCoOwners();
+			final List<String> users = lock.getUsers();
+			if (!owner.equals(former.getName())) {
+				if (!coowners.contains(former.getName())) {
+					if (!users.contains(former.getName())) {
+						former.sendMessage(plugin.getPrefix() + "This block is locked!");
+						event.setCancelled(true);
+					}
 				}
 			}
-			event.setCancelled(true);
 		}
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPistonExtend(BlockPistonExtendEvent event) {
-		Block source = event.getBlock();
-		Block extension = source.getRelative(event.getDirection());
-		Registry registry = plugin.getRegistry();
-		if (registry.contains(source.getWorld().getUID(), source.getX(), source.getY(), source.getZ())) {
-			if (registry.contains(extension.getWorld().getUID(), extension.getX(), extension.getY(), extension.getZ())) {
-				Lock sourceLock = registry.getLock(source.getWorld().getUID(), source.getX(), source.getY(), source.getZ());
-				Lock extensionLock = registry.getLock(extension.getWorld().getUID(), extension.getX(), extension.getY(), extension.getZ());
-				if (!sourceLock.equals(extensionLock)) {
-					event.setCancelled(true);
-				}
-			}
-		}
+		//TODO Think of something...
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onBlockIgnite(BlockIgniteEvent event) {
-		Block ignited = event.getBlock();
-		Registry registry = plugin.getRegistry();
-		if (registry.contains(ignited.getWorld().getUID(), ignited.getX(), ignited.getY(), ignited.getZ())) {
-			event.setCancelled(true);
-		}
+		final Block block = event.getBlock().getLocation().getBlock();
+		event.setCancelled(registry.getLock(block.getWorld().getUID(), block.getX(), block.getY(), block.getZ()) != null);
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onLightningStrike(LightningStrikeEvent event) {
-		Block struck = event.getLightning().getLocation().getBlock();
-		Registry registry = plugin.getRegistry();
-		if (registry.contains(struck.getWorld().getUID(), struck.getX(), struck.getY(), struck.getZ())) {
-			event.setCancelled(true);
-		}
+		final Block block = event.getLightning().getLocation().getBlock();
+		event.setCancelled(registry.getLock(block.getWorld().getUID(), block.getX(), block.getY(), block.getZ()) != null);
 	}
 }
