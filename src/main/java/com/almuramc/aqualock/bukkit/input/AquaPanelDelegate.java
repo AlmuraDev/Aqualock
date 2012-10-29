@@ -24,14 +24,10 @@ import java.util.UUID;
 
 import com.almuramc.aqualock.bukkit.AqualockPlugin;
 import com.almuramc.aqualock.bukkit.display.AquaPanel;
-import com.almuramc.aqualock.bukkit.display.field.OwnerField;
 import com.almuramc.aqualock.bukkit.util.BlockUtil;
 
 import org.getspout.spoutapi.event.input.KeyBindingEvent;
-import org.getspout.spoutapi.gui.GenericCheckBox;
-import org.getspout.spoutapi.gui.GenericTextField;
 import org.getspout.spoutapi.gui.ScreenType;
-import org.getspout.spoutapi.gui.Widget;
 import org.getspout.spoutapi.keyboard.BindingExecutionDelegate;
 import org.getspout.spoutapi.player.SpoutPlayer;
 

@@ -75,8 +75,8 @@ public final class AqualockConfiguration {
 	}
 
 	public Configuration getSqlConfiguration() {
-		final String mode = config.getString("sql-mode");
-		switch(config.getString("sql-mode")) {
+		final String mode = config.getString("sql.mode");
+		switch (mode) {
 			case "sql":
 				return new MySQLConfiguration();
 			case "sqlite":
@@ -84,7 +84,7 @@ public final class AqualockConfiguration {
 			case "h2":
 				return new H2Configuration();
 			default:
-				throw new YAMLException("Specified sql-mode " + mode + " is invalid.");
+				throw new YAMLException("Specified mode for SQL configuration: " + mode + " is invalid.");
 		}
 	}
 }

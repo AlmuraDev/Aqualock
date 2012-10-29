@@ -1,3 +1,10 @@
 #in seconds
 double-door-close-timer: 5
-sql-mode: h2
+sql:
+    mode: h2
+    name: minecraft
+    username: minecraft
+    password: minecraft
+    host: localhost
+    port: 25564
+    

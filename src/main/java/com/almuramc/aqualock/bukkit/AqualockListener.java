@@ -176,14 +176,6 @@ public class AqualockListener implements Listener {
 	public void onSignChange(SignChangeEvent event) {
 		Player writer = event.getPlayer();
 		Block theSign = event.getBlock();
-		Registry registry = plugin.getRegistry();
-		if (registry.contains(theSign.getWorld().getUID(), theSign.getX(), theSign.getY(), theSign.getZ())) {
-			Lock lock = registry.getLock(theSign.getWorld().getUID(), theSign.getX(), theSign.getY(), theSign.getZ());
-			if (!lock.getOwner().equals(writer.getName()) || !(lock.getCoOwners().contains(writer.getName()))) {
-				writer.sendMessage(plugin.getPrefix() + "This voxel is locked.");
-				event.setCancelled(true);
-			}
-		}
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)

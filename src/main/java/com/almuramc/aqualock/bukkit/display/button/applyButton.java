@@ -24,15 +24,14 @@ import java.util.List;
 
 import com.almuramc.aqualock.bukkit.AqualockPlugin;
 import com.almuramc.aqualock.bukkit.display.AquaPanel;
-import com.almuramc.aqualock.bukkit.display.checkbox.EveryoneCheckbox;
 import com.almuramc.aqualock.bukkit.display.field.CoOwnerField;
 import com.almuramc.aqualock.bukkit.display.field.OwnerField;
 import com.almuramc.aqualock.bukkit.display.field.PasswordField;
-import com.almuramc.aqualock.bukkit.lock.BukkitLock;
+import com.almuramc.aqualock.bukkit.display.field.UserField;
+import com.almuramc.aqualock.bukkit.util.LockUtil;
 
 import org.getspout.spoutapi.event.screen.ButtonClickEvent;
 import org.getspout.spoutapi.gui.GenericButton;
-import org.getspout.spoutapi.gui.GenericCheckBox;
 import org.getspout.spoutapi.gui.Widget;
 
 public class ApplyButton extends GenericButton {
@@ -48,6 +47,7 @@ public class ApplyButton extends GenericButton {
 		final AquaPanel panel = (AquaPanel) event.getScreen();
 		String owner = "";
 		List<String> coowners = null;
+		List<String> users = null;
 		String password = "";
 		for (Widget widget : panel.getAttachedWidgets()) {
 			final Class clazz = widget.getClass();
@@ -56,30 +56,36 @@ public class ApplyButton extends GenericButton {
 			} else if (clazz.equals(PasswordField.class)) {
 				password = ((PasswordField) widget).getText();
 			} else if (clazz.equals(CoOwnerField.class)) {
-				coowners = new ArrayList<String>();
-				final char[] chars = ((CoOwnerField) widget).getText().toCharArray();
-				final StringBuilder temp = new StringBuilder();
-				for (int i = 0; i < chars.length; i++) {
-					if (chars[i] == ',') {
-						coowners.add(temp.toString());
-						temp.delete(0, temp.length());
-						continue;
-					}
-					if (chars[i] == ' ') {
-						continue;
-					}
-					if (i == chars.length - 1) {
-						temp.append(chars[i]);
-						coowners.add(temp.toString());
-						continue;
-					}
-					temp.append(chars[i]);
-				}
+				coowners = parseFieldToList(((CoOwnerField) widget).getText());
+			} else if (clazz.equals(UserField.class)) {
+				users = parseFieldToList(((UserField) widget).getText());
 			}
 		}
-		final BukkitLock lock = new BukkitLock(owner, coowners, password, panel.getLocation(), (byte) 0);
-		AqualockPlugin.getBackend().addLock(lock);
-		AqualockPlugin.getRegistry().addLock(lock);
-		panel.close();
+		if (LockUtil.lock(owner, coowners, users, password, panel.getLocation(), panel.getLocation().getBlock().getData())) {
+			panel.close();
+		}
+	}
+
+	public List<String> parseFieldToList(String text) {
+		ArrayList<String> temp = new ArrayList<>();
+		final char[] chars = text.toCharArray();
+		final StringBuilder parsed = new StringBuilder();
+		for (int i = 0; i < chars.length; i++) {
+			if (chars[i] == ',') {
+				temp.add(temp.toString());
+				parsed.delete(0, parsed.length());
+				continue;
+			}
+			if (chars[i] == ' ') {
+				continue;
+			}
+			if (i == chars.length - 1) {
+				temp.add(temp.toString());
+				parsed.append(chars[i]);
+				continue;
+			}
+			parsed.append(chars[i]);
+		}
+		return temp;
 	}
 }

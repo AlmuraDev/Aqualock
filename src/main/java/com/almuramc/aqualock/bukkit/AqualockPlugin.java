@@ -22,11 +22,10 @@ package com.almuramc.aqualock.bukkit;
 import com.almuramc.aqualock.bukkit.command.AqualockCommands;
 import com.almuramc.aqualock.bukkit.configuration.AqualockConfiguration;
 import com.almuramc.aqualock.bukkit.input.AquaPanelDelegate;
-import com.almuramc.bolt.lock.Lock;
+import com.almuramc.aqualock.common.AquaCommonRegistry;
 import com.almuramc.bolt.registry.CommonRegistry;
 import com.almuramc.bolt.storage.SqlStorage;
 import com.almuramc.bolt.storage.Storage;
-import com.alta189.simplesave.sqlite.SQLiteConfiguration;
 
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
@@ -40,14 +39,14 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class AqualockPlugin extends JavaPlugin {
 	private static final CommonRegistry registry;
+	private static AqualockPlugin instance;
 	private static Storage backend;
 	private static Permission permission;
 	private static Economy economy;
 	private static AqualockConfiguration configuration;
-	private static AqualockPlugin instance;
 
 	static {
-		registry = new CommonRegistry();
+		registry = new AquaCommonRegistry();
 	}
 
 	@Override
@@ -57,6 +56,7 @@ public class AqualockPlugin extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
+		instance = this;
 		if (!setupPermissions()) {
 			throw new RuntimeException("Failed to initialize Vault for permissions!");
 		}
@@ -66,21 +66,10 @@ public class AqualockPlugin extends JavaPlugin {
 		configuration = new AqualockConfiguration(this);
 		backend = new SqlStorage(configuration.getSqlConfiguration(), getDataFolder());
 		backend.onLoad();
-		for (Lock lock : backend.getAll()) {
-			registry.addLock(lock);
-		}
+		registry.onLoad(backend);
 		this.getCommand("aqualock").setExecutor(new AqualockCommands(this));
 		this.getServer().getPluginManager().registerEvents(new AqualockListener(this), this);
 		SpoutManager.getKeyBindingManager().registerBinding("Aqua Panel", Keyboard.KEY_Y, "Opens the lock panel", new AquaPanelDelegate(this), this);
-	}
-
-	@Override
-	public void onLoad() {
-		instance = this;
-	}
-
-	public static AqualockPlugin getInstance() {
-		return instance;
 	}
 
 	public static CommonRegistry getRegistry() {

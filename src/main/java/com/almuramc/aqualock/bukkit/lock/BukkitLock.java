@@ -34,8 +34,8 @@ public class BukkitLock extends BasicLock {
 	private String passcode;
 	private byte data;
 
-	public BukkitLock(String owner, List<String> coowners, String passcode, Location location, byte data) {
-		super(owner, coowners, location.getWorld().getUID(), location.getBlockX(), location.getBlockY(), location.getBlockZ());
+	public BukkitLock(String owner, List<String> coowners, List<String> users, String passcode, Location location, byte data) {
+		super(owner, coowners, users, location.getWorld().getUID(), location.getBlockX(), location.getBlockY(), location.getBlockZ());
 		this.passcode = passcode;
 		this.data = data;
 	}

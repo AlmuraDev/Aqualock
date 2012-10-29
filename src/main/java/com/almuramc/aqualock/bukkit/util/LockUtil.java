@@ -19,19 +19,25 @@
  */
 package com.almuramc.aqualock.bukkit.util;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 import com.almuramc.aqualock.bukkit.AqualockPlugin;
+import com.almuramc.aqualock.bukkit.configuration.AqualockConfiguration;
 import com.almuramc.aqualock.bukkit.lock.BukkitLock;
 import com.almuramc.bolt.lock.Lock;
 import com.almuramc.bolt.registry.CommonRegistry;
 import com.almuramc.bolt.storage.Storage;
 
+import org.getspout.spoutapi.SpoutManager;
+import org.getspout.spoutapi.player.SpoutPlayer;
+
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.block.Block;
+import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 /**
@@ -40,10 +46,12 @@ import org.bukkit.entity.Player;
 public class LockUtil {
 	private static final CommonRegistry registry;
 	private static final Storage backend;
+	private static final AqualockConfiguration config;
 
 	static {
 		registry = AqualockPlugin.getRegistry();
 		backend = AqualockPlugin.getBackend();
+		config = AqualockPlugin.getConfiguration();
 	}
 
 	/**
@@ -53,48 +61,22 @@ public class LockUtil {
 	 * @param location
 	 * @param data
 	 */
-	public static void lock(String playerName, List<String> coowners, String passcode, Location location, byte data) {
+	public static boolean lock(String playerName, List<String> coowners, List<String> users, String passcode, Location location, byte data) {
 		checkLocation(location);
-		Player player = checkNameAndGetPlayer(playerName);
+		final Player player = checkNameAndGetPlayer(playerName);
 		if (coowners == null) {
 			coowners = Collections.emptyList();
 		}
-		BukkitLock lock = new BukkitLock(playerName, coowners, passcode, location, data);
-		//Make sure we aren't relocking blocks
-		if (registry.contains(lock)) {
-			player.sendMessage(AqualockPlugin.getPrefix() + "This location has a lock. Did you mean to update instead?");
-			return;
+		if (users == null) {
+			users = new ArrayList<>(1);
+			users.add("Everyone");
 		}
-		//If the server has an economy system, use it
-		if (AqualockPlugin.getEconomies() != null) {
-			//Check if they need to be charged for this lock
-			if (EconomyUtil.shouldChargeForLock(player)) {
-				//No account? Let the player know some message and return
-				if (!EconomyUtil.hasAccount(player)) {
-					player.sendMessage(AqualockPlugin.getPrefix() + "Locks cost money and you do not have a wallet!");
-					return;
-				} else {
-					double cost = EconomyUtil.getCostForLock(player, location.getBlock().getType());
-					//Find out if they have the money.
-					if (EconomyUtil.hasEnough(player, cost)) {
-						if (cost < 0) {
-							player.sendMessage(AqualockPlugin.getPrefix() + "You gained $" + ChatColor.GREEN + cost + ChatColor.WHITE + " from locking");
-						} else if (cost > 0) {
-							player.sendMessage(AqualockPlugin.getPrefix() + "You lost $" + ChatColor.GREEN + cost + ChatColor.WHITE + " from locking");
-						}
-						EconomyUtil.apply(player, cost);
-						//Don't have enough? Tell them that and return
-					} else {
-						player.sendMessage(AqualockPlugin.getPrefix() + "This lock costs $" + ChatColor.GREEN + cost + ChatColor.WHITE + " and you do not have enough!");
-						return;
-					}
-				}
-			}
+		if (!performAction(player, passcode, location, "LOCK")) {
+			return false;
 		}
-		//Is it a double door? Lets lock both doors
-		System.out.println(location.getBlock());
+		final BukkitLock lock = new BukkitLock(playerName, coowners, users, passcode, location, data);
 		//After all that is said and done, add the lock made to the registry and backend.
-		player.sendMessage(AqualockPlugin.getPrefix() + "You locked " + location.toString());
+		SpoutManager.getPlayer(player).sendNotification("Aqua", "Locked the block!", Material.CAKE);
 		registry.addLock(lock);
 		backend.addLock(lock);
 		if (BlockUtil.isDoubleDoor(location, location.getBlock().getFace(player.getLocation().getBlock()))) {
@@ -104,14 +86,14 @@ public class LockUtil {
 			for (Location loc : doors) {
 				//If the lock created in this method's location is not the location of this iteration then its the second door, lock it.
 				if (!loc.equals(location)) {
-					final Block b = loc.getBlock();
-					BukkitLock other = new BukkitLock(lock.getOwner(), lock.getCoOwners(), lock.getPasscode(), b.getLocation(), b.getData());
-					player.sendMessage(AqualockPlugin.getPrefix() + "Detected a door at " + b.getLocation().toString() + "so locking it as well");
+					final BukkitLock other = new BukkitLock(lock.getOwner(), lock.getCoOwners(), lock.getUsers(), lock.getPasscode(), loc, loc.getBlock().getData());
+					player.sendMessage(AqualockPlugin.getPrefix() + "Detected a door at " + loc.toString() + "so locking it as well");
 					registry.addLock(other);
 					backend.addLock(other);
 				}
 			}
 		}
+		return true;
 	}
 
 	/**
@@ -121,62 +103,11 @@ public class LockUtil {
 	 */
 	public static void unlock(String playerName, String passcode, Location location) {
 		checkLocation(location);
-		Player player = checkNameAndGetPlayer(playerName);
-
-		Lock lock = registry.getLock(location.getWorld().getUID(), location.getBlockX(), location.getBlockY(), location.getBlockZ());
-
-		if (lock == null) {
-			player.sendMessage(AqualockPlugin.getPrefix() + "You attempted to unlock this block but Aqualock cannot find a lock here.");
+		final Player player = checkNameAndGetPlayer(playerName);
+		if (!performAction(player, passcode, location, "UNLOCK")) {
 			return;
-		} else {
-			String owner = lock.getOwner();
-			//The owner of the lock at the location doesn't match the player's name, check co-owners next
-			if (!owner.equals(playerName)) {
-				//They aren't a co-owner either, so return and print a message
-				if (!lock.getCoOwners().contains(playerName)) {
-					player.sendMessage(AqualockPlugin.getPrefix() + "You are not an Owner or Co-Owner, your unlock has been denied.");
-					//TODO Hurt them?
-					return;
-				}
-			}
-			//At this point they are either an owner or co-owner but that is irrelevant.
-			//TODO Owner-level only privileges?
-			//Now lets handle Bukkit-like lock characteristics to determine if we can unlock
-			if (lock instanceof BukkitLock) {
-				//Is a Bukkit lock but the passcode passed in fails so fail to unlock (even if it was the owner...)
-				if (!((BukkitLock) lock).getPasscode().equals(passcode)) {
-					player.sendMessage(AqualockPlugin.getPrefix() + "Incorrect passcode for unlock, please try again.");
-					return;
-				}
-			}
-
-			//If the server has an economy system, use it
-			if (AqualockPlugin.getEconomies() != null) {
-				//Check if they need to be charged for this lock
-				if (EconomyUtil.shouldChargeForUnlock(player)) {
-					//No account? Let the player know some message and return
-					if (!EconomyUtil.hasAccount(player)) {
-						player.sendMessage(AqualockPlugin.getPrefix() + "Unlocks cost money and you do not have a wallet!");
-						return;
-					} else {
-						double cost = EconomyUtil.getCostForUnlock(player, location.getBlock().getType());
-						//Find out if they have the money.
-						if (EconomyUtil.hasEnough(player, cost)) {
-							if (cost < 0) {
-								player.sendMessage(AqualockPlugin.getPrefix() + "You gained $" + ChatColor.GREEN + cost + ChatColor.WHITE + " from unlocking.");
-							} else if (cost > 0) {
-								player.sendMessage(AqualockPlugin.getPrefix() + "You lost $" + ChatColor.GREEN + cost + ChatColor.WHITE + " from unlocking.");
-							}
-							EconomyUtil.apply(player, cost);
-							//Don't have enough? Tell them that and return
-						} else {
-							player.sendMessage(AqualockPlugin.getPrefix() + "This unlock costs $" + ChatColor.GREEN + cost + ChatColor.WHITE + " and you do not have enough!");
-							return;
-						}
-					}
-				}
-			}
 		}
+		final Lock lock = registry.getLock(location.getWorld().getUID(), location.getBlockX(), location.getBlockY(), location.getBlockZ());
 		registry.removeLock(lock);
 		backend.removeLock(lock);
 	}
@@ -188,128 +119,244 @@ public class LockUtil {
 	 * @param location
 	 * @param data
 	 */
-	public static void update(String playerName, List<String> coowners, String passcode, Location location, byte data) {
+	public static void update(String playerName, List<String> coowners, List<String> users, String passcode, Location location, byte data) {
 		checkLocation(location);
 		Player player = checkNameAndGetPlayer(playerName);
 		if (coowners == null) {
 			coowners = Collections.emptyList();
 		}
-		//First check if the registry has a lock at this location, if not then lock.
-		if (!registry.contains(location.getWorld().getUID(), location.getBlockX(), location.getBlockY(), location.getBlockZ())) {
-			player.sendMessage(AqualockPlugin.getPrefix() + "There is no lock at this location. Did you want to lock instead?");
+		if (users == null) {
+			users = new ArrayList<>(1);
+			users.add("Everyone");
+		}
+		if (!performAction(player, passcode, location, "UPDATE")) {
 			return;
 		}
-		Lock lock = registry.getLock(location.getWorld().getUID(), location.getBlockX(), location.getBlockY(), location.getBlockZ());
-		//The player updating the lock is neither an owner or a co-owner nor has the permission
-		if ((!lock.getOwner().equals(playerName) || !lock.getCoOwners().contains(playerName))) {
-			player.sendMessage(AqualockPlugin.getPrefix() + "Incorrect passcode for update, please try again.");
-			return;
-		}
-		if (lock instanceof BukkitLock) {
-			if (!((BukkitLock) lock).getPasscode().equals(passcode)) {
-				player.sendMessage(AqualockPlugin.getPrefix() + "Incorrect passcode for update, please try again.");
-				return;
-			}
-		}
-		//If the server has an economy system, use it
-		if (AqualockPlugin.getEconomies() != null) {
-			//Check if they need to be charged for this lock
-			if (EconomyUtil.shouldChargeForUpdate(player)) {
-				//No account? Let the player know some message and return
-				if (!EconomyUtil.hasAccount(player)) {
-					player.sendMessage(AqualockPlugin.getPrefix() + "Updates cost money and you do not have a wallet!");
-					return;
-				} else {
-					double cost = EconomyUtil.getCostForUpdate(player, location.getBlock().getType());
-					//Find out if they have the money.
-					if (EconomyUtil.hasEnough(player, cost)) {
-						if (cost < 0) {
-							player.sendMessage(AqualockPlugin.getPrefix() + "You gained $" + ChatColor.GREEN + cost + ChatColor.WHITE + " from updating.");
-						} else if (cost > 0) {
-							player.sendMessage(AqualockPlugin.getPrefix() + "You lost $" + ChatColor.GREEN + cost + ChatColor.WHITE + " from updating.");
-						}
-						EconomyUtil.apply(player, cost);
-						//Don't have enough? Tell them that and return
-					} else {
-						player.sendMessage(AqualockPlugin.getPrefix() + "This update costs $" + ChatColor.GREEN + cost + ChatColor.WHITE + " and you do not have enough!");
-						return;
-					}
-				}
-			}
-		}
+		final BukkitLock lock = (BukkitLock) registry.getLock(location.getWorld().getUID(), location.getBlockX(), location.getBlockY(), location.getBlockZ());
 		lock.setOwner(playerName);
-		lock.setCoOwners(coowners);
-		if (lock instanceof BukkitLock) {
-			((BukkitLock) lock).setPasscode(passcode);
-			((BukkitLock) lock).setData(data);
-		}
+		lock.setCoOwners(coowners.toArray(new String[coowners.size()]));
+		lock.setUsers(users.toArray(new String[users.size()]));
+		lock.setPasscode(passcode);
+		lock.setData(data);
 		//Update backend and registry
 		registry.addLock(lock);
 		backend.addLock(lock);
 	}
 
-	public static void use(String playerName, Location location) {
+	public static void use(String playerName, String passcode, Location location) {
 		checkLocation(location);
-		Player player = checkNameAndGetPlayer(playerName);
-		//First check if the registry has a lock at this location, if not then return
-		if (!registry.contains(location.getWorld().getUID(), location.getBlockX(), location.getBlockY(), location.getBlockZ())) {
-			return;
-		}
-		Lock lock = registry.getLock(location.getWorld().getUID(), location.getBlockX(), location.getBlockY(), location.getBlockZ());
-		if ((!lock.getOwner().equals(playerName) || !lock.getCoOwners().contains(playerName))) {
-			//TODO Tell them that they don't have privileges to use at this location and return
-			return;
-		}
-		//If the server has an economy system, use it
-		if (AqualockPlugin.getEconomies() != null) {
-			//Check if they need to be charged for this lock
-			if (EconomyUtil.shouldChargeForUse(player)) {
-				//No account? Let the player know some message and return
-				if (!EconomyUtil.hasAccount(player)) {
-					//TODO message
-					return;
-				} else {
-					double cost = EconomyUtil.getCostForUse(player, location.getBlock().getType());
-					//Find out if they have the money.
-					if (EconomyUtil.hasEnough(player, cost)) {
-						//TODO If the cost was zero then say something like "Using was free!"
-						if (cost == 0) {
-							//player.sendMessage
-							//TODO If cost was less than zero then say something like "Using gave you monies!"
-						} else if (cost < 0) {
-							//player.sendMessage
-							//TODO Tell the user how much they were charged
-						} else {
-							//player.sendMessage
+		final Player player = checkNameAndGetPlayer(playerName);
+		performAction(player, passcode, location, "USE");
+	}
+
+	public static boolean performAction(Player player, String passcode, Location location, String action) {
+		final World world = location.getWorld();
+		final UUID worldIdentifier = world.getUID();
+		final int x = location.getBlockX();
+		final int y = location.getBlockY();
+		final int z = location.getBlockZ();
+		final Lock lock = registry.getLock(worldIdentifier, x, y, z);
+		final String name = player.getName();
+		final SpoutPlayer splayer = SpoutManager.getPlayer(player);
+		switch (action) {
+			case "LOCK":
+				if (lock != null) {
+					splayer.sendNotification("Aqua", "This location has a lock!", Material.LAVA_BUCKET);
+					return false;
+				}
+				if (AqualockPlugin.getEconomies() != null) {
+					if (EconomyUtil.shouldChargeForLock(player)) {
+						if (!EconomyUtil.hasAccount(player)) {
+							splayer.sendNotification("Aqua", "You have no account!", Material.LAVA_BUCKET);
+							return false;
 						}
-						EconomyUtil.apply(player, cost);
-						//Don't have enough? Tell them that and return
-					} else {
-						//TODO message
-						return;
+						final double value = config.getCosts().getLockCost(location.getBlock().getType());
+						if (!EconomyUtil.hasEnough(player, value)) {
+							splayer.sendNotification("Aqua", "Not enough money!", Material.LAVA_BUCKET);
+							return false;
+						}
+						if (value > 0) {
+							splayer.sendNotification("Aqua", "Charged for lock: " + value, Material.POTION);
+						} else if (value < 0) {
+							splayer.sendNotification("Aqua", "Received for lock: " + value, Material.CAKE);
+						} else {
+							splayer.sendNotification("Aqua", "Lock was free!", Material.APPLE);
+						}
+						EconomyUtil.apply(player, value);
 					}
 				}
-			}
+				return true;
+			case "UNLOCK":
+				if (lock == null) {
+					splayer.sendNotification("Aqua", "No lock at location!", Material.POTION);
+					return true;
+				}
+				boolean canUnlock = false;
+				if (!name.equals(lock.getOwner())) {
+					for (String pname : lock.getCoOwners()) {
+						if (pname.equals(name)) {
+							if (pname.equals(name)) {
+								if (lock instanceof BukkitLock && (!((BukkitLock) lock).getPasscode().equals(passcode))) {
+									splayer.sendNotification("Aqua", "Invalid password!", Material.LAVA_BUCKET);
+									return false;
+								}
+							}
+							canUnlock = true;
+						}
+					}
+				} else {
+					canUnlock = true;
+				}
+				if (!canUnlock) {
+					splayer.sendNotification("Aqua", "Cannot unlock the lock!", Material.LAVA_BUCKET);
+					return false;
+				}
+				if (AqualockPlugin.getEconomies() != null) {
+					if (EconomyUtil.shouldChargeForUnlock(player)) {
+						if (!EconomyUtil.hasAccount(player)) {
+							splayer.sendNotification("Aqua", "You have no account!", Material.LAVA_BUCKET);
+							return false;
+						}
+						final double value = config.getCosts().getUnlockCost(location.getBlock().getType());
+						if (!EconomyUtil.hasEnough(player, value)) {
+							splayer.sendNotification("Aqua", "Not enough money!", Material.LAVA_BUCKET);
+							return false;
+						}
+						if (value > 0) {
+							splayer.sendNotification("Aqua", "Charged for unlock: " + value, Material.POTION);
+						} else if (value < 0) {
+							splayer.sendNotification("Aqua", "Received for unlock: " + value, Material.CAKE);
+						} else {
+							splayer.sendNotification("Aqua", "Unlock was free!", Material.APPLE);
+						}
+						EconomyUtil.apply(player, value);
+					}
+				}
+				return true;
+			case "USE":
+				if (lock == null) {
+					return true;
+				}
+				if (!name.equals(lock.getOwner())) {
+					for (String pname : lock.getCoOwners()) {
+						if (pname.equals(name)) {
+							if (lock instanceof BukkitLock && (!((BukkitLock) lock).getPasscode().equals(passcode))) {
+								splayer.sendNotification("Aqua", "Invalid password!", Material.LAVA_BUCKET);
+								return false;
+							}
+						}
+					}
+				}
+				if (AqualockPlugin.getEconomies() != null) {
+					if (EconomyUtil.shouldChargeForUse(player)) {
+						if (!EconomyUtil.hasAccount(player)) {
+							splayer.sendNotification("Aqua", "You have no account!", Material.LAVA_BUCKET);
+							return false;
+						}
+						final double value = config.getCosts().getUseCost(location.getBlock().getType());
+						if (!EconomyUtil.hasEnough(player, value)) {
+							splayer.sendNotification("Aqua", "Not enough money!", Material.LAVA_BUCKET);
+							return false;
+						}
+						if (value > 0) {
+							splayer.sendNotification("Aqua", "Charged for use: " + value, Material.POTION);
+						} else if (value < 0) {
+							splayer.sendNotification("Aqua", "Received for use: " + value, Material.CAKE);
+						} else {
+							splayer.sendNotification("Aqua", "Use was free!", Material.APPLE);
+						}
+						EconomyUtil.apply(player, value);
+					}
+				}
+				return true;
+			case "UPDATE":
+				if (lock == null) {
+					return true;
+				}
+				boolean canUpdate = false;
+				if (!name.equals(lock.getOwner())) {
+					for (String pname : lock.getCoOwners()) {
+						if (name.equals(pname)) {
+							canUpdate = true;
+						}
+					}
+				}
+				if (!canUpdate) {
+					splayer.sendNotification("Aqua", "Not the Owner/CoOwner!", Material.LAVA_BUCKET);
+					return false;
+				}
+				if (AqualockPlugin.getEconomies() != null) {
+					if (EconomyUtil.shouldChargeForUpdate(player)) {
+						if (!EconomyUtil.hasAccount(player)) {
+							splayer.sendNotification("Aqua", "You have no account!", Material.LAVA_BUCKET);
+							return false;
+						}
+						final double value = config.getCosts().getUpdateCost(location.getBlock().getType());
+						if (!EconomyUtil.hasEnough(player, value)) {
+							splayer.sendNotification("Aqua", "Not enough money!", Material.LAVA_BUCKET);
+							return false;
+						}
+						if (value > 0) {
+							splayer.sendNotification("Aqua", "Charged for update: " + value, Material.POTION);
+						} else if (value < 0) {
+							splayer.sendNotification("Aqua", "Received for update: " + value, Material.CAKE);
+						} else {
+							splayer.sendNotification("Aqua", "Update was free!", Material.APPLE);
+						}
+						EconomyUtil.apply(player, value);
+					}
+					return true;
+				}
 		}
+		return false;
+	}
+
+	public static boolean canPerformAction(Player player, String action) {
+		//Determine if they have basic perms for the action defined
+		switch (action) {
+			case "LOCK":
+				if (!PermissionUtil.canLock(player)) {
+					return false;
+				}
+				break;
+			case "UNLOCK":
+				if (!PermissionUtil.canUnlock(player)) {
+					return false;
+				}
+				break;
+			case "USE":
+				if (!PermissionUtil.canUse(player)) {
+					return false;
+				}
+				break;
+			case "UPDATE":
+				if (!PermissionUtil.canUse(player)) {
+					return false;
+				}
+				break;
+			default:
+				return false;
+		}
+		return true;
 	}
 	////////////////////////////////////////////////////////////////////////////////////////////////////////
-	///////////////////////////////////////Overriden Methods///////////////////////////////////////////////
+	//////////////////////////////////////Overloaded Methods///////////////////////////////////////////////
 	//////////////////////////////////////Don't touch these!//////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public static void lock(String owner, List<String> coowners, String passcode, Location location) {
 		checkLocation(location);
-		lock(owner, coowners, passcode, location, location.getBlock().getData());
+		lock(owner, coowners, null, passcode, location, location.getBlock().getData());
 	}
 
 	public static void lock(String owner, List<String> coowners, Location location) {
 		checkLocation(location);
-		lock(owner, coowners, "", location, location.getBlock().getData());
+		lock(owner, coowners, null, "", location, location.getBlock().getData());
 	}
 
 	public static void lock(String owner, Location location) {
 		checkLocation(location);
-		lock(owner, null, "", location, location.getBlock().getData());
+		lock(owner, null, null, "", location, location.getBlock().getData());
 	}
 
 	public static void unlock(String playerName, Location location) {
@@ -318,12 +365,12 @@ public class LockUtil {
 
 	public static void update(String playerName, List<String> coowners, String passcode, Location location) {
 		checkLocation(location);
-		update(playerName, coowners, passcode, location, location.getBlock().getData());
+		update(playerName, coowners, null, passcode, location, location.getBlock().getData());
 	}
 
 	public static void update(String playerName, List<String> coowners, Location location) {
 		checkLocation(location);
-		update(playerName, coowners, "", location, location.getBlock().getData());
+		update(playerName, coowners, null, "", location, location.getBlock().getData());
 	}
 
 	public static void update(String playerName, Location location) {
