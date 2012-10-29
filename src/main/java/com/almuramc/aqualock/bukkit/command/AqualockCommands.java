@@ -29,6 +29,7 @@ import com.almuramc.bolt.registry.Registry;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -55,24 +56,27 @@ public class AqualockCommands implements CommandExecutor {
 		}
 		Player player = (Player) commandSender;
 		//TODO Possibly see if they enter params after lock? This suffices for now.
-		Location target = BlockUtil.getTarget(player, null, 4).getLocation();
+		Block target = BlockUtil.getTarget(player, null, 4);
+		if (target == null) {
+			player.sendMessage(plugin.getPrefix() + "No valid block found in a four block line of sight.");
+		}
 		if (strings[0].equalsIgnoreCase("lock")) {
 			if (PermissionUtil.canLock(player)) {
-				LockUtil.lock(player.getName(), target);
+				LockUtil.lock(player.getName(), target.getLocation());
 			}
 			return true;
 		} else if (strings[0].equalsIgnoreCase("unlock")) {
 			if (PermissionUtil.canUnlock(player)) {
-				LockUtil.unlock(player.getName(), target);
+				LockUtil.unlock(player.getName(), target.getLocation());
 			}
 			return true;
 		} else if (strings[0].equalsIgnoreCase("update")) {
 			if (PermissionUtil.canUpdate(player)) {
-				LockUtil.update(player.getName(), target);
+				LockUtil.update(player.getName(), target.getLocation());
 			}
 			return true;
 		} else if (strings[0].equalsIgnoreCase("check")) {
-			check(player, target);
+			check(player, target.getLocation());
 			return true;
 		}
 		return false;
