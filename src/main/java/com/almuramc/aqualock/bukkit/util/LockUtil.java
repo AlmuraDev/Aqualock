@@ -192,14 +192,12 @@ public class LockUtil {
 					return true;
 				}
 				boolean canUnlock = false;
-				if (!name.equals(lock.getOwner())) {
+				if (!name.equals(lock.getOwner()) && !canPerformAction(player, "UNLOCK")) {
 					for (String pname : lock.getCoOwners()) {
 						if (pname.equals(name)) {
-							if (pname.equals(name)) {
-								if (lock instanceof BukkitLock && (!((BukkitLock) lock).getPasscode().equals(passcode))) {
-									splayer.sendNotification("Aqua", "Invalid password!", Material.LAVA_BUCKET);
-									return false;
-								}
+							if (lock instanceof BukkitLock && (!((BukkitLock) lock).getPasscode().equals(passcode))) {
+								splayer.sendNotification("Aqua", "Invalid password!", Material.LAVA_BUCKET);
+								return false;
 							}
 							canUnlock = true;
 						}
@@ -237,7 +235,7 @@ public class LockUtil {
 				if (lock == null) {
 					return true;
 				}
-				if (!name.equals(lock.getOwner())) {
+				if (!name.equals(lock.getOwner())&& !canPerformAction(player, "USE")) {
 					for (String pname : lock.getCoOwners()) {
 						if (pname.equals(name)) {
 							if (lock instanceof BukkitLock && (!((BukkitLock) lock).getPasscode().equals(passcode))) {
@@ -274,7 +272,7 @@ public class LockUtil {
 					return true;
 				}
 				boolean canUpdate = false;
-				if (!name.equals(lock.getOwner())) {
+				if (!name.equals(lock.getOwner())&& !canPerformAction(player, "UPDATE")) {
 					for (String pname : lock.getCoOwners()) {
 						if (name.equals(pname)) {
 							canUpdate = true;
