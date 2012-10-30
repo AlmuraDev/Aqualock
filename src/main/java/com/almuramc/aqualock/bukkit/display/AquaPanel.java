@@ -223,7 +223,7 @@ public class AquaPanel extends GenericPopup {
 				.setWidth(40)
 				.shiftXPos(15)
 				.shiftYPos(-40);
-		attachWidgets(plugin, borderTexture, closeButton, applyButton, usersField, usersLabel, coownersField, coownersLabel,
+		attachWidgets(plugin, borderTexture, closeButton, applyButton, unlockButton, usersField, usersLabel, coownersField, coownersLabel,
 				costToUseField, costToUseLabel, damageOnFailField, damageOnFailLabel, costToCreateOutputLabel,
 				costToCreateLabel, everyoneCheckbox, passwordField, passwordLabel, ownerField, ownerLabel);
 		passwordField.setFocus(true);
