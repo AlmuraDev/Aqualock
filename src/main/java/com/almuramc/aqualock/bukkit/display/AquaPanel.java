@@ -99,7 +99,7 @@ public class AquaPanel extends GenericPopup {
                 .setAnchor(WidgetAnchor.CENTER_CENTER)
                 .setHeight(18)
                 .setWidth(40)
-                .shiftXPos(65)
+                .shiftXPos(40)
                 .shiftYPos(87);
 		usersField = new UserField();
 		usersField
@@ -137,13 +137,21 @@ public class AquaPanel extends GenericPopup {
 				.setWidth(40)
 				.shiftXPos(15)
 				.shiftYPos(6);
+        everyoneCheckbox = new EveryoneCheckbox();
+        everyoneCheckbox
+                .setAuto(true)
+                .setAnchor(WidgetAnchor.CENTER_CENTER)
+                .setHeight(10)
+                .setWidth(40)
+                .shiftXPos(-132)
+                .shiftYPos(60);
 		costToUseField = new UseCostField();
 		costToUseField
 				.setAnchor(WidgetAnchor.CENTER_CENTER)
 				.setHeight(14)
 				.setWidth(40)
 				.shiftXPos(-70)
-				.shiftYPos(57);
+				.shiftYPos(40);
 		costToUseLabel = new UseCostLabel("Cost to use:");
 		costToUseLabel
 				.setAuto(true)
@@ -151,14 +159,14 @@ public class AquaPanel extends GenericPopup {
 				.setHeight(10)
 				.setWidth(40)
 				.shiftXPos(-132)
-				.shiftYPos(60);
+				.shiftYPos(40);
 		damageOnFailField = new DamageField();
 		damageOnFailField
 				.setAnchor(WidgetAnchor.CENTER_CENTER)
 				.setHeight(14)
 				.setWidth(40)
 				.shiftXPos(-70)
-				.shiftYPos(40);
+				.shiftYPos(20);
 		damageOnFailLabel = new DamageLabel("Damage on fail:");
 		damageOnFailLabel
 				.setAuto(true)
@@ -166,7 +174,7 @@ public class AquaPanel extends GenericPopup {
 				.setHeight(10)
 				.setWidth(40)
 				.shiftXPos(-146)
-				.shiftYPos(43);
+				.shiftYPos(20);
 		costToCreateOutputLabel = new CreateCostValueLabel("");
 		costToCreateOutputLabel
 				.setAuto(true)
@@ -174,17 +182,9 @@ public class AquaPanel extends GenericPopup {
 				.setHeight(10)
 				.setWidth(40)
 				.shiftXPos(-70)
-				.shiftYPos(23);
+				.shiftYPos(-5);
 		costToCreateLabel = new CreateCostLabel("Cost to create:");
 		costToCreateLabel
-				.setAuto(true)
-				.setAnchor(WidgetAnchor.CENTER_CENTER)
-				.setHeight(10)
-				.setWidth(40)
-				.shiftXPos(-148)
-				.shiftYPos(23);
-		everyoneCheckbox = new EveryoneCheckbox();
-		everyoneCheckbox
 				.setAuto(true)
 				.setAnchor(WidgetAnchor.CENTER_CENTER)
 				.setHeight(10)
@@ -248,7 +248,7 @@ public class AquaPanel extends GenericPopup {
 					((OwnerField) widget).setText(getPlayer().getName());
 				} else if (widget instanceof CreateCostValueLabel) {
 					final double value = plugin.getConfiguration().getCosts().getLockCost(getLocation().getBlock().getType());
-					float r = 255, g = 255, b = 255, a = 255f;
+					float r = 255f, g = 255f, b = 255f, a = 0f;
 					if (value > 0.0) {
 						r = 1f;
 						g = 0f;
@@ -293,7 +293,7 @@ public class AquaPanel extends GenericPopup {
 		//Change label names for modifying locks
 		costToCreateLabel.setText("Cost to change:");
 		final double value = plugin.getConfiguration().getCosts().getUpdateCost(getLocation().getBlock().getType());
-		float r = 255, g = 255, b = 255, a = 255f;
+		float r = 255f, g = 255f, b = 255f, a = 0f;
 		if (value > 0.0) {
 			r = 1f;
 			g = 0f;
