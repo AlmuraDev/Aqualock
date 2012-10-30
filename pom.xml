@@ -69,7 +69,7 @@
 			<groupId>com.almuramc</groupId>
 			<artifactId>bolt</artifactId>
 			<version>dev-SNAPSHOT</version>
-			<scope>compile</scope>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.powermock</groupId>

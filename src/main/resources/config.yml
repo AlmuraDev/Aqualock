@@ -2,6 +2,7 @@
 double-door-close-timer: 5
 sql:
     mode: h2
+    #MySQL only
     name: minecraft
     username: minecraft
     password: minecraft
