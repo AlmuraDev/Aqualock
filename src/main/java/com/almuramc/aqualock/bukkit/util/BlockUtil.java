@@ -86,7 +86,7 @@ public class BlockUtil {
 		Door source = new Door(block.getType(), block.getData());
 		BlockFace checkLeft;
 		BlockFace checkRight;
-        final BlockFace facing = source.getFacing();
+		final BlockFace facing = source.getFacing();
 		if (facing.equals(BlockFace.NORTH) || facing.equals(BlockFace.SOUTH)) {
 			checkLeft = BlockFace.WEST;
 			checkRight = BlockFace.EAST;

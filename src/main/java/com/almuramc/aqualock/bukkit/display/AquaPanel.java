@@ -93,15 +93,15 @@ public class AquaPanel extends GenericPopup {
 				.setWidth(40)
 				.shiftXPos(90)
 				.shiftYPos(87);
-        unlockButton = new UnlockButton(plugin);
-        unlockButton
-                .setAuto(true)
-                .setEnabled(false)
-                .setAnchor(WidgetAnchor.CENTER_CENTER)
-                .setHeight(18)
-                .setWidth(40)
-                .shiftXPos(40)
-                .shiftYPos(87);
+		unlockButton = new UnlockButton(plugin);
+		unlockButton
+				.setAuto(true)
+				.setEnabled(false)
+				.setAnchor(WidgetAnchor.CENTER_CENTER)
+				.setHeight(18)
+				.setWidth(40)
+				.shiftXPos(40)
+				.shiftYPos(87);
 		usersField = new UserField();
 		usersField
 				.setMaximumLines(5)
@@ -138,14 +138,14 @@ public class AquaPanel extends GenericPopup {
 				.setWidth(40)
 				.shiftXPos(15)
 				.shiftYPos(6);
-        everyoneCheckbox = new EveryoneCheckbox();
-        everyoneCheckbox
-                .setAuto(true)
-                .setAnchor(WidgetAnchor.CENTER_CENTER)
-                .setHeight(10)
-                .setWidth(40)
-                .shiftXPos(-132)
-                .shiftYPos(60);
+		everyoneCheckbox = new EveryoneCheckbox();
+		everyoneCheckbox
+				.setAuto(true)
+				.setAnchor(WidgetAnchor.CENTER_CENTER)
+				.setHeight(10)
+				.setWidth(40)
+				.shiftXPos(-132)
+				.shiftYPos(60);
 		costToUseField = new UseCostField();
 		costToUseField
 				.setAnchor(WidgetAnchor.CENTER_CENTER)
@@ -249,18 +249,18 @@ public class AquaPanel extends GenericPopup {
 					((OwnerField) widget).setText(getPlayer().getName());
 				} else if (widget instanceof CreateCostValueLabel) {
 					final double value = plugin.getConfiguration().getCosts().getLockCost(getLocation().getBlock().getType());
-                    String hexColor = "ffffff"; //white
+					String hexColor = "ffffff"; //white
 					if (value > 0.0) {
-                        hexColor = "008000"; //green
+						hexColor = "008000"; //green
 					} else if (value < 0.0) {
-                        hexColor = "ff0000"; //red
+						hexColor = "ff0000"; //red
 					}
 					((CreateCostValueLabel) widget).setText(Double.toString(value).replaceAll("[^\\d.]", ""));
 					((CreateCostValueLabel) widget).setTextColor(new Color(hexColor));
 				} else if (widget instanceof UnlockButton) {
-                    widget.setTooltip("You cannot unlock a lock that doesn't exist!");
-                    ((UnlockButton) widget).setEnabled(false);
-                }
+					widget.setTooltip("You cannot unlock a lock that doesn't exist!");
+					((UnlockButton) widget).setEnabled(false);
+				}
 			}
 			costToCreateLabel.setText("Cost to create:");
 			this.setDirty(true);
@@ -277,42 +277,42 @@ public class AquaPanel extends GenericPopup {
 			output.append(coowners.get(i));
 		}
 		coownersField.setText(output.toString());
-        final List<String> users = lock.getUsers();
-        output.delete(0, output.length());
-        for (int i = 0; i < users.size(); i++) {
-            if (i > 0) {
-                output.append(", ");
-            }
-            output.append(users.get(i));
-        }
-        usersField.setText(output.toString());
+		final List<String> users = lock.getUsers();
+		output.delete(0, output.length());
+		for (int i = 0; i < users.size(); i++) {
+			if (i > 0) {
+				output.append(", ");
+			}
+			output.append(users.get(i));
+		}
+		usersField.setText(output.toString());
 		//Change label names for modifying locks
 		costToCreateLabel.setText("Cost to change:");
 		final double value = plugin.getConfiguration().getCosts().getUpdateCost(getLocation().getBlock().getType());
-        String hexColor = "ffffff"; //white
-        if (value > 0.0) {
-            hexColor = "008000"; //green
-        } else if (value < 0.0) {
-            hexColor = "ff0000"; //red
-        }
+		String hexColor = "ffffff"; //white
+		if (value > 0.0) {
+			hexColor = "008000"; //green
+		} else if (value < 0.0) {
+			hexColor = "ff0000"; //red
+		}
 		costToCreateOutputLabel.setText(Double.toString(value).replaceAll("[^\\d.]", ""));
 		costToCreateOutputLabel.setTextColor(new Color(hexColor));
-        if (LockUtil.canPerformAction(getPlayer(), "UNLOCK")) {
-            final String name = getPlayer().getName();
-            boolean canUnlock;
-            if (!ownerField.getText().equals(name)) {
-                if (!coowners.contains(name)) {
-                    unlockButton.setEnabled(false);
-                    unlockButton.setTooltip("You do not have permission, not the owner, or a co-owner and therefore cannot unlock this lock!");
-                }
-                canUnlock = true;
-            } else {
-                canUnlock = true;
-            }
-            if (canUnlock) {
-                unlockButton.setEnabled(true);
-            }
-        }
+		if (LockUtil.canPerformAction(getPlayer(), "UNLOCK")) {
+			final String name = getPlayer().getName();
+			boolean canUnlock;
+			if (!ownerField.getText().equals(name)) {
+				if (!coowners.contains(name)) {
+					unlockButton.setEnabled(false);
+					unlockButton.setTooltip("You do not have permission, not the owner, or a co-owner and therefore cannot unlock this lock!");
+				}
+				canUnlock = true;
+			} else {
+				canUnlock = true;
+			}
+			if (canUnlock) {
+				unlockButton.setEnabled(true);
+			}
+		}
 		this.setDirty(true);
 	}
 

@@ -22,7 +22,6 @@ package com.almuramc.aqualock.bukkit;
 import java.util.List;
 
 import com.almuramc.aqualock.bukkit.util.BlockUtil;
-import com.almuramc.aqualock.bukkit.util.LockUtil;
 import com.almuramc.aqualock.bukkit.util.PermissionUtil;
 import com.almuramc.bolt.lock.Lock;
 import com.almuramc.bolt.registry.CommonRegistry;

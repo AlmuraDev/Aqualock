@@ -25,9 +25,9 @@ import java.util.UUID;
 import com.almuramc.aqualock.bukkit.AqualockPlugin;
 import com.almuramc.aqualock.bukkit.display.AquaPanel;
 import com.almuramc.aqualock.bukkit.util.BlockUtil;
-
 import com.almuramc.aqualock.bukkit.util.LockUtil;
 import com.almuramc.bolt.lock.Lock;
+
 import org.getspout.spoutapi.event.input.KeyBindingEvent;
 import org.getspout.spoutapi.gui.ScreenType;
 import org.getspout.spoutapi.keyboard.BindingExecutionDelegate;
@@ -57,11 +57,11 @@ public class AquaPanelDelegate implements BindingExecutionDelegate {
 			return;
 		}
 		AquaPanel panel;
-        final Location loc = block.getLocation();
-        final Lock lock = plugin.getRegistry().getLock(loc.getWorld().getUID(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
-        if (!LockUtil.canPerformAction(player, lock == null ? "LOCK" : "CHANGE")) {
-            return;
-        }
+		final Location loc = block.getLocation();
+		final Lock lock = plugin.getRegistry().getLock(loc.getWorld().getUID(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
+		if (!LockUtil.canPerformAction(player, lock == null ? "LOCK" : "CHANGE")) {
+			return;
+		}
 		//Check for GUI cache, create new cache if necessary, attach new panel
 		if (!panels.containsKey(player.getUniqueId())) {
 			panel = new AquaPanel(plugin);

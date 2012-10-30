@@ -104,13 +104,13 @@ public class LockUtil {
 	public static boolean unlock(String playerName, String passcode, Location location) {
 		checkLocation(location);
 		final Player player = checkNameAndGetPlayer(playerName);
-        if (performAction(player, passcode, location, "UNLOCK")) {
-            final Lock lock = registry.getLock(location.getWorld().getUID(), location.getBlockX(), location.getBlockY(), location.getBlockZ());
-		    registry.removeLock(lock);
-		    backend.removeLock(lock);
-            return true;
-        }
-        return false;
+		if (performAction(player, passcode, location, "UNLOCK")) {
+			final Lock lock = registry.getLock(location.getWorld().getUID(), location.getBlockX(), location.getBlockY(), location.getBlockZ());
+			registry.removeLock(lock);
+			backend.removeLock(lock);
+			return true;
+		}
+		return false;
 	}
 
 	/**
@@ -236,7 +236,7 @@ public class LockUtil {
 				if (lock == null) {
 					return true;
 				}
-				if (!name.equals(lock.getOwner())&& !canPerformAction(player, "USE")) {
+				if (!name.equals(lock.getOwner()) && !canPerformAction(player, "USE")) {
 					for (String pname : lock.getCoOwners()) {
 						if (pname.equals(name)) {
 							if (lock instanceof BukkitLock && (!((BukkitLock) lock).getPasscode().equals(passcode))) {
@@ -273,7 +273,7 @@ public class LockUtil {
 					return true;
 				}
 				boolean canUpdate = false;
-				if (!name.equals(lock.getOwner())&& !canPerformAction(player, "UPDATE")) {
+				if (!name.equals(lock.getOwner()) && !canPerformAction(player, "UPDATE")) {
 					for (String pname : lock.getCoOwners()) {
 						if (name.equals(pname)) {
 							canUpdate = true;
