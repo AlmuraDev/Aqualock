@@ -24,6 +24,7 @@ import java.util.List;
 import com.almuramc.aqualock.bukkit.AqualockPlugin;
 import com.almuramc.aqualock.bukkit.display.button.ApplyButton;
 import com.almuramc.aqualock.bukkit.display.button.CloseButton;
+import com.almuramc.aqualock.bukkit.display.button.UnlockButton;
 import com.almuramc.aqualock.bukkit.display.checkbox.EveryoneCheckbox;
 import com.almuramc.aqualock.bukkit.display.field.CoOwnerField;
 import com.almuramc.aqualock.bukkit.display.field.DamageField;
@@ -57,7 +58,7 @@ import org.bukkit.Location;
 public class AquaPanel extends GenericPopup {
 	private final AqualockPlugin plugin;
 	//Widgets
-	private final GenericButton closeButton, applyButton;
+	private final GenericButton closeButton, applyButton, unlockButton;
 	private final GenericCheckBox everyoneCheckbox;
 	private final GenericLabel usersLabel, coownersLabel, costToUseLabel, damageOnFailLabel, costToCreateOutputLabel, costToCreateLabel, passwordLabel, ownerLabel;
 	private final GenericTextField usersField, coownersField, costToUseField, damageOnFailField, passwordField, ownerField;
@@ -91,6 +92,15 @@ public class AquaPanel extends GenericPopup {
 				.setWidth(40)
 				.shiftXPos(90)
 				.shiftYPos(87);
+        unlockButton = new UnlockButton(plugin);
+        unlockButton
+                .setAuto(true)
+                .setEnabled(false)
+                .setAnchor(WidgetAnchor.CENTER_CENTER)
+                .setHeight(18)
+                .setWidth(40)
+                .shiftXPos(65)
+                .shiftYPos(87);
 		usersField = new UserField();
 		usersField
 				.setMaximumLines(5)
@@ -252,7 +262,9 @@ public class AquaPanel extends GenericPopup {
 					}
 					((CreateCostValueLabel) widget).setText(Double.toString(value).replaceAll("[^\\d.]", ""));
 					((CreateCostValueLabel) widget).setTextColor(new Color(r, g, b, a));
-				}
+				} else if (widget instanceof UnlockButton) {
+                    ((UnlockButton) widget).setEnabled(false);
+                }
 			}
 			costToCreateLabel.setText("Cost to create:");
 			this.setDirty(true);
@@ -286,6 +298,7 @@ public class AquaPanel extends GenericPopup {
 		}
 		costToCreateOutputLabel.setText(Double.toString(value).replaceAll("[^\\d.]", ""));
 		costToCreateOutputLabel.setTextColor(new Color(r, g, b, a));
+
 		this.setDirty(true);
 	}
 
