@@ -23,5 +23,6 @@ public class UnlockButton extends GenericButton {
         final Lock lock = plugin.getRegistry().getLock(location.getWorld().getUID(), location.getBlockX(), location.getBlockY(), location.getBlockZ());
         plugin.getRegistry().removeLock(lock);
         plugin.getBackend().removeLock(lock);
+        panel.close();
     }
 }
