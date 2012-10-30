@@ -281,6 +281,15 @@ public class AquaPanel extends GenericPopup {
 			output.append(coowners.get(i));
 		}
 		coownersField.setText(output.toString());
+        final List<String> users = lock.getUsers();
+        output.delete(0, output.length());
+        for (int i = 0; i < users.size(); i++) {
+            if (i > 0) {
+                output.append(", ");
+            }
+            output.append(users.get(i));
+        }
+        usersField.setText(output.toString());
 		//Change label names for modifying locks
 		costToCreateLabel.setText("Cost to change:");
 		final double value = plugin.getConfiguration().getCosts().getUpdateCost(getLocation().getBlock().getType());
