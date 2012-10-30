@@ -101,15 +101,16 @@ public class LockUtil {
 	 * @param passcode
 	 * @param location
 	 */
-	public static void unlock(String playerName, String passcode, Location location) {
+	public static boolean unlock(String playerName, String passcode, Location location) {
 		checkLocation(location);
 		final Player player = checkNameAndGetPlayer(playerName);
-		if (!performAction(player, passcode, location, "UNLOCK")) {
-			return;
-		}
-		final Lock lock = registry.getLock(location.getWorld().getUID(), location.getBlockX(), location.getBlockY(), location.getBlockZ());
-		registry.removeLock(lock);
-		backend.removeLock(lock);
+        if (performAction(player, passcode, location, "UNLOCK")) {
+            final Lock lock = registry.getLock(location.getWorld().getUID(), location.getBlockX(), location.getBlockY(), location.getBlockZ());
+		    registry.removeLock(lock);
+		    backend.removeLock(lock);
+            return true;
+        }
+        return false;
 	}
 
 	/**

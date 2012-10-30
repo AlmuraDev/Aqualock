@@ -40,6 +40,7 @@ import com.almuramc.aqualock.bukkit.display.label.OwnerLabel;
 import com.almuramc.aqualock.bukkit.display.label.PasswordLabel;
 import com.almuramc.aqualock.bukkit.display.label.UseCostLabel;
 import com.almuramc.aqualock.bukkit.display.label.UserLabel;
+import com.almuramc.aqualock.bukkit.util.LockUtil;
 import com.almuramc.bolt.lock.Lock;
 
 import org.getspout.spoutapi.gui.Color;
@@ -182,7 +183,7 @@ public class AquaPanel extends GenericPopup {
 				.setHeight(10)
 				.setWidth(40)
 				.shiftXPos(-70)
-				.shiftYPos(-5);
+				.shiftYPos(0);
 		costToCreateLabel = new CreateCostLabel("Cost to create:");
 		costToCreateLabel
 				.setAuto(true)
@@ -190,7 +191,7 @@ public class AquaPanel extends GenericPopup {
 				.setHeight(10)
 				.setWidth(40)
 				.shiftXPos(-148)
-				.shiftYPos(-5);
+				.shiftYPos(0);
 		passwordField = new PasswordField();
 		passwordField
 				.setAnchor(WidgetAnchor.CENTER_CENTER)
@@ -257,6 +258,7 @@ public class AquaPanel extends GenericPopup {
 					((CreateCostValueLabel) widget).setText(Double.toString(value).replaceAll("[^\\d.]", ""));
 					((CreateCostValueLabel) widget).setTextColor(new Color(hexColor));
 				} else if (widget instanceof UnlockButton) {
+                    widget.setTooltip("You cannot unlock a lock that doesn't exist!");
                     ((UnlockButton) widget).setEnabled(false);
                 }
 			}
@@ -295,7 +297,22 @@ public class AquaPanel extends GenericPopup {
         }
 		costToCreateOutputLabel.setText(Double.toString(value).replaceAll("[^\\d.]", ""));
 		costToCreateOutputLabel.setTextColor(new Color(hexColor));
-        unlockButton.setEnabled(true);
+        if (LockUtil.canPerformAction(getPlayer(), "UNLOCK")) {
+            final String name = getPlayer().getName();
+            boolean canUnlock;
+            if (!ownerField.getText().equals(name)) {
+                if (!coowners.contains(name)) {
+                    unlockButton.setEnabled(false);
+                    unlockButton.setTooltip("You do not have permission, not the owner, or a co-owner and therefore cannot unlock this lock!");
+                }
+                canUnlock = true;
+            } else {
+                canUnlock = true;
+            }
+            if (canUnlock) {
+                unlockButton.setEnabled(true);
+            }
+        }
 		this.setDirty(true);
 	}
 
