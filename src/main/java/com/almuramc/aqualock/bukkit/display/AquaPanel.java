@@ -248,20 +248,14 @@ public class AquaPanel extends GenericPopup {
 					((OwnerField) widget).setText(getPlayer().getName());
 				} else if (widget instanceof CreateCostValueLabel) {
 					final double value = plugin.getConfiguration().getCosts().getLockCost(getLocation().getBlock().getType());
-					float r = 255f, g = 255f, b = 255f, a = 0f;
+                    String hexColor = "ffffff"; //white
 					if (value > 0.0) {
-						r = 1f;
-						g = 0f;
-						b = 0f;
-						a = 1f;
+                        hexColor = "008000"; //green
 					} else if (value < 0.0) {
-						r = 0f;
-						g = 128f;
-						b = 0f;
-						a = 0f;
+                        hexColor = "ff0000"; //red
 					}
 					((CreateCostValueLabel) widget).setText(Double.toString(value).replaceAll("[^\\d.]", ""));
-					((CreateCostValueLabel) widget).setTextColor(new Color(r, g, b, a));
+					((CreateCostValueLabel) widget).setTextColor(new Color(hexColor));
 				} else if (widget instanceof UnlockButton) {
                     ((UnlockButton) widget).setEnabled(false);
                 }
@@ -293,20 +287,14 @@ public class AquaPanel extends GenericPopup {
 		//Change label names for modifying locks
 		costToCreateLabel.setText("Cost to change:");
 		final double value = plugin.getConfiguration().getCosts().getUpdateCost(getLocation().getBlock().getType());
-		float r = 255f, g = 255f, b = 255f, a = 0f;
-		if (value > 0.0) {
-			r = 1f;
-			g = 0f;
-			b = 0f;
-			a = 1f;
-		} else if (value < 0.0) {
-			r = 0f;
-			g = 128f;
-			b = 0f;
-			a = 0f;
-		}
+        String hexColor = "ffffff"; //white
+        if (value > 0.0) {
+            hexColor = "008000"; //green
+        } else if (value < 0.0) {
+            hexColor = "ff0000"; //red
+        }
 		costToCreateOutputLabel.setText(Double.toString(value).replaceAll("[^\\d.]", ""));
-		costToCreateOutputLabel.setTextColor(new Color(r, g, b, a));
+		costToCreateOutputLabel.setTextColor(new Color(hexColor));
         unlockButton.setEnabled(true);
 		this.setDirty(true);
 	}

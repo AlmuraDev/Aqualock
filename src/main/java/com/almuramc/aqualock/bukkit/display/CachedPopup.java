@@ -1,9 +1,6 @@
 package com.almuramc.aqualock.bukkit.display;
 
-import org.getspout.spoutapi.gui.GenericCheckBox;
-import org.getspout.spoutapi.gui.GenericPopup;
-import org.getspout.spoutapi.gui.GenericTextField;
-import org.getspout.spoutapi.gui.Widget;
+import org.getspout.spoutapi.gui.*;
 
 public class CachedPopup extends GenericPopup {
     public void clear() {
@@ -12,6 +9,8 @@ public class CachedPopup extends GenericPopup {
                 ((GenericTextField) widget).setText("");
             } else if (widget instanceof GenericCheckBox) {
                 ((GenericCheckBox) widget).setChecked(false);
+            } else if (widget instanceof GenericLabel) {
+                ((GenericLabel) widget).setTextColor(new Color("ffffff"));
             }
         }
     }
