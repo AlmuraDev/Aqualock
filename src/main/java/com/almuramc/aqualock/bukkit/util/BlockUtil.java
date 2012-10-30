@@ -63,8 +63,8 @@ public class BlockUtil {
 	 * Returns if the block is apart of a double door.
 	 * @return true if a part of a double door, false if not
 	 */
-	public static boolean isDoubleDoor(Location location, BlockFace clicked) {
-		return !getDoubleDoor(location, clicked).isEmpty();
+	public static boolean isDoubleDoor(Location location) {
+		return !getDoubleDoor(location).isEmpty();
 	}
 
 	/**
@@ -74,7 +74,7 @@ public class BlockUtil {
 	 * If the list returned is empty, it isn't a double door.
 	 * @return Empty list if not in a double door or the 4 blocks comprising the double door.
 	 */
-	public static List<Location> getDoubleDoor(Location location, BlockFace clicked) {
+	public static List<Location> getDoubleDoor(Location location) {
 		//Passed in block is not a double door
 		final Block block = location.getBlock();
 		if (!isDoorMaterial(block.getType())) {
@@ -86,7 +86,8 @@ public class BlockUtil {
 		Door source = new Door(block.getType(), block.getData());
 		BlockFace checkLeft;
 		BlockFace checkRight;
-		if (clicked.equals(BlockFace.NORTH) || clicked.equals(BlockFace.SOUTH)) {
+        final BlockFace facing = source.getFacing();
+		if (facing.equals(BlockFace.NORTH) || facing.equals(BlockFace.SOUTH)) {
 			checkLeft = BlockFace.WEST;
 			checkRight = BlockFace.EAST;
 		} else {
