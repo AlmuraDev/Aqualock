@@ -298,7 +298,7 @@ public class AquaPanel extends GenericPopup {
 		}
 		costToCreateOutputLabel.setText(Double.toString(value).replaceAll("[^\\d.]", ""));
 		costToCreateOutputLabel.setTextColor(new Color(r, g, b, a));
-
+        unlockButton.setEnabled(true);
 		this.setDirty(true);
 	}
 
