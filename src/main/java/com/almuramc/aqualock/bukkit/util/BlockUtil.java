@@ -87,16 +87,36 @@ public class BlockUtil {
 		BlockFace checkLeft;
 		BlockFace checkRight;
 		final BlockFace facing = source.getFacing();
-		if (facing.equals(BlockFace.NORTH) || facing.equals(BlockFace.SOUTH)) {
-			checkLeft = BlockFace.WEST;
-			checkRight = BlockFace.EAST;
-		} else {
-			checkLeft = BlockFace.SOUTH;
-			checkRight = BlockFace.NORTH;
+		System.out.println(facing);
+		switch(facing) {
+			case NORTH:
+				checkLeft = BlockFace.NORTH;
+				checkRight = BlockFace.SOUTH;
+				break;
+			case SOUTH:
+				checkLeft = BlockFace.EAST;
+				checkRight = BlockFace.WEST;
+				break;
+			case WEST :
+				checkLeft = BlockFace.SOUTH;
+				checkRight = BlockFace.NORTH;
+				break;
+			case EAST:
+				checkLeft = BlockFace.WEST;
+				checkRight = BlockFace.EAST;
+				break;
+			default:
+				checkLeft = null;
+				checkRight = null;
 		}
+		System.out.println(checkLeft);
+		System.out.println(checkRight);
+		System.out.println(doors.toString());
 		//Check the immediate east and west of this block
 		Block east = block.getRelative(checkLeft);
+		System.out.println(east.getType() + " : " + east.toString());
 		Block west = block.getRelative(checkRight);
+		System.out.println(west.getType() + " : " + west.toString());
 		if (!isDoorMaterial(east.getType(), block.getType())) {
 			if (!isDoorMaterial(west.getType(), block.getType())) {
 				return Collections.emptyList();
@@ -105,6 +125,7 @@ public class BlockUtil {
 		} else {
 			doors.add(east.getLocation());
 		}
+		System.out.println(doors.toString());
 		//If we are this far then we know 2 of the four blocks are doors
 		if (source.isTopHalf()) {
 			Block bottom = block.getRelative(BlockFace.DOWN);
@@ -145,6 +166,7 @@ public class BlockUtil {
 				doors.add(topEast.getLocation());
 			}
 		}
+		System.out.println(doors.toString());
 		return doors;
 	}
 

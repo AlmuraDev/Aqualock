@@ -60,6 +60,7 @@ public class AquaPanelDelegate implements BindingExecutionDelegate {
 		final Location loc = block.getLocation();
 		final Lock lock = plugin.getRegistry().getLock(loc.getWorld().getUID(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
 		if (!LockUtil.canPerformAction(player, lock == null ? "LOCK" : "UPDATE")) {
+			player.sendMessage(plugin.getPrefix() + "You are not allowed to open the panel!");
 			return;
 		}
 		//Check for GUI cache, create new cache if necessary, attach new panel

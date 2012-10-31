@@ -22,6 +22,7 @@ package com.almuramc.aqualock.bukkit;
 import java.util.List;
 
 import com.almuramc.aqualock.bukkit.util.BlockUtil;
+import com.almuramc.aqualock.bukkit.util.LockUtil;
 import com.almuramc.aqualock.bukkit.util.PermissionUtil;
 import com.almuramc.bolt.lock.Lock;
 import com.almuramc.bolt.registry.CommonRegistry;
@@ -38,6 +39,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockCanBuildEvent;
 import org.bukkit.event.block.BlockDamageEvent;
@@ -78,21 +80,6 @@ public class AqualockListener implements Listener {
 					breaker.sendMessage(plugin.getPrefix() + "This block is locked.");
 					event.setCancelled(true);
 					return;
-				}
-			}
-			registry.removeLock(lock);
-			AqualockPlugin.getBackend().removeLock(lock);
-			//Remove locks from doors
-			final List<Location> locations = BlockUtil.getDoubleDoor(breaking.getLocation());
-			if (!locations.isEmpty()) {
-				for (Location loc : locations) {
-					if (!loc.getBlock().equals(breaking)) {
-						final Lock l = registry.getLock(breaking.getWorld().getUID(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
-						if (l != null) {
-							registry.removeLock(l);
-							AqualockPlugin.getBackend().removeLock(l);
-						}
-					}
 				}
 			}
 		}
@@ -149,17 +136,16 @@ public class AqualockListener implements Listener {
 		}
 		final Lock lock = registry.getLock(interacted.getWorld().getUID(), interacted.getX(), interacted.getY(), interacted.getZ());
 		if (lock != null) {
-			if (!PermissionUtil.canUse(interacter)) {
-				interacter.sendMessage(plugin.getPrefix() + "You lack the permission to use locks!");
+			if (!LockUtil.canPerformAction(interacter, "USE")) {
+				if (event.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
+					interacter.sendMessage(plugin.getPrefix() + "You lack the permission to break locks!");
+				} else if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
+					interacter.sendMessage(plugin.getPrefix() + "You lack the permission to use locks!");
+				}
 				event.setCancelled(true);
 				return;
 			}
-			if (!lock.getOwner().equals(interacter.getName())) {
-				if (!(lock.getCoOwners().contains(interacter.getName()))) {
-					interacter.sendMessage(plugin.getPrefix() + "You are not a co-owner so you may not interact with this locked block!");
-				} else {
-					interacter.sendMessage(plugin.getPrefix() + "You are neither an owner or co-owner so you may not interact with this locked block!");
-				}
+			if (!LockUtil.performAction(interacter, "", interacted.getLocation(), "USE")) {
 				event.setCancelled(true);
 				return;
 			}
@@ -176,15 +162,12 @@ public class AqualockListener implements Listener {
 					if (block.equals(interacted) || block.equals(interacted.getRelative(BlockFace.UP)) || block.equals(interacted.getRelative(BlockFace.DOWN))) {
 						continue;
 					}
-					System.out.println("Block face clicked: " + event.getBlockFace());
-					System.out.println("Block data: " + block.getData());
 					if (open) {
 						BlockUtil.closeDoor(block);
 					} else {
 						BlockUtil.openDoor(block);
 					}
 				}
-				System.out.println("----------------------");
 			}
 		}
 	}
@@ -224,19 +207,11 @@ public class AqualockListener implements Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPistonExtend(BlockPistonExtendEvent event) {
-		final Block block = event.getBlock();
-		final Lock lock = registry.getLock(block.getWorld().getUID(), block.getX(), block.getY(), block.getZ());
 		if (event.getLength() > 0) {
 			final List<Block> moving = event.getBlocks();
 			for (Block b : moving) {
-				final Lock l = registry.getLock(b.getWorld().getUID(), b.getX(), b.getY(), b.getZ());
-				if (l != null) {
-					if (!lock.getOwner().equals(l.getOwner())) {
-						if (!(lock.getCoOwners().contains(l.getOwner()))) {
-							SpoutManager.getPlayer(Bukkit.getPlayer(lock.getOwner())).sendNotification("Aqua", "Piston Extend Blocked!", Material.LAVA_BUCKET);
-							event.setCancelled(true);
-						}
-					}
+				if (registry.contains(b.getWorld().getUID(), b.getX(), b.getY(), b.getZ())) {
+					event.setCancelled(true);
 				}
 			}
 		}
@@ -244,17 +219,9 @@ public class AqualockListener implements Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPistonRetract(BlockPistonRetractEvent event) {
-		final Block block = event.getBlock();
 		final Block moved = event.getRetractLocation().getBlock();
-		final Lock lock = registry.getLock(block.getWorld().getUID(), block.getX(), block.getY(), block.getZ());
-		final Lock l = registry.getLock(moved.getWorld().getUID(), moved.getX(), moved.getY(), moved.getZ());
-		if (lock != null && l != null) {
-			if (!lock.getOwner().equals(l.getOwner())) {
-				if (!(lock.getCoOwners().contains(l.getOwner()))) {
-					SpoutManager.getPlayer(Bukkit.getPlayer(lock.getOwner())).sendNotification("Aqua", "Piston Extend Blocked!", Material.LAVA_BUCKET);
-					event.setCancelled(true);
-				}
-			}
+		if (registry.contains(moved.getWorld().getUID(), moved.getX(), moved.getY(), moved.getZ())) {
+			event.setCancelled(true);
 		}
 	}
 }
