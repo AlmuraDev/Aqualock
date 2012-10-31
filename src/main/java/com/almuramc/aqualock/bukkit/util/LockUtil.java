@@ -79,9 +79,8 @@ public class LockUtil {
 		SpoutManager.getPlayer(player).sendNotification("Aqua", "Locked the block!", Material.CAKE);
 		registry.addLock(lock);
 		backend.addLock(lock);
-		if (BlockUtil.isDoubleDoor(location)) {
-			//Get the double door blocks
-			List<Location> doors = BlockUtil.getDoubleDoor(location);
+		final List<Location> doors = BlockUtil.getDoubleDoor(location);
+		if (doors != null) {
 			//Loop through the blocks (will be 2 iterations)
 			for (Location loc : doors) {
 				//If the lock created in this method's location is not the location of this iteration then its the second door, lock it.

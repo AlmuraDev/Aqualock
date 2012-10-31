@@ -20,6 +20,7 @@
 package com.almuramc.aqualock.bukkit.util;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -60,14 +61,6 @@ public class BlockUtil {
 	}
 
 	/**
-	 * Returns if the block is apart of a double door.
-	 * @return true if a part of a double door, false if not
-	 */
-	public static boolean isDoubleDoor(Location location) {
-		return !getDoubleDoor(location).isEmpty();
-	}
-
-	/**
 	 * Gets a list containing all blocks a part of a double door. The list will have no fewer or no more than 4 elements.
 	 * Note: the search for double door blocks is 2D and based on the material of the source block passed in.
 	 * <p/>
@@ -80,144 +73,91 @@ public class BlockUtil {
 		if (!isDoorMaterial(block.getType())) {
 			return Collections.emptyList();
 		}
-		final ArrayList<Location> doors = new ArrayList<Location>(4);
+		final ArrayList<Location> doors = new ArrayList<Location>(2);
 		doors.add(block.getLocation());
-		//Now we need to do a check around this block to find out if its in a double door
-		Door source = new Door(block.getType(), block.getData());
-		BlockFace checkLeft;
-		BlockFace checkRight;
-		final BlockFace facing = source.getFacing();
-		System.out.println(facing);
-		switch (facing) {
-			case NORTH:
-				checkLeft = BlockFace.NORTH;
-				checkRight = BlockFace.SOUTH;
-				break;
-			case SOUTH:
-				checkLeft = BlockFace.EAST;
-				checkRight = BlockFace.WEST;
-				break;
-			case WEST:
-				checkLeft = BlockFace.SOUTH;
-				checkRight = BlockFace.NORTH;
-				break;
-			case EAST:
-				checkLeft = BlockFace.WEST;
-				checkRight = BlockFace.EAST;
-				break;
-			default:
-				checkLeft = null;
-				checkRight = null;
+		Block other = findAdjacentBlock(location.getBlock(), location.getBlock().getType());
+		if (other != null) {
+			doors.add(other.getLocation());
 		}
-		System.out.println(checkLeft);
-		System.out.println(checkRight);
-		System.out.println(doors.toString());
-		//Check the immediate east and west of this block
-		Block east = block.getRelative(checkLeft);
-		System.out.println(east.getType() + " : " + east.toString());
-		Block west = block.getRelative(checkRight);
-		System.out.println(west.getType() + " : " + west.toString());
-		if (!isDoorMaterial(east.getType(), block.getType())) {
-			if (!isDoorMaterial(west.getType(), block.getType())) {
-				return Collections.emptyList();
-			}
-			doors.add(west.getLocation());
-		} else {
-			doors.add(east.getLocation());
-		}
-		System.out.println(doors.toString());
-		//If we are this far then we know 2 of the four blocks are doors
-		if (source.isTopHalf()) {
-			Block bottom = block.getRelative(BlockFace.DOWN);
-			//The original block was the top-half of the door, so check the bottom
-			if (!isDoorMaterial(bottom.getType(), block.getType())) {
-				return Collections.emptyList();
-			}
-			doors.add(bottom.getLocation());
-			//At this point we know that 3 of the 4 blocks are doors, lets seek out the 4th block
-			Block bottomEast = bottom.getRelative(checkLeft);
-			//Check if the diagonally down eastern block from the source is a door and the block directly above it is the eastern door. If so its block 4 and its a double door
-			if (!isDoorMaterial(bottomEast.getType(), block.getType()) || !bottomEast.getRelative(BlockFace.UP).equals(east)) {
-				Block bottomWest = bottom.getRelative(checkRight);
-				if (!isDoorMaterial(bottomWest.getType(), block.getType()) || !bottomWest.getRelative(BlockFace.UP).equals(west)) {
-					return Collections.emptyList();
-				}
-				doors.add(bottomWest.getLocation());
-			} else {
-				doors.add(bottomEast.getLocation());
-			}
-		} else {
-			Block top = block.getRelative(BlockFace.UP);
-			//The original block was the bottom-half of the door, so check the top
-			if (!isDoorMaterial(top.getType(), block.getType())) {
-				return Collections.emptyList();
-			}
-			doors.add(top.getLocation());
-			//At this point we know that 3 of the 4 blocks are doors, lets seek out the 4th block
-			Block topEast = top.getRelative(checkLeft);
-			//Check if the diagonally top eastern block from the source is a door and the block directly below it is the eastern door. If so its block 4 and its a double door
-			if (!isDoorMaterial(topEast.getType(), block.getType()) || !topEast.getRelative(BlockFace.DOWN).equals(east)) {
-				Block topWest = top.getRelative(checkRight);
-				if (!isDoorMaterial(topWest.getType(), block.getType()) || !topWest.getRelative(BlockFace.DOWN).equals(west)) {
-					return Collections.emptyList();
-				}
-				doors.add(topWest.getLocation());
-			} else {
-				doors.add(topEast.getLocation());
-			}
-		}
-		System.out.println(doors.toString());
 		return doors;
 	}
 
+	public static void changeDoorStates(boolean allowDoorToOpen, Block... doors) {
+		for (Block door : doors) {
+			if (door == null) {
+				continue;
+			}
+
+			// If we aren't allowing the door to open, check if it's already closed
+			if (!allowDoorToOpen && (door.getData() & 0x4) == 0) {
+				// The door is already closed and we don't want to open it
+				// the bit 0x4 is set when the door is open
+				continue;
+			}
+
+			// Get the top half of the door
+			Block topHalf = door.getRelative(BlockFace.UP);
+
+			// Now xor both data values with 0x4, the flag that states if the door is open
+			door.setData((byte) (door.getData() ^ 0x4));
+
+			// Play the door open/close sound
+			door.getWorld().playEffect(door.getLocation(), Effect.DOOR_TOGGLE, 0);
+
+			// Only change the block above it if it is something we can open or close
+			if (isDoorMaterial(topHalf.getType())) {
+				topHalf.setData((byte) (topHalf.getData() ^ 0x4));
+			}
+		}
+	}
+
+	/**
+	 * Find a block that is adjacent to another block given a Material
+	 *
+	 * @param block
+	 * @param material
+	 * @param ignore
+	 * @return
+	 */
+	public static Block findAdjacentBlock(Block block, Material material, Block... ignore) {
+		BlockFace[] faces = new BlockFace[]{BlockFace.NORTH, BlockFace.SOUTH, BlockFace.EAST, BlockFace.WEST};
+		List<Block> ignoreList = Arrays.asList(ignore);
+
+		for (BlockFace face : faces) {
+			Block adjacentBlock = block.getRelative(face);
+
+			if (adjacentBlock.getType() == material && !ignoreList.contains(adjacentBlock)) {
+				return adjacentBlock;
+			}
+		}
+
+		return null;
+	}
+
 	private static boolean isDoorMaterial(Material material) {
-		return isDoorMaterial(material, null);
+		return material == Material.IRON_DOOR_BLOCK || material == Material.WOODEN_DOOR || material == Material.FENCE_GATE;
 	}
 
-	private static boolean isDoorMaterial(Material material, Material toMatch) {
-		if (toMatch == null) {
-			toMatch = material;
+	public static boolean onDoorInteract(Block block) {
+		if (isDoorMaterial(block.getType())) {
+			return false;
 		}
-		if ((material.equals(Material.WOODEN_DOOR) || material.equals(Material.IRON_DOOR_BLOCK)) && toMatch.equals(material)) {
-			return true;
-		}
-		return false;
-	}
-
-	public static boolean isDoorClosed(Block block) {
-		byte data = block.getData();
-		if ((data & 0x8) == 0x8) {
+		// Are we looking at the top half?
+		// If we are, we need to get the bottom half instead
+		Door source = (Door) block.getState().getData();
+		if (source.isTopHalf()) {
+			// Inspect the bottom half instead, fool!
 			block = block.getRelative(BlockFace.DOWN);
-			data = block.getData();
 		}
-		return ((data & 0x4) == 0);
-	}
-
-	public static void openDoor(Block block) {
-		byte data = block.getData();
-		if ((data & 0x8) == 0x8) {
-			block = block.getRelative(BlockFace.DOWN);
-			data = block.getData();
+		final List <Location> other = getDoubleDoor(block.getLocation());
+		Block oBlock = other.get(2).getBlock();
+		final Door otherSrc = (Door) oBlock.getState().getData();
+		if (otherSrc.isTopHalf()) {
+			oBlock = oBlock.getRelative(BlockFace.DOWN);
 		}
-		if (isDoorClosed(block)) {
-			data = (byte) (data | 0x4);
-			block.setData(data, true);
-			block.getState().update(true);
-			block.getWorld().playEffect(block.getLocation(), Effect.DOOR_TOGGLE, 0);
+		if (other != null) {
+			changeDoorStates(true, ((block.getType() == Material.WOODEN_DOOR || block.getType() == Material.FENCE_GATE) ? null : block), oBlock);
 		}
-	}
-
-	public static void closeDoor(Block block) {
-		byte data = block.getData();
-		if ((data & 0x8) == 0x8) {
-			block = block.getRelative(BlockFace.DOWN);
-			data = block.getData();
-		}
-		if (!isDoorClosed(block)) {
-			data = (byte) (data & 0xb);
-			block.setData(data, true);
-			block.getState().update(true);
-			block.getWorld().playEffect(block.getLocation(), Effect.DOOR_TOGGLE, 0);
-		}
+		return true;
 	}
 }

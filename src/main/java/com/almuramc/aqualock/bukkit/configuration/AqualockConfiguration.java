@@ -70,10 +70,6 @@ public final class AqualockConfiguration {
 		return langConfig;
 	}
 
-	public double getDoubleDoorCloseTimer() {
-		return config.getDouble("double-door-close-timer");
-	}
-
 	public Configuration getSqlConfiguration() {
 		final String mode = config.getString("sql.mode");
 		switch (mode) {
