@@ -27,7 +27,11 @@ import com.almuramc.bolt.lock.Lock;
 import com.almuramc.bolt.registry.CommonRegistry;
 import com.almuramc.bolt.registry.Registry;
 
+import org.getspout.spoutapi.SpoutManager;
+
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
@@ -35,11 +39,15 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockCanBuildEvent;
 import org.bukkit.event.block.BlockDamageEvent;
+import org.bukkit.event.block.BlockFadeEvent;
 import org.bukkit.event.block.BlockFormEvent;
 import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockPistonExtendEvent;
+import org.bukkit.event.block.BlockPistonRetractEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.EntityBlockFormEvent;
 import org.bukkit.event.block.LeavesDecayEvent;
 import org.bukkit.event.block.SignChangeEvent;
@@ -91,29 +99,45 @@ public class AqualockListener implements Listener {
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
-	public void onBlockFromTo(BlockFromToEvent event) {
-		Block to = event.getToBlock();
-		Block from = event.getBlock();
-		Registry registry = plugin.getRegistry();
-		if (registry.contains(from.getWorld().getUID(), from.getX(), from.getY(), from.getZ())) {
-			if (registry.contains(to.getWorld().getUID(), to.getX(), to.getY(), to.getZ())) {
-				Lock fromLock = registry.getLock(from.getWorld().getUID(), from.getX(), from.getY(), from.getZ());
-				Lock toLock = registry.getLock(to.getWorld().getUID(), to.getX(), to.getY(), to.getZ());
-				if (fromLock.equals(toLock)) {
-					return;
+	public void onBlockPlace(BlockPlaceEvent event) {
+		final Player player = event.getPlayer();
+		final Block block = event.getBlock();
+		final Lock lock = registry.getLock(block.getWorld().getUID(), block.getX(), block.getY(), block.getZ());
+		if (lock != null) {
+			if (!lock.getOwner().equals(player.getName())) {
+				if (!(lock.getCoOwners().contains(player.getName()))) {
+					SpoutManager.getPlayer(player).sendNotification("Aqua", "This block is locked!", Material.LAVA_BUCKET);
+					event.setCancelled(true);
 				}
 			}
 		}
-		event.setCancelled(true);
+	}
+
+	@EventHandler(priority = EventPriority.MONITOR)
+	public void onBlockDamage(BlockDamageEvent event) {
+		final Player player = event.getPlayer();
+		final Block block = event.getBlock();
+		final Lock lock = registry.getLock(block.getWorld().getUID(), block.getX(), block.getY(), block.getZ());
+		if (lock != null) {
+			if (!lock.getOwner().equals(player.getName())) {
+				if (!(lock.getCoOwners().contains(player.getName()))) {
+					SpoutManager.getPlayer(player).sendNotification("Aqua", "This block is locked!", Material.LAVA_BUCKET);
+					event.setCancelled(true);
+				}
+			}
+		}
+	}
+
+	@EventHandler(priority = EventPriority.MONITOR)
+	public void onBlockFromTo(BlockFromToEvent event) {
+		final Block block = event.getBlock();
+		event.setCancelled(registry.getLock(block.getWorld().getUID(), block.getX(), block.getY(), block.getZ()) != null);
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onLeavesDecay(LeavesDecayEvent event) {
-		Block decaying = event.getBlock();
-		Registry registry = plugin.getRegistry();
-		if (registry.contains(decaying.getWorld().getUID(), decaying.getX(), decaying.getY(), decaying.getZ())) {
-			event.setCancelled(true);
-		}
+		final Block block = event.getBlock();
+		event.setCancelled(registry.getLock(block.getWorld().getUID(), block.getX(), block.getY(), block.getZ()) != null);
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
@@ -123,14 +147,13 @@ public class AqualockListener implements Listener {
 		if (interacted == null) {
 			return;
 		}
-		Registry registry = plugin.getRegistry();
-		if (registry.contains(interacted.getWorld().getUID(), interacted.getX(), interacted.getY(), interacted.getZ())) {
+		final Lock lock = registry.getLock(interacted.getWorld().getUID(), interacted.getX(), interacted.getY(), interacted.getZ());
+		if (lock != null) {
 			if (!PermissionUtil.canUse(interacter)) {
 				interacter.sendMessage(plugin.getPrefix() + "You lack the permission to use locks!");
 				event.setCancelled(true);
 				return;
 			}
-			Lock lock = registry.getLock(interacted.getWorld().getUID(), interacted.getX(), interacted.getY(), interacted.getZ());
 			if (!lock.getOwner().equals(interacter.getName())) {
 				if (!(lock.getCoOwners().contains(interacter.getName()))) {
 					interacter.sendMessage(plugin.getPrefix() + "You are not a co-owner so you may not interact with this locked block!");
@@ -168,13 +191,17 @@ public class AqualockListener implements Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onSignChange(SignChangeEvent event) {
-		Player writer = event.getPlayer();
-		Block theSign = event.getBlock();
-	}
-
-	@EventHandler(priority = EventPriority.MONITOR)
-	public void onPistonExtend(BlockPistonExtendEvent event) {
-		//TODO Think of something...
+		final Player player = event.getPlayer();
+		final Block block = event.getBlock();
+		final Lock lock = registry.getLock(block.getWorld().getUID(), block.getX(), block.getY(), block.getZ());
+		if (lock != null) {
+			if (!lock.getOwner().equals(player.getName())) {
+				if (!(lock.getCoOwners().contains(player.getName()))) {
+					SpoutManager.getPlayer(player).sendNotification("Aqua", "This block is locked!", Material.LAVA_BUCKET);
+					event.setCancelled(true);
+				}
+			}
+		}
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
@@ -187,5 +214,47 @@ public class AqualockListener implements Listener {
 	public void onLightningStrike(LightningStrikeEvent event) {
 		final Block block = event.getLightning().getLocation().getBlock();
 		event.setCancelled(registry.getLock(block.getWorld().getUID(), block.getX(), block.getY(), block.getZ()) != null);
+	}
+
+	@EventHandler(priority = EventPriority.MONITOR)
+	public void onBlockFade(BlockFadeEvent event) {
+		final Block block = event.getBlock();
+		event.setCancelled(registry.getLock(block.getWorld().getUID(), block.getX(), block.getY(), block.getZ()) != null);
+	}
+
+	@EventHandler(priority = EventPriority.MONITOR)
+	public void onPistonExtend(BlockPistonExtendEvent event) {
+		final Block block = event.getBlock();
+		final Lock lock = registry.getLock(block.getWorld().getUID(), block.getX(), block.getY(), block.getZ());
+		if (event.getLength() > 0) {
+			final List<Block> moving = event.getBlocks();
+			for (Block b : moving) {
+				final Lock l = registry.getLock(b.getWorld().getUID(), b.getX(), b.getY(), b.getZ());
+				if (l != null) {
+					if (!lock.getOwner().equals(l.getOwner())) {
+						if (!(lock.getCoOwners().contains(l.getOwner()))) {
+							SpoutManager.getPlayer(Bukkit.getPlayer(lock.getOwner())).sendNotification("Aqua", "Piston Extend Blocked!", Material.LAVA_BUCKET);
+							event.setCancelled(true);
+						}
+					}
+				}
+			}
+		}
+	}
+
+	@EventHandler(priority = EventPriority.MONITOR)
+	public void onPistonRetract(BlockPistonRetractEvent event) {
+		final Block block = event.getBlock();
+		final Block moved = event.getRetractLocation().getBlock();
+		final Lock lock = registry.getLock(block.getWorld().getUID(), block.getX(), block.getY(), block.getZ());
+		final Lock l = registry.getLock(moved.getWorld().getUID(), moved.getX(), moved.getY(), moved.getZ());
+		if (lock != null && l != null) {
+			if (!lock.getOwner().equals(l.getOwner())) {
+				if (!(lock.getCoOwners().contains(l.getOwner()))) {
+					SpoutManager.getPlayer(Bukkit.getPlayer(lock.getOwner())).sendNotification("Aqua", "Piston Extend Blocked!", Material.LAVA_BUCKET);
+					event.setCancelled(true);
+				}
+			}
+		}
 	}
 }
