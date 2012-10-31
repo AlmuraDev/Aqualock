@@ -88,7 +88,7 @@ public class BlockUtil {
 		BlockFace checkRight;
 		final BlockFace facing = source.getFacing();
 		System.out.println(facing);
-		switch(facing) {
+		switch (facing) {
 			case NORTH:
 				checkLeft = BlockFace.NORTH;
 				checkRight = BlockFace.SOUTH;
@@ -97,7 +97,7 @@ public class BlockUtil {
 				checkLeft = BlockFace.EAST;
 				checkRight = BlockFace.WEST;
 				break;
-			case WEST :
+			case WEST:
 				checkLeft = BlockFace.SOUTH;
 				checkRight = BlockFace.NORTH;
 				break;

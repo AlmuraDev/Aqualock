@@ -23,14 +23,11 @@ import java.util.List;
 
 import com.almuramc.aqualock.bukkit.util.BlockUtil;
 import com.almuramc.aqualock.bukkit.util.LockUtil;
-import com.almuramc.aqualock.bukkit.util.PermissionUtil;
 import com.almuramc.bolt.lock.Lock;
 import com.almuramc.bolt.registry.CommonRegistry;
-import com.almuramc.bolt.registry.Registry;
 
 import org.getspout.spoutapi.SpoutManager;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -41,16 +38,13 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockCanBuildEvent;
 import org.bukkit.event.block.BlockDamageEvent;
 import org.bukkit.event.block.BlockFadeEvent;
-import org.bukkit.event.block.BlockFormEvent;
 import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPistonRetractEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.block.EntityBlockFormEvent;
 import org.bukkit.event.block.LeavesDecayEvent;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -77,7 +71,7 @@ public class AqualockListener implements Listener {
 		if (lock != null) {
 			if (!lock.getOwner().equals(breaker.getName())) {
 				if (!(lock.getCoOwners().contains(breaker.getName()))) {
-					breaker.sendMessage(plugin.getPrefix() + "This block is locked.");
+					SpoutManager.getPlayer(breaker).sendNotification("Aqua", "This block is locked!", Material.LAVA_BUCKET);
 					event.setCancelled(true);
 					return;
 				}
@@ -138,9 +132,9 @@ public class AqualockListener implements Listener {
 		if (lock != null) {
 			if (!LockUtil.canPerformAction(interacter, "USE")) {
 				if (event.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
-					interacter.sendMessage(plugin.getPrefix() + "You lack the permission to break locks!");
+					SpoutManager.getPlayer(interacter).sendNotification("Aqua", "Break denied!", Material.LAVA_BUCKET);
 				} else if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
-					interacter.sendMessage(plugin.getPrefix() + "You lack the permission to use locks!");
+					SpoutManager.getPlayer(interacter).sendNotification("Aqua", "Interact denied!", Material.LAVA_BUCKET);
 				}
 				event.setCancelled(true);
 				return;

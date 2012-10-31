@@ -139,7 +139,7 @@ public class AquaPanel extends GenericPopup {
 				.setHeight(10)
 				.setWidth(40)
 				.shiftXPos(15)
-				.shiftYPos(-19);		
+				.shiftYPos(-19);
 		costToCreateOutputLabel = new CreateCostValueLabel("");
 		costToCreateOutputLabel
 				.setAuto(true)

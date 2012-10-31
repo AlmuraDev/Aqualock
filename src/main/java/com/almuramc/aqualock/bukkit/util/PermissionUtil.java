@@ -50,7 +50,7 @@ public class PermissionUtil {
 	}
 
 	public static boolean canUpdate(Player player) {
-		return  has(player, player.getWorld(), "aqualock.update") || has(player, player.getWorld(), "aqualock.admin");
+		return has(player, player.getWorld(), "aqualock.update") || has(player, player.getWorld(), "aqualock.admin");
 	}
 
 	public static boolean canUse(Player player) {
