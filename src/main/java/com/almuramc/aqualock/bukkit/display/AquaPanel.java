@@ -310,6 +310,7 @@ public class AquaPanel extends GenericPopup {
 				canUnlock = true;
 			}
 			if (canUnlock) {
+				unlockButton.setTooltip("Click this to free this lock!");
 				unlockButton.setEnabled(true);
 			}
 		}
