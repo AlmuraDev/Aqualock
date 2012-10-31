@@ -72,7 +72,7 @@ public class ApplyButton extends GenericButton {
 		final StringBuilder parsed = new StringBuilder();
 		for (int i = 0; i < chars.length; i++) {
 			if (chars[i] == ',') {
-				temp.add(temp.toString());
+				temp.add(parsed.toString());
 				parsed.delete(0, parsed.length());
 				continue;
 			}
@@ -80,7 +80,7 @@ public class ApplyButton extends GenericButton {
 				continue;
 			}
 			if (i == chars.length - 1) {
-				temp.add(temp.toString());
+				temp.add(parsed.toString());
 				parsed.append(chars[i]);
 				continue;
 			}
