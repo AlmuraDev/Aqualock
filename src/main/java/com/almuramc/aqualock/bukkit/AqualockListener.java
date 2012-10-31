@@ -153,7 +153,7 @@ public class AqualockListener implements Listener {
 				return;
 			}
 			final List<Location> doors = BlockUtil.getDoubleDoor(interacted.getLocation());
-			if (doors != null) {
+			if (!doors.isEmpty()) {
 				Door state = (Door) interacted.getState().getData();
 				if (state.isTopHalf()) {
 					final Block bottom = interacted.getRelative(BlockFace.DOWN);
