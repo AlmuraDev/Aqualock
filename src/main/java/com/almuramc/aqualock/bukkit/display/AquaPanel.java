@@ -26,12 +26,14 @@ import com.almuramc.aqualock.bukkit.display.button.ApplyButton;
 import com.almuramc.aqualock.bukkit.display.button.CloseButton;
 import com.almuramc.aqualock.bukkit.display.button.UnlockButton;
 import com.almuramc.aqualock.bukkit.display.checkbox.EveryoneCheckbox;
+import com.almuramc.aqualock.bukkit.display.field.CloseTimerField;
 import com.almuramc.aqualock.bukkit.display.field.CoOwnerField;
 import com.almuramc.aqualock.bukkit.display.field.DamageField;
 import com.almuramc.aqualock.bukkit.display.field.OwnerField;
 import com.almuramc.aqualock.bukkit.display.field.PasswordField;
 import com.almuramc.aqualock.bukkit.display.field.UseCostField;
 import com.almuramc.aqualock.bukkit.display.field.UserField;
+import com.almuramc.aqualock.bukkit.display.label.CloseTimerLabel;
 import com.almuramc.aqualock.bukkit.display.label.CoOwnerLabel;
 import com.almuramc.aqualock.bukkit.display.label.CreateCostLabel;
 import com.almuramc.aqualock.bukkit.display.label.CreateCostValueLabel;
@@ -61,8 +63,8 @@ public class AquaPanel extends GenericPopup {
 	//Widgets
 	private final GenericButton closeButton, applyButton, unlockButton;
 	private final GenericCheckBox everyoneCheckbox;
-	private final GenericLabel usersLabel, coownersLabel, costToUseLabel, damageOnFailLabel, costToCreateOutputLabel, costToCreateLabel, passwordLabel, ownerLabel;
-	private final GenericTextField usersField, coownersField, costToUseField, damageOnFailField, passwordField, ownerField;
+	private final GenericLabel usersLabel, coownersLabel, costToUseLabel, damageOnFailLabel, costToCreateOutputLabel, costToCreateLabel, passwordLabel, ownerLabel, closeTimerLabel;
+	private final GenericTextField usersField, coownersField, costToUseField, damageOnFailField, passwordField, ownerField, closeTimerField;
 	private final GenericTexture borderTexture;
 	//Geo
 	private Location location;
@@ -104,14 +106,14 @@ public class AquaPanel extends GenericPopup {
 				.shiftYPos(87);
 		usersField = new UserField();
 		usersField
-				.setMaximumLines(5)
+				.setMaximumLines(2)
 				.setMaximumCharacters(100)
 				.setTabIndex(2)
 				.setAnchor(WidgetAnchor.CENTER_CENTER)
-				.setHeight(14)
+				.setHeight(29)
 				.setWidth(165)
 				.shiftXPos(15)
-				.shiftYPos(60);
+				.shiftYPos(40);
 		usersLabel = new UserLabel("Users:");
 		usersLabel
 				.setAuto(true)
@@ -119,17 +121,17 @@ public class AquaPanel extends GenericPopup {
 				.setHeight(11)
 				.setWidth(40)
 				.shiftXPos(15)
-				.shiftYPos(45);
+				.shiftYPos(29);
 		coownersField = new CoOwnerField();
 		coownersField
-				.setMaximumLines(5)
+				.setMaximumLines(2)
 				.setMaximumCharacters(100)
 				.setTabIndex(1)
 				.setAnchor(WidgetAnchor.CENTER_CENTER)
-				.setHeight(14)
+				.setHeight(29)
 				.setWidth(165)
 				.shiftXPos(15)
-				.shiftYPos(23);
+				.shiftYPos(-7);
 		coownersLabel = new CoOwnerLabel("Co-Owners:");
 		coownersLabel
 				.setAuto(true)
@@ -137,30 +139,23 @@ public class AquaPanel extends GenericPopup {
 				.setHeight(10)
 				.setWidth(40)
 				.shiftXPos(15)
-				.shiftYPos(6);
-		everyoneCheckbox = new EveryoneCheckbox();
-		everyoneCheckbox
+				.shiftYPos(-19);		
+		costToCreateOutputLabel = new CreateCostValueLabel("");
+		costToCreateOutputLabel
 				.setAuto(true)
 				.setAnchor(WidgetAnchor.CENTER_CENTER)
 				.setHeight(10)
 				.setWidth(40)
-				.shiftXPos(-132)
-				.shiftYPos(60);
-		costToUseField = new UseCostField();
-		costToUseField
-				.setAnchor(WidgetAnchor.CENTER_CENTER)
-				.setHeight(14)
-				.setWidth(40)
-				.shiftXPos(-70)
-				.shiftYPos(40);
-		costToUseLabel = new UseCostLabel("Cost to use:");
-		costToUseLabel
+				.shiftXPos(-68)
+				.shiftYPos(0);
+		costToCreateLabel = new CreateCostLabel("Cost to create:");
+		costToCreateLabel
 				.setAuto(true)
 				.setAnchor(WidgetAnchor.CENTER_CENTER)
 				.setHeight(10)
 				.setWidth(40)
-				.shiftXPos(-132)
-				.shiftYPos(40);
+				.shiftXPos(-148)
+				.shiftYPos(0);
 		damageOnFailField = new DamageField();
 		damageOnFailField
 				.setAnchor(WidgetAnchor.CENTER_CENTER)
@@ -175,30 +170,52 @@ public class AquaPanel extends GenericPopup {
 				.setHeight(10)
 				.setWidth(40)
 				.shiftXPos(-146)
-				.shiftYPos(20);
-		costToCreateOutputLabel = new CreateCostValueLabel("");
-		costToCreateOutputLabel
-				.setAuto(true)
+				.shiftYPos(23);
+		costToUseField = new UseCostField();
+		costToUseField
 				.setAnchor(WidgetAnchor.CENTER_CENTER)
-				.setHeight(10)
+				.setHeight(14)
 				.setWidth(40)
 				.shiftXPos(-70)
-				.shiftYPos(0);
-		costToCreateLabel = new CreateCostLabel("Cost to create:");
-		costToCreateLabel
+				.shiftYPos(40);
+		costToUseLabel = new UseCostLabel("Cost to use:");
+		costToUseLabel
 				.setAuto(true)
 				.setAnchor(WidgetAnchor.CENTER_CENTER)
 				.setHeight(10)
 				.setWidth(40)
-				.shiftXPos(-148)
-				.shiftYPos(0);
+				.shiftXPos(-132)
+				.shiftYPos(43);
+		closeTimerField = new CloseTimerField();
+		closeTimerField
+				.setAnchor(WidgetAnchor.CENTER_CENTER)
+				.setHeight(14)
+				.setWidth(40)
+				.shiftXPos(-70)
+				.shiftYPos(60);
+		closeTimerLabel = new CloseTimerLabel("Auto Close Timer:");
+		closeTimerLabel
+				.setAuto(true)
+				.setAnchor(WidgetAnchor.CENTER_CENTER)
+				.setHeight(10)
+				.setWidth(40)
+				.shiftXPos(-157)
+				.shiftYPos(65);
+		everyoneCheckbox = new EveryoneCheckbox();
+		everyoneCheckbox
+				.setAuto(true)
+				.setAnchor(WidgetAnchor.CENTER_CENTER)
+				.setHeight(10)
+				.setWidth(40)
+				.shiftXPos(-165)
+				.shiftYPos(87);
 		passwordField = new PasswordField();
 		passwordField
 				.setAnchor(WidgetAnchor.CENTER_CENTER)
 				.setHeight(14)
 				.setWidth(107)
 				.shiftXPos(70)
-				.shiftYPos(-24);
+				.shiftYPos(-49);
 		passwordLabel = new PasswordLabel("Password:");
 		passwordLabel
 				.setAuto(true)
@@ -206,7 +223,7 @@ public class AquaPanel extends GenericPopup {
 				.setHeight(8)
 				.setWidth(40)
 				.shiftXPos(15)
-				.shiftYPos(-20);
+				.shiftYPos(-45);
 		ownerField = new OwnerField();
 		ownerField
 				.setMaximumCharacters(18)
@@ -215,7 +232,7 @@ public class AquaPanel extends GenericPopup {
 				.setHeight(14)
 				.setWidth(107)
 				.shiftXPos(70)
-				.shiftYPos(-44);
+				.shiftYPos(-69);
 		ownerLabel = new OwnerLabel("Owner:");
 		ownerLabel
 				.setAuto(true)
@@ -223,10 +240,10 @@ public class AquaPanel extends GenericPopup {
 				.setHeight(10)
 				.setWidth(40)
 				.shiftXPos(15)
-				.shiftYPos(-40);
+				.shiftYPos(-65);
 		attachWidgets(plugin, borderTexture, closeButton, applyButton, unlockButton, usersField, usersLabel, coownersField, coownersLabel,
 				costToUseField, costToUseLabel, damageOnFailField, damageOnFailLabel, costToCreateOutputLabel,
-				costToCreateLabel, everyoneCheckbox, passwordField, passwordLabel, ownerField, ownerLabel);
+				costToCreateLabel, everyoneCheckbox, passwordField, passwordLabel, ownerField, ownerLabel, closeTimerField, closeTimerLabel);
 		passwordField.setFocus(true);
 		passwordField.setTabIndex(0);
 		passwordField.setMaximumCharacters(15);
