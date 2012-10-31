@@ -69,6 +69,7 @@ public class AqualockListener implements Listener {
 				if (!(lock.getCoOwners().contains(breaker.getName()))) {
 					breaker.sendMessage(plugin.getPrefix() + "This block is locked.");
 					event.setCancelled(true);
+					return;
 				}
 			}
 			registry.removeLock(lock);
@@ -169,41 +170,6 @@ public class AqualockListener implements Listener {
 	public void onSignChange(SignChangeEvent event) {
 		Player writer = event.getPlayer();
 		Block theSign = event.getBlock();
-	}
-
-	@EventHandler(priority = EventPriority.MONITOR)
-	public void onBlockForm(BlockFormEvent event) {
-		Block formed = event.getBlock();
-		Registry registry = plugin.getRegistry();
-		if (registry.contains(formed.getWorld().getUID(), formed.getX(), formed.getY(), formed.getZ())) {
-			event.setCancelled(true);
-		}
-	}
-
-	@EventHandler(priority = EventPriority.MONITOR)
-	public void onEntityBlockForm(EntityBlockFormEvent event) {
-		Player former = null;
-		if (event.getEntity() instanceof Player) {
-			former = (Player) event.getEntity();
-		}
-		if (former == null) {
-			return;
-		}
-		final Block formed = event.getBlock();
-		final Lock lock = registry.getLock(formed.getWorld().getUID(), formed.getX(), formed.getY(), formed.getZ());
-		if (lock != null) {
-			final String owner = lock.getOwner();
-			final List<String> coowners = lock.getCoOwners();
-			final List<String> users = lock.getUsers();
-			if (!owner.equals(former.getName())) {
-				if (!coowners.contains(former.getName())) {
-					if (!users.contains(former.getName())) {
-						former.sendMessage(plugin.getPrefix() + "This block is locked!");
-						event.setCancelled(true);
-					}
-				}
-			}
-		}
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
