@@ -48,7 +48,7 @@ public class AquaPanelDelegate implements BindingExecutionDelegate {
 	public void keyPressed(KeyBindingEvent keyBindingEvent) {
 		final SpoutPlayer player = keyBindingEvent.getPlayer();
 		//Do not let them close another screen with this keybinding from this event
-		if (!player.getMainScreen().getScreenType().equals(ScreenType.GAME_SCREEN)) {
+		if (!keyBindingEvent.getScreenType().equals(ScreenType.GAME_SCREEN)) {
 			return;
 		}
 		Block block = BlockUtil.getTarget(player, null, 4);
