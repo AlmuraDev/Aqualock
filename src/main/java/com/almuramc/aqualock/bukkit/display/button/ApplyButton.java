@@ -79,7 +79,7 @@ public class ApplyButton extends GenericButton {
 			if (chars[i] == ' ') {
 				continue;
 			}
-			if (i == chars.length - 1) {
+			if (i == chars.length) {
 				temp.add(parsed.toString());
 				parsed.append(chars[i]);
 				continue;

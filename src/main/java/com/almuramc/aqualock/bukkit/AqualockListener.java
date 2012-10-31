@@ -60,36 +60,25 @@ public class AqualockListener implements Listener {
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
-	public void onBlockDamage(BlockDamageEvent event) {
-		Player damager = event.getPlayer();
-		Block damaged = event.getBlock();
-		Registry registry = plugin.getRegistry();
-		if (registry.contains(damaged.getWorld().getUID(), damaged.getX(), damaged.getY(), damaged.getZ())) {
-			Lock lock = registry.getLock(damaged.getWorld().getUID(), damaged.getX(), damaged.getY(), damaged.getZ());
-			if (!lock.getOwner().equals(damager.getName()) || !(lock.getCoOwners().contains(damager.getName()))) {
-				damager.sendMessage(plugin.getPrefix() + "This voxel is locked.");
-				event.setCancelled(true);
-			}
-		}
-	}
-
-	@EventHandler(priority = EventPriority.MONITOR)
 	public void onBlockBreak(BlockBreakEvent event) {
-		Player breaker = event.getPlayer();
-		Block breaking = event.getBlock();
-		Registry registry = plugin.getRegistry();
-		if (registry.contains(breaking.getWorld().getUID(), breaking.getX(), breaking.getY(), breaking.getZ())) {
-			Lock lock = registry.getLock(breaking.getWorld().getUID(), breaking.getX(), breaking.getY(), breaking.getZ());
-			if (!lock.getOwner().equals(breaker.getName()) || !(lock.getCoOwners().contains(breaker.getName()))) {
-				breaker.sendMessage(plugin.getPrefix() + "This voxel is locked.");
-				event.setCancelled(true);
+		final Player breaker = event.getPlayer();
+		final Block breaking = event.getBlock();
+		final Lock lock = registry.getLock(breaking.getWorld().getUID(), breaking.getX(), breaking.getY(), breaking.getZ());
+		if (lock != null) {
+			if (!lock.getOwner().equals(breaker.getName())) {
+				if (!(lock.getCoOwners().contains(breaker.getName()))) {
+					breaker.sendMessage(plugin.getPrefix() + "This block is locked.");
+					event.setCancelled(true);
+				}
 			}
-			if (BlockUtil.isDoubleDoor(breaking.getLocation())) {
-				List<Location> locations = BlockUtil.getDoubleDoor(breaking.getLocation());
+			registry.removeLock(lock);
+			AqualockPlugin.getBackend().removeLock(lock);
+			//Remove locks from doors
+			final List<Location> locations = BlockUtil.getDoubleDoor(breaking.getLocation());
+			if (!locations.isEmpty()) {
 				for (Location loc : locations) {
 					if (!loc.getBlock().equals(breaking)) {
-						final Block b = loc.getBlock();
-						Lock l = registry.getLock(breaking.getWorld().getUID(), b.getX(), b.getY(), b.getZ());
+						final Lock l = registry.getLock(breaking.getWorld().getUID(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
 						if (l != null) {
 							registry.removeLock(l);
 							AqualockPlugin.getBackend().removeLock(l);
@@ -97,8 +86,6 @@ public class AqualockListener implements Listener {
 					}
 				}
 			}
-			registry.removeLock(lock);
-			AqualockPlugin.getBackend().removeLock(lock);
 		}
 	}
 
