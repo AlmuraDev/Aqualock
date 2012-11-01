@@ -340,8 +340,8 @@ public class LockUtil {
 					return true;
 				}
 				if (!name.equals(lock.getOwner()) && !canPerformAction(player, "USE")) {
-					for (String pname : lock.getCoOwners()) {
-						if (pname.equals(name)) {
+					if (!lock.getCoOwners().contains(name)) {
+						if (!lock.getUsers().contains(name)) {
 							if (lock instanceof BukkitLock && (!((BukkitLock) lock).getPasscode().equals(passcode))) {
 								splayer.sendNotification("Aqualock", "Invalid password!", Material.LAVA_BUCKET);
 								return false;
