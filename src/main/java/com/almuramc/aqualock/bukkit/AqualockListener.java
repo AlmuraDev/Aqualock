@@ -52,9 +52,6 @@ import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.weather.LightningStrikeEvent;
-import org.bukkit.material.Door;
-
-import org.spout.api.material.source.MaterialSource;
 
 public class AqualockListener implements Listener {
 	private final AqualockPlugin plugin;
@@ -228,7 +225,7 @@ public class AqualockListener implements Listener {
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onEntityExplode(EntityExplodeEvent event) {
 		Iterator<Block> iter = event.blockList().iterator();
-		while(iter.hasNext()) {
+		while (iter.hasNext()) {
 			Block block = iter.next();
 			final Block top = block.getRelative(BlockFace.UP);
 			if (BlockUtil.isDoorMaterial(top.getType())) {
