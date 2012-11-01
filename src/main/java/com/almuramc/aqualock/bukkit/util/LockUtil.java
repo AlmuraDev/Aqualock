@@ -71,8 +71,7 @@ public class LockUtil {
 			coowners = Collections.emptyList();
 		}
 		if (users == null) {
-			users = new ArrayList<>(1);
-			users.add("Everyone");
+			users = Collections.emptyList();
 		}
 		if (!performAction(player, passcode, location, 0, "LOCK")) {
 			return false;
@@ -90,6 +89,7 @@ public class LockUtil {
 		//If the lock created in this method's location is not the location of this iteration then its the second door, lock it.
 		final Block oBlock = BlockUtil.getDoubleDoor(location);
 		if (oBlock != null) {
+			BlockUtil.changeDoorStates(false, location.getBlock(), oBlock);
 			DoorBukkitLock otherLock = new DoorBukkitLock(playerName, coowners, users, passcode, oBlock.getLocation(), oBlock.getData(), useCost, autocloseTimer);
 			registry.addLock(otherLock);
 			backend.addLock(otherLock);
