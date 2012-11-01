@@ -41,6 +41,7 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
+import org.bukkit.material.Door;
 
 /**
  * The core utility class of Aqualock. Handles common functions between commands/GUI (to spare a LOT of duplicate code) such as lock, unlock, use, and change
@@ -107,6 +108,18 @@ public class LockUtil {
 				registry.addLock(topRight);
 				backend.addLock(topRight);
 			}
+		//Not a double door...but perhaps a regular door
+		} else if (BlockUtil.isDoorMaterial(location.getBlock().getType())) {
+			Door source = (Door) location.getBlock().getState().getData();
+			if (source.isTopHalf()) {
+				DoorBukkitLock bottom = new DoorBukkitLock(playerName, coowners, users, passcode, location.getBlock().getRelative(BlockFace.DOWN).getLocation(), location.getBlock().getRelative(BlockFace.DOWN).getData(), useCost, damage, autocloseTimer);
+				registry.addLock(bottom);
+				backend.addLock(bottom);
+			} else {
+				DoorBukkitLock top = new DoorBukkitLock(playerName, coowners, users, passcode, location.getBlock().getRelative(BlockFace.UP).getLocation(), location.getBlock().getRelative(BlockFace.UP).getData(), useCost, damage, autocloseTimer);
+				registry.addLock(top);
+				backend.addLock(top);
+			}
 		}
 		return true;
 	}
@@ -142,6 +155,17 @@ public class LockUtil {
 					final Block topRight = oBlock.getRelative(BlockFace.UP);
 					backend.removeLock(registry.getLock(topRight.getWorld().getUID(), topRight.getX(), topRight.getY(), topRight.getZ()));
 					registry.removeLock(topRight.getWorld().getUID(), topRight.getX(), topRight.getY(), topRight.getZ());
+				}
+			}  else if (BlockUtil.isDoorMaterial(location.getBlock().getType())) {
+				Door source = (Door) location.getBlock().getState().getData();
+				if (source.isTopHalf()) {
+					final Block bottom = location.getBlock().getRelative(BlockFace.DOWN);
+					backend.removeLock(registry.getLock(bottom.getWorld().getUID(), bottom.getX(), bottom.getY(), bottom.getZ()));
+					registry.removeLock(bottom.getWorld().getUID(), bottom.getX(), bottom.getY(), bottom.getZ());
+				} else {
+					final Block up = location.getBlock().getRelative(BlockFace.UP);
+					backend.removeLock(registry.getLock(up.getWorld().getUID(), up.getX(), up.getY(), up.getZ()));
+					registry.removeLock(up.getWorld().getUID(), up.getX(), up.getY(), up.getZ());
 				}
 			}
 			return true;
@@ -202,6 +226,17 @@ public class LockUtil {
 				DoorBukkitLock topRight = new DoorBukkitLock(playerName, coowners, users, passcode, oBlock.getRelative(BlockFace.UP).getLocation(), oBlock.getRelative(BlockFace.UP).getData(), useCost, damage, timer);
 				registry.addLock(topRight);
 				backend.addLock(topRight);
+			}
+		} else if (BlockUtil.isDoorMaterial(location.getBlock().getType())) {
+			Door source = (Door) location.getBlock().getState().getData();
+			if (source.isTopHalf()) {
+				DoorBukkitLock bottom = new DoorBukkitLock(playerName, coowners, users, passcode, location.getBlock().getRelative(BlockFace.DOWN).getLocation(), location.getBlock().getRelative(BlockFace.DOWN).getData(), useCost, damage, timer);
+				registry.addLock(bottom);
+				backend.addLock(bottom);
+			} else {
+				DoorBukkitLock top = new DoorBukkitLock(playerName, coowners, users, passcode, location.getBlock().getRelative(BlockFace.UP).getLocation(), location.getBlock().getRelative(BlockFace.UP).getData(), useCost, damage, timer);
+				registry.addLock(top);
+				backend.addLock(top);
 			}
 		}
 		SpoutManager.getPlayer(player).sendNotification("Aqualock", "Updated the block!", Material.CAKE);

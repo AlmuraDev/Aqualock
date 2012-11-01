@@ -151,13 +151,11 @@ public class BlockUtil {
 			block = block.getRelative(BlockFace.DOWN);
 		}
 		Block oBlock = getDoubleDoor(block.getLocation());
-		System.out.println(oBlock);
 		changeDoorStates(true, (block.getType() == Material.WOODEN_DOOR ? null : block), oBlock);
 		if ((block.getData() & 0x4) != 0) {
 			final Block finalBlock = block;
 			final Block finalOBlock = oBlock;
 			final DoorBukkitLock lock = (DoorBukkitLock) AqualockPlugin.getRegistry().getLock(finalBlock.getWorld().getUID(), finalBlock.getX(), finalBlock.getY(), finalBlock.getZ());
-			System.out.println(lock.getAutocloseTimer());
 			if (lock.getAutocloseTimer() > 0) {
 				AqualockPlugin.getInstance().getServer().getScheduler().scheduleSyncDelayedTask(AqualockPlugin.getInstance(), new Runnable() {
 					@Override
@@ -170,19 +168,7 @@ public class BlockUtil {
 		return true;
 	}
 
-	public Block getBlockSignAttachedTo(Block block) {
-		if (!isSignMaterial(block.getType())) {
-			return null;
-		}
-		Sign source = (Sign) block.getState().getData();
-		return (block.getRelative(source.getAttachedFace()));
-	}
-
 	public static boolean isDoorMaterial(Material material) {
 		return material == Material.IRON_DOOR_BLOCK || material == Material.WOODEN_DOOR || material == Material.FENCE_GATE;
-	}
-
-	public static boolean isSignMaterial(Material material) {
-		return material == Material.SIGN || material == Material.SIGN_POST;
 	}
 }
