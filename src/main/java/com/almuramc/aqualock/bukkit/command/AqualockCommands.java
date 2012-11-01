@@ -77,12 +77,19 @@ public class AqualockCommands implements CommandExecutor {
 				player.sendMessage(plugin.getPrefix() + "Need to specify a valid player's name as a parameter.");
 				return true;
 			}
+			int count = 0;
 			//EXPENSIVE, BLAME DOCKTER
 			for (Lock lock : plugin.getRegistry().getAll()) {
 				if (lock.getOwner().equals(playerToClear.getName())) {
 					plugin.getRegistry().removeLock(lock);
 					plugin.getBackend().removeLock(lock);
+					count++;
 				}
+			}
+			if (count == 0) {
+				player.sendMessage(plugin.getPrefix() + playerToClear.getName() + " had no locks!");
+			} else {
+				player.sendMessage(plugin.getPrefix() + "Cleared " + count + " lock(s) from " + playerToClear.getName());
 			}
 			return true;
 		}
