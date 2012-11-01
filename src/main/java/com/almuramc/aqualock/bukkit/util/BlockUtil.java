@@ -32,6 +32,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
+import org.bukkit.material.Sign;
 
 /**
  * Class with helper functions that deal with blocks
@@ -140,10 +141,6 @@ public class BlockUtil {
 		return null;
 	}
 
-	public static boolean isDoorMaterial(Material material) {
-		return material == Material.IRON_DOOR_BLOCK || material == Material.WOODEN_DOOR || material == Material.FENCE_GATE;
-	}
-
 	public static boolean onDoorInteract(Block block) {
 		if (!isDoorMaterial(block.getType())) {
 			return false;
@@ -171,5 +168,21 @@ public class BlockUtil {
 			}
 		}
 		return true;
+	}
+
+	public Block getBlockSignAttachedTo(Block block) {
+		if (!isSignMaterial(block.getType())) {
+			return null;
+		}
+		Sign source = (Sign) block.getState().getData();
+		return (block.getRelative(source.getAttachedFace()));
+	}
+
+	public static boolean isDoorMaterial(Material material) {
+		return material == Material.IRON_DOOR_BLOCK || material == Material.WOODEN_DOOR || material == Material.FENCE_GATE;
+	}
+
+	public static boolean isSignMaterial(Material material) {
+		return material == Material.SIGN || material == Material.SIGN_POST;
 	}
 }

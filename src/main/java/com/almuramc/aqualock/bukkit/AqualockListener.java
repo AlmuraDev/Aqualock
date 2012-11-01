@@ -44,6 +44,7 @@ import org.bukkit.event.block.BlockDamageEvent;
 import org.bukkit.event.block.BlockFadeEvent;
 import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockIgniteEvent;
+import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPistonRetractEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -70,17 +71,6 @@ public class AqualockListener implements Listener {
 		final Player breaker = event.getPlayer();
 		final Block breaking = event.getBlock();
 		final Lock lock = registry.getLock(breaking.getWorld().getUID(), breaking.getX(), breaking.getY(), breaking.getZ());
-		final Block top = breaking.getRelative(BlockFace.UP);
-		if (BlockUtil.isDoorMaterial(top.getType())) {
-			final Block temp = top.getRelative(BlockFace.UP);
-			if (BlockUtil.isDoorMaterial(temp.getType())) {
-				if (registry.contains(top.getWorld().getUID(), top.getX(), top.getY(), top.getZ())) {
-					SpoutManager.getPlayer(breaker).sendNotification("Aqualock", "Locked door above!", Material.LAVA_BUCKET);
-					event.setCancelled(true);
-					return;
-				}
-			}
-		}
 		if (lock != null) {
 			if (!lock.getOwner().equals(breaker.getName())) {
 				if (!(lock.getCoOwners().contains(breaker.getName()))) {
@@ -227,16 +217,15 @@ public class AqualockListener implements Listener {
 		Iterator<Block> iter = event.blockList().iterator();
 		while (iter.hasNext()) {
 			Block block = iter.next();
-			final Block top = block.getRelative(BlockFace.UP);
-			if (BlockUtil.isDoorMaterial(top.getType())) {
-				if (registry.contains(top.getWorld().getUID(), top.getX(), top.getY(), top.getZ())) {
-					iter.remove();
-				}
-			} else {
-				if (registry.contains(block.getWorld().getUID(), block.getX(), block.getY(), block.getZ())) {
-					iter.remove();
-				}
+			if (registry.contains(block.getWorld().getUID(), block.getX(), block.getY(), block.getZ())) {
+				iter.remove();
 			}
 		}
+	}
+
+	@EventHandler(priority = EventPriority.MONITOR)
+	public void onBlockPhysics(BlockPhysicsEvent event) {
+		final Block block = event.getBlock();
+		event.setCancelled(registry.contains(block.getWorld().getUID(), block.getX(), block.getY(), block.getZ()));
 	}
 }
