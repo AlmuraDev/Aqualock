@@ -19,6 +19,7 @@
  */
 package com.almuramc.aqualock.bukkit;
 
+import java.util.Iterator;
 import java.util.List;
 
 import com.almuramc.aqualock.bukkit.lock.BukkitLock;
@@ -38,6 +39,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockBurnEvent;
 import org.bukkit.event.block.BlockDamageEvent;
 import org.bukkit.event.block.BlockFadeEvent;
 import org.bukkit.event.block.BlockFromToEvent;
@@ -47,8 +49,12 @@ import org.bukkit.event.block.BlockPistonRetractEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.LeavesDecayEvent;
 import org.bukkit.event.block.SignChangeEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.weather.LightningStrikeEvent;
+import org.bukkit.material.Door;
+
+import org.spout.api.material.source.MaterialSource;
 
 public class AqualockListener implements Listener {
 	private final AqualockPlugin plugin;
@@ -83,6 +89,7 @@ public class AqualockListener implements Listener {
 				if (!(lock.getCoOwners().contains(breaker.getName()))) {
 					SpoutManager.getPlayer(breaker).sendNotification("Aqualock", "This block is locked!", Material.LAVA_BUCKET);
 					event.setCancelled(true);
+					breaker.setHealth(breaker.getHealth() - ((BukkitLock) lock).getDamage());
 					return;
 				}
 			}
@@ -209,6 +216,30 @@ public class AqualockListener implements Listener {
 		final Block moved = event.getRetractLocation().getBlock();
 		if (registry.contains(moved.getWorld().getUID(), moved.getX(), moved.getY(), moved.getZ())) {
 			event.setCancelled(true);
+		}
+	}
+
+	@EventHandler(priority = EventPriority.MONITOR)
+	public void onBlockBurn(BlockBurnEvent event) {
+		final Block block = event.getBlock();
+		event.setCancelled(registry.getLock(block.getWorld().getUID(), block.getX(), block.getY(), block.getZ()) != null);
+	}
+
+	@EventHandler(priority = EventPriority.MONITOR)
+	public void onEntityExplode(EntityExplodeEvent event) {
+		Iterator<Block> iter = event.blockList().iterator();
+		while(iter.hasNext()) {
+			Block block = iter.next();
+			final Block top = block.getRelative(BlockFace.UP);
+			if (BlockUtil.isDoorMaterial(top.getType())) {
+				if (registry.contains(top.getWorld().getUID(), top.getX(), top.getY(), top.getZ())) {
+					iter.remove();
+				}
+			} else {
+				if (registry.contains(block.getWorld().getUID(), block.getX(), block.getY(), block.getZ())) {
+					iter.remove();
+				}
+			}
 		}
 	}
 }

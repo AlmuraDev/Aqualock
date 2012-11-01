@@ -28,8 +28,8 @@ import org.bukkit.Location;
 public class DoorBukkitLock extends BukkitLock {
 	private long autocloseTimer;
 
-	public DoorBukkitLock(String owner, List<String> coowners, List<String> users, String passcode, Location location, byte data, double useCost, long autocloseTimer) {
-		super(owner, coowners, users, passcode, location, data, useCost);
+	public DoorBukkitLock(String owner, List<String> coowners, List<String> users, String passcode, Location location, byte data, double useCost, int damage, long autocloseTimer) {
+		super(owner, coowners, users, passcode, location, data, useCost, damage);
 		this.autocloseTimer = autocloseTimer;
 	}
 

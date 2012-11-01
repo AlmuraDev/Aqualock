@@ -27,6 +27,7 @@ import com.almuramc.aqualock.bukkit.display.AquaPanel;
 import com.almuramc.aqualock.bukkit.display.checkbox.EveryoneCheckbox;
 import com.almuramc.aqualock.bukkit.display.field.CloseTimerField;
 import com.almuramc.aqualock.bukkit.display.field.CoOwnerField;
+import com.almuramc.aqualock.bukkit.display.field.DamageField;
 import com.almuramc.aqualock.bukkit.display.field.OwnerField;
 import com.almuramc.aqualock.bukkit.display.field.PasswordField;
 import com.almuramc.aqualock.bukkit.display.field.UseCostField;
@@ -55,6 +56,7 @@ public class ApplyButton extends GenericButton {
 		List<String> users = null;
 		String password = "";
 		double cost = 0;
+		int damage = 0;
 		long timer = 0;
 		for (Widget widget : panel.getAttachedWidgets()) {
 			final Class clazz = widget.getClass();
@@ -86,16 +88,22 @@ public class ApplyButton extends GenericButton {
 				} catch (Exception e) {
 					//do nothing
 				}
+			} else if (clazz.equals(DamageField.class)) {
+				try {
+					damage = Integer.parseInt(((DamageField) widget).getText());
+				} catch (Exception e) {
+					//do nothing
+				}
 			}
 		}
 		final Location loc = panel.getLocation();
 		boolean close = true;
 		if (AqualockPlugin.getRegistry().contains(loc.getWorld().getUID(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ())) {
-			if (!LockUtil.update(owner, coowners, users, password, panel.getLocation(), panel.getLocation().getBlock().getData(), cost, timer)) {
+			if (!LockUtil.update(owner, coowners, users, password, panel.getLocation(), panel.getLocation().getBlock().getData(), cost, damage, timer)) {
 				close = false;
 			}
 		} else {
-			if (!LockUtil.lock(owner, coowners, users, password, panel.getLocation(), panel.getLocation().getBlock().getData(), cost, timer)) {
+			if (!LockUtil.lock(owner, coowners, users, password, panel.getLocation(), panel.getLocation().getBlock().getData(), cost, damage, timer)) {
 				close = false;
 			}
 		}

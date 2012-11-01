@@ -34,12 +34,14 @@ public class BukkitLock extends BasicLock {
 	private String passcode;
 	private byte data;
 	private double useCost;
+	private int damage;
 
-	public BukkitLock(String owner, List<String> coowners, List<String> users, String passcode, Location location, byte data, double useCost) {
+	public BukkitLock(String owner, List<String> coowners, List<String> users, String passcode, Location location, byte data, double useCost, int damage) {
 		super(owner, coowners, users, location.getWorld().getUID(), location.getBlockX(), location.getBlockY(), location.getBlockZ());
 		this.passcode = passcode;
 		this.data = data;
 		this.useCost = useCost;
+		this.damage = damage;
 	}
 
 	public String getPasscode() {
@@ -66,6 +68,14 @@ public class BukkitLock extends BasicLock {
 		this.useCost = useCost;
 	}
 
+	public int getDamage() {
+		return damage;
+	}
+
+	public void setDamage(int damage) {
+		this.damage = damage;
+	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (!super.equals(obj)) {
@@ -77,6 +87,7 @@ public class BukkitLock extends BasicLock {
 				.append(this.passcode, other.passcode)
 				.append(this.data, other.data)
 				.append(this.useCost, other.useCost)
+				.append(this.damage, other.damage)
 				.isEquals();
 	}
 
@@ -87,6 +98,7 @@ public class BukkitLock extends BasicLock {
 				.append("passcode", passcode)
 				.append("data", data)
 				.append("cost", useCost)
+				.append("damage", damage)
 				.toString();
 	}
 }

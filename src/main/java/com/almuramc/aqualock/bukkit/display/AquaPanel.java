@@ -284,6 +284,8 @@ public class AquaPanel extends GenericPopup {
 			applyButton.setText("Lock");
 			closeTimerField.setText("5");
 			costToCreateLabel.setText("Cost to create:");
+			costToUseField.setText("0.0");
+			damageOnFailField.setText("0.0");
 			this.setDirty(true);
 			return;
 		}
@@ -344,6 +346,7 @@ public class AquaPanel extends GenericPopup {
 			closeTimerField.setText(Long.toString(((DoorBukkitLock) lock).getAutocloseTimer()).replaceAll("[^\\d.]", ""));
 		}
 		applyButton.setText("Update");
+		damageOnFailField.setText(Integer.toString(((BukkitLock) lock).getDamage()));
 		this.setDirty(true);
 	}
 

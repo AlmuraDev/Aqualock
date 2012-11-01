@@ -64,7 +64,7 @@ public class LockUtil {
 	 * @param location
 	 * @param data
 	 */
-	public static boolean lock(String playerName, List<String> coowners, List<String> users, String passcode, Location location, byte data, double useCost, long autocloseTimer) {
+	public static boolean lock(String playerName, List<String> coowners, List<String> users, String passcode, Location location, byte data, double useCost, int damage, long autocloseTimer) {
 		checkLocation(location);
 		final Player player = checkNameAndGetPlayer(playerName);
 		if (coowners == null) {
@@ -78,9 +78,9 @@ public class LockUtil {
 		}
 		Lock lock;
 		if (BlockUtil.isDoorMaterial(location.getBlock().getType())) {
-			lock = new DoorBukkitLock(playerName, coowners, users, passcode, location, data, useCost, autocloseTimer);
+			lock = new DoorBukkitLock(playerName, coowners, users, passcode, location, data, useCost, damage, autocloseTimer);
 		} else {
-			lock = new BukkitLock(playerName, coowners, users, passcode, location, data, useCost);
+			lock = new BukkitLock(playerName, coowners, users, passcode, location, data, useCost, damage);
 		}
 		//After all that is said and done, add the lock made to the registry and backend.
 		SpoutManager.getPlayer(player).sendNotification("Aqualock", "Locked the block!", Material.CAKE);
@@ -90,21 +90,21 @@ public class LockUtil {
 		final Block oBlock = BlockUtil.getDoubleDoor(location);
 		if (oBlock != null) {
 			BlockUtil.changeDoorStates(false, location.getBlock(), oBlock);
-			DoorBukkitLock otherLock = new DoorBukkitLock(playerName, coowners, users, passcode, oBlock.getLocation(), oBlock.getData(), useCost, autocloseTimer);
+			DoorBukkitLock otherLock = new DoorBukkitLock(playerName, coowners, users, passcode, oBlock.getLocation(), oBlock.getData(), useCost, damage, autocloseTimer);
 			registry.addLock(otherLock);
 			backend.addLock(otherLock);
 			if ((oBlock.getData() & 0x8) == 0x8) {
-				DoorBukkitLock bottomLeft = new DoorBukkitLock(playerName, coowners, users, passcode, location.getBlock().getRelative(BlockFace.DOWN).getLocation(), location.getBlock().getRelative(BlockFace.DOWN).getData(), useCost, autocloseTimer);
+				DoorBukkitLock bottomLeft = new DoorBukkitLock(playerName, coowners, users, passcode, location.getBlock().getRelative(BlockFace.DOWN).getLocation(), location.getBlock().getRelative(BlockFace.DOWN).getData(), useCost, damage, autocloseTimer);
 				registry.addLock(bottomLeft);
 				backend.addLock(bottomLeft);
-				DoorBukkitLock bottomRight = new DoorBukkitLock(playerName, coowners, users, passcode, oBlock.getRelative(BlockFace.DOWN).getLocation(), oBlock.getRelative(BlockFace.DOWN).getData(), useCost, autocloseTimer);
+				DoorBukkitLock bottomRight = new DoorBukkitLock(playerName, coowners, users, passcode, oBlock.getRelative(BlockFace.DOWN).getLocation(), oBlock.getRelative(BlockFace.DOWN).getData(), useCost, damage, autocloseTimer);
 				registry.addLock(bottomRight);
 				backend.addLock(bottomRight);
 			} else {
-				DoorBukkitLock topLeft = new DoorBukkitLock(playerName, coowners, users, passcode, location.getBlock().getRelative(BlockFace.UP).getLocation(), location.getBlock().getRelative(BlockFace.UP).getData(), useCost, autocloseTimer);
+				DoorBukkitLock topLeft = new DoorBukkitLock(playerName, coowners, users, passcode, location.getBlock().getRelative(BlockFace.UP).getLocation(), location.getBlock().getRelative(BlockFace.UP).getData(), useCost, damage, autocloseTimer);
 				registry.addLock(topLeft);
 				backend.addLock(topLeft);
-				DoorBukkitLock topRight = new DoorBukkitLock(playerName, coowners, users, passcode, oBlock.getRelative(BlockFace.UP).getLocation(), oBlock.getRelative(BlockFace.UP).getData(), useCost, autocloseTimer);
+				DoorBukkitLock topRight = new DoorBukkitLock(playerName, coowners, users, passcode, oBlock.getRelative(BlockFace.UP).getLocation(), oBlock.getRelative(BlockFace.UP).getData(), useCost, damage, autocloseTimer);
 				registry.addLock(topRight);
 				backend.addLock(topRight);
 			}
@@ -157,7 +157,7 @@ public class LockUtil {
 	 * @param location
 	 * @param data
 	 */
-	public static boolean update(String playerName, List<String> coowners, List<String> users, String passcode, Location location, byte data, double useCost, long timer) {
+	public static boolean update(String playerName, List<String> coowners, List<String> users, String passcode, Location location, byte data, double useCost, int damage, long timer) {
 		checkLocation(location);
 		Player player = checkNameAndGetPlayer(playerName);
 		if (coowners == null) {
@@ -187,21 +187,21 @@ public class LockUtil {
 		backend.addLock(lock);
 		final Block oBlock = BlockUtil.getDoubleDoor(location);
 		if (oBlock != null) {
-			DoorBukkitLock otherLock = new DoorBukkitLock(playerName, coowners, users, passcode, oBlock.getLocation(), oBlock.getData(), useCost, timer);
+			DoorBukkitLock otherLock = new DoorBukkitLock(playerName, coowners, users, passcode, oBlock.getLocation(), oBlock.getData(), useCost, damage, timer);
 			registry.addLock(otherLock);
 			backend.addLock(otherLock);
 			if ((oBlock.getData() & 0x8) == 0x8) {
-				DoorBukkitLock bottomLeft = new DoorBukkitLock(playerName, coowners, users, passcode, location.getBlock().getRelative(BlockFace.DOWN).getLocation(), location.getBlock().getRelative(BlockFace.DOWN).getData(), useCost, timer);
+				DoorBukkitLock bottomLeft = new DoorBukkitLock(playerName, coowners, users, passcode, location.getBlock().getRelative(BlockFace.DOWN).getLocation(), location.getBlock().getRelative(BlockFace.DOWN).getData(), useCost, damage, timer);
 				registry.addLock(bottomLeft);
 				backend.addLock(bottomLeft);
-				DoorBukkitLock bottomRight = new DoorBukkitLock(playerName, coowners, users, passcode, oBlock.getRelative(BlockFace.DOWN).getLocation(), oBlock.getRelative(BlockFace.DOWN).getData(), useCost, timer);
+				DoorBukkitLock bottomRight = new DoorBukkitLock(playerName, coowners, users, passcode, oBlock.getRelative(BlockFace.DOWN).getLocation(), oBlock.getRelative(BlockFace.DOWN).getData(), useCost, damage, timer);
 				registry.addLock(bottomRight);
 				backend.addLock(bottomRight);
 			} else {
-				DoorBukkitLock topLeft = new DoorBukkitLock(playerName, coowners, users, passcode, location.getBlock().getRelative(BlockFace.UP).getLocation(), location.getBlock().getRelative(BlockFace.UP).getData(), useCost, timer);
+				DoorBukkitLock topLeft = new DoorBukkitLock(playerName, coowners, users, passcode, location.getBlock().getRelative(BlockFace.UP).getLocation(), location.getBlock().getRelative(BlockFace.UP).getData(), useCost, damage, timer);
 				registry.addLock(topLeft);
 				backend.addLock(topLeft);
-				DoorBukkitLock topRight = new DoorBukkitLock(playerName, coowners, users, passcode, oBlock.getRelative(BlockFace.UP).getLocation(), oBlock.getRelative(BlockFace.UP).getData(), useCost, timer);
+				DoorBukkitLock topRight = new DoorBukkitLock(playerName, coowners, users, passcode, oBlock.getRelative(BlockFace.UP).getLocation(), oBlock.getRelative(BlockFace.UP).getData(), useCost, damage, timer);
 				registry.addLock(topRight);
 				backend.addLock(topRight);
 			}
