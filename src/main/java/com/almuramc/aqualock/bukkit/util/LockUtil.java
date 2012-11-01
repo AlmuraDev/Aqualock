@@ -84,7 +84,7 @@ public class LockUtil {
 			lock = new BukkitLock(playerName, coowners, users, passcode, location, data, useCost);
 		}
 		//After all that is said and done, add the lock made to the registry and backend.
-		SpoutManager.getPlayer(player).sendNotification("Aqua", "Locked the block!", Material.CAKE);
+		SpoutManager.getPlayer(player).sendNotification("Aqualock", "Locked the block!", Material.CAKE);
 		registry.addLock(lock);
 		backend.addLock(lock);
 		//If the lock created in this method's location is not the location of this iteration then its the second door, lock it.
@@ -124,7 +124,7 @@ public class LockUtil {
 			final Lock lock = registry.getLock(location.getWorld().getUID(), location.getBlockX(), location.getBlockY(), location.getBlockZ());
 			registry.removeLock(lock);
 			backend.removeLock(lock);
-			SpoutManager.getPlayer(player).sendNotification("Aqua", "Unlocked the block!", Material.CAKE);
+			SpoutManager.getPlayer(player).sendNotification("Aqualock", "Unlocked the block!", Material.CAKE);
 			final Block oBlock = BlockUtil.getDoubleDoor(location);
 			if (oBlock != null) {
 				backend.removeLock(registry.getLock(oBlock.getWorld().getUID(), oBlock.getX(), oBlock.getY(), oBlock.getZ()));
@@ -206,16 +206,18 @@ public class LockUtil {
 				backend.addLock(topRight);
 			}
 		}
-		SpoutManager.getPlayer(player).sendNotification("Aqua", "Updated the block!", Material.CAKE);
+		SpoutManager.getPlayer(player).sendNotification("Aqualock", "Updated the block!", Material.CAKE);
 		return true;
 	}
 
-	public static void use(String playerName, String passcode, Location location, double useCost) {
+	public static boolean use(String playerName, String passcode, Location location, double useCost) {
 		checkLocation(location);
 		final Player player = checkNameAndGetPlayer(playerName);
-		if (performAction(player, passcode, location, useCost, "USE")) {
-			SpoutManager.getPlayer(player).sendNotification("Aqua", "Used the block!", Material.CAKE);
+		if (!performAction(player, passcode, location, useCost, "USE")) {
+			return false;
 		}
+		SpoutManager.getPlayer(player).sendNotification("Aqualock", "Used the block!", Material.CAKE);
+		return true;
 	}
 
 	public static boolean performAction(Player player, String passcode, Location location, double useCost, String action) {
@@ -230,26 +232,26 @@ public class LockUtil {
 		switch (action) {
 			case "LOCK":
 				if (lock != null) {
-					splayer.sendNotification("Aqua", "This location has a lock!", Material.LAVA_BUCKET);
+					splayer.sendNotification("Aqualock", "This location has a lock!", Material.LAVA_BUCKET);
 					return false;
 				}
 				if (AqualockPlugin.getEconomies() != null) {
 					if (EconomyUtil.shouldChargeForLock(player)) {
 						if (!EconomyUtil.hasAccount(player)) {
-							splayer.sendNotification("Aqua", "You have no account!", Material.LAVA_BUCKET);
+							splayer.sendNotification("Aqualock", "You have no account!", Material.LAVA_BUCKET);
 							return false;
 						}
 						final double value = config.getCosts().getLockCost(location.getBlock().getType());
 						if (!EconomyUtil.hasEnough(player, value)) {
-							splayer.sendNotification("Aqua", "Not enough money!", Material.LAVA_BUCKET);
+							splayer.sendNotification("Aqualock", "Not enough money!", Material.LAVA_BUCKET);
 							return false;
 						}
 						if (value > 0) {
-							splayer.sendNotification("Aqua", "Charged for lock: " + value, Material.POTION);
+							splayer.sendNotification("Aqualock", "Charged for lock: " + value, Material.POTION);
 						} else if (value < 0) {
-							splayer.sendNotification("Aqua", "Received for lock: " + value, Material.CAKE);
+							splayer.sendNotification("Aqualock", "Received for lock: " + value, Material.CAKE);
 						} else {
-							splayer.sendNotification("Aqua", "Lock was free!", Material.APPLE);
+							splayer.sendNotification("Aqualock", "Lock was free!", Material.APPLE);
 						}
 						EconomyUtil.apply(player, value);
 					}
@@ -257,7 +259,7 @@ public class LockUtil {
 				return true;
 			case "UNLOCK":
 				if (lock == null) {
-					splayer.sendNotification("Aqua", "No lock at location!", Material.POTION);
+					splayer.sendNotification("Aqualock", "No lock at location!", Material.POTION);
 					return true;
 				}
 				boolean canUnlock = false;
@@ -265,7 +267,7 @@ public class LockUtil {
 					for (String pname : lock.getCoOwners()) {
 						if (pname.equals(name)) {
 							if (lock instanceof BukkitLock && (!((BukkitLock) lock).getPasscode().equals(passcode))) {
-								splayer.sendNotification("Aqua", "Invalid password!", Material.LAVA_BUCKET);
+								splayer.sendNotification("Aqualock", "Invalid password!", Material.LAVA_BUCKET);
 								return false;
 							}
 							canUnlock = true;
@@ -275,26 +277,26 @@ public class LockUtil {
 					canUnlock = true;
 				}
 				if (!canUnlock) {
-					splayer.sendNotification("Aqua", "Cannot unlock the lock!", Material.LAVA_BUCKET);
+					splayer.sendNotification("Aqualock", "Cannot unlock the lock!", Material.LAVA_BUCKET);
 					return false;
 				}
 				if (AqualockPlugin.getEconomies() != null) {
 					if (EconomyUtil.shouldChargeForUnlock(player)) {
 						if (!EconomyUtil.hasAccount(player)) {
-							splayer.sendNotification("Aqua", "You have no account!", Material.LAVA_BUCKET);
+							splayer.sendNotification("Aqualock", "You have no account!", Material.LAVA_BUCKET);
 							return false;
 						}
 						final double value = config.getCosts().getUnlockCost(location.getBlock().getType());
 						if (!EconomyUtil.hasEnough(player, value)) {
-							splayer.sendNotification("Aqua", "Not enough money!", Material.LAVA_BUCKET);
+							splayer.sendNotification("Aqualock", "Not enough money!", Material.LAVA_BUCKET);
 							return false;
 						}
 						if (value > 0) {
-							splayer.sendNotification("Aqua", "Charged for unlock: " + value, Material.POTION);
+							splayer.sendNotification("Aqualock", "Charged for unlock: " + value, Material.POTION);
 						} else if (value < 0) {
-							splayer.sendNotification("Aqua", "Received for unlock: " + value, Material.CAKE);
+							splayer.sendNotification("Aqualock", "Received for unlock: " + value, Material.CAKE);
 						} else {
-							splayer.sendNotification("Aqua", "Unlock was free!", Material.APPLE);
+							splayer.sendNotification("Aqualock", "Unlock was free!", Material.APPLE);
 						}
 						EconomyUtil.apply(player, value);
 					}
@@ -308,7 +310,7 @@ public class LockUtil {
 					for (String pname : lock.getCoOwners()) {
 						if (pname.equals(name)) {
 							if (lock instanceof BukkitLock && (!((BukkitLock) lock).getPasscode().equals(passcode))) {
-								splayer.sendNotification("Aqua", "Invalid password!", Material.LAVA_BUCKET);
+								splayer.sendNotification("Aqualock", "Invalid password!", Material.LAVA_BUCKET);
 								return false;
 							}
 						}
@@ -317,19 +319,19 @@ public class LockUtil {
 				if (AqualockPlugin.getEconomies() != null) {
 					if (EconomyUtil.shouldChargeForUse(player)) {
 						if (!EconomyUtil.hasAccount(player)) {
-							splayer.sendNotification("Aqua", "You have no account!", Material.LAVA_BUCKET);
+							splayer.sendNotification("Aqualock", "You have no account!", Material.LAVA_BUCKET);
 							return false;
 						}
 						if (!EconomyUtil.hasEnough(player, useCost)) {
-							splayer.sendNotification("Aqua", "Not enough money!", Material.LAVA_BUCKET);
+							splayer.sendNotification("Aqualock", "Not enough money!", Material.LAVA_BUCKET);
 							return false;
 						}
 						if (useCost > 0) {
-							splayer.sendNotification("Aqua", "Charged for use: " + useCost, Material.POTION);
+							splayer.sendNotification("Aqualock", "Charged for use: " + useCost, Material.POTION);
 						} else if (useCost < 0) {
-							splayer.sendNotification("Aqua", "Received for use: " + useCost, Material.CAKE);
+							splayer.sendNotification("Aqualock", "Received for use: " + useCost, Material.CAKE);
 						} else {
-							splayer.sendNotification("Aqua", "Use was free!", Material.APPLE);
+							splayer.sendNotification("Aqualock", "Use was free!", Material.APPLE);
 						}
 						EconomyUtil.apply(player, useCost);
 					}
@@ -350,26 +352,26 @@ public class LockUtil {
 					canUpdate = true;
 				}
 				if (!canUpdate) {
-					splayer.sendNotification("Aqua", "Not the Owner/CoOwner!", Material.LAVA_BUCKET);
+					splayer.sendNotification("Aqualock", "Not the Owner/CoOwner!", Material.LAVA_BUCKET);
 					return false;
 				}
 				if (AqualockPlugin.getEconomies() != null) {
 					if (EconomyUtil.shouldChargeForUpdate(player)) {
 						if (!EconomyUtil.hasAccount(player)) {
-							splayer.sendNotification("Aqua", "You have no account!", Material.LAVA_BUCKET);
+							splayer.sendNotification("Aqualock", "You have no account!", Material.LAVA_BUCKET);
 							return false;
 						}
 						final double value = config.getCosts().getUpdateCost(location.getBlock().getType());
 						if (!EconomyUtil.hasEnough(player, value)) {
-							splayer.sendNotification("Aqua", "Not enough money!", Material.LAVA_BUCKET);
+							splayer.sendNotification("Aqualock", "Not enough money!", Material.LAVA_BUCKET);
 							return false;
 						}
 						if (value > 0) {
-							splayer.sendNotification("Aqua", "Charged for update: " + value, Material.POTION);
+							splayer.sendNotification("Aqualock", "Charged for update: " + value, Material.POTION);
 						} else if (value < 0) {
-							splayer.sendNotification("Aqua", "Received for update: " + value, Material.CAKE);
+							splayer.sendNotification("Aqualock", "Received for update: " + value, Material.CAKE);
 						} else {
-							splayer.sendNotification("Aqua", "Update was free!", Material.APPLE);
+							splayer.sendNotification("Aqualock", "Update was free!", Material.APPLE);
 						}
 						EconomyUtil.apply(player, value);
 					}

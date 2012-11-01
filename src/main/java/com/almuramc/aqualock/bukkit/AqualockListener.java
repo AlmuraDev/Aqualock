@@ -72,7 +72,7 @@ public class AqualockListener implements Listener {
 			final Block temp = top.getRelative(BlockFace.UP);
 			if (BlockUtil.isDoorMaterial(temp.getType())) {
 				if (registry.contains(top.getWorld().getUID(), top.getX(), top.getY(), top.getZ())) {
-					SpoutManager.getPlayer(breaker).sendNotification("Aqua", "Locked door above!", Material.LAVA_BUCKET);
+					SpoutManager.getPlayer(breaker).sendNotification("Aqualock", "Locked door above!", Material.LAVA_BUCKET);
 					event.setCancelled(true);
 					return;
 				}
@@ -81,12 +81,12 @@ public class AqualockListener implements Listener {
 		if (lock != null) {
 			if (!lock.getOwner().equals(breaker.getName())) {
 				if (!(lock.getCoOwners().contains(breaker.getName()))) {
-					SpoutManager.getPlayer(breaker).sendNotification("Aqua", "This block is locked!", Material.LAVA_BUCKET);
+					SpoutManager.getPlayer(breaker).sendNotification("Aqualock", "This block is locked!", Material.LAVA_BUCKET);
 					event.setCancelled(true);
 					return;
 				}
 			}
-			SpoutManager.getPlayer(breaker).sendNotification("Aqua", "Unlock first!", Material.LAVA_BUCKET);
+			SpoutManager.getPlayer(breaker).sendNotification("Aqualock", "Unlock first!", Material.LAVA_BUCKET);
 			event.setCancelled(true);
 		}
 	}
@@ -99,7 +99,7 @@ public class AqualockListener implements Listener {
 		if (lock != null) {
 			if (!lock.getOwner().equals(player.getName())) {
 				if (!(lock.getCoOwners().contains(player.getName()))) {
-					SpoutManager.getPlayer(player).sendNotification("Aqua", "This block is locked!", Material.LAVA_BUCKET);
+					SpoutManager.getPlayer(player).sendNotification("Aqualock", "This block is locked!", Material.LAVA_BUCKET);
 					event.setCancelled(true);
 				}
 			}
@@ -114,7 +114,7 @@ public class AqualockListener implements Listener {
 		if (lock != null) {
 			if (!lock.getOwner().equals(player.getName())) {
 				if (!(lock.getCoOwners().contains(player.getName()))) {
-					SpoutManager.getPlayer(player).sendNotification("Aqua", "This block is locked!", Material.LAVA_BUCKET);
+					SpoutManager.getPlayer(player).sendNotification("Aqualock", "This block is locked!", Material.LAVA_BUCKET);
 					event.setCancelled(true);
 				}
 			}
@@ -144,14 +144,14 @@ public class AqualockListener implements Listener {
 		if (lock != null) {
 			if (!LockUtil.canPerformAction(interacter, "USE")) {
 				if (event.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
-					SpoutManager.getPlayer(interacter).sendNotification("Aqua", "Break denied!", Material.LAVA_BUCKET);
+					SpoutManager.getPlayer(interacter).sendNotification("Aqualock", "Break denied!", Material.LAVA_BUCKET);
 				} else if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
-					SpoutManager.getPlayer(interacter).sendNotification("Aqua", "Interact denied!", Material.LAVA_BUCKET);
+					SpoutManager.getPlayer(interacter).sendNotification("Aqualock", "Interact denied!", Material.LAVA_BUCKET);
 				}
 				event.setCancelled(true);
 				return;
 			}
-			if (!LockUtil.performAction(interacter, "", interacted.getLocation(), ((BukkitLock) lock).getUseCost(), "USE")) {
+			if (!LockUtil.use(interacter.getName(), "", interacted.getLocation(), ((BukkitLock) lock).getUseCost())) {
 				event.setCancelled(true);
 				return;
 			}
@@ -167,7 +167,7 @@ public class AqualockListener implements Listener {
 		if (lock != null) {
 			if (!lock.getOwner().equals(player.getName())) {
 				if (!(lock.getCoOwners().contains(player.getName()))) {
-					SpoutManager.getPlayer(player).sendNotification("Aqua", "This block is locked!", Material.LAVA_BUCKET);
+					SpoutManager.getPlayer(player).sendNotification("Aqualock", "This block is locked!", Material.LAVA_BUCKET);
 					event.setCancelled(true);
 				}
 			}
