@@ -164,8 +164,7 @@ public class LockUtil {
 			coowners = Collections.emptyList();
 		}
 		if (users == null) {
-			users = new ArrayList<>(1);
-			users.add("Everyone");
+			users = Collections.emptyList();
 		}
 		if (!performAction(player, passcode, location, useCost, "UPDATE")) {
 			return false;
