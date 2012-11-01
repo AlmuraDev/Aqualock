@@ -84,13 +84,21 @@ public class ApplyButton extends GenericButton {
 				}
 			} else if (clazz.equals(UseCostField.class)) {
 				try {
-					cost = Double.parseDouble(((UseCostField) widget).getText());
+					double value = Double.parseDouble(((UseCostField) widget).getText());
+					if (value < 0) {
+						value = 0 - value;
+					}
+					cost = value;
 				} catch (Exception e) {
 					//do nothing
 				}
 			} else if (clazz.equals(DamageField.class)) {
 				try {
-					damage = Integer.parseInt(((DamageField) widget).getText());
+					int value = Integer.parseInt(((DamageField) widget).getText());
+					if (value < 0) {
+						value = Math.abs(value);
+					}
+					damage = value;
 				} catch (Exception e) {
 					//do nothing
 				}
