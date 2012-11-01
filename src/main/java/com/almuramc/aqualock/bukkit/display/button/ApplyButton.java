@@ -24,6 +24,7 @@ import java.util.List;
 
 import com.almuramc.aqualock.bukkit.AqualockPlugin;
 import com.almuramc.aqualock.bukkit.display.AquaPanel;
+import com.almuramc.aqualock.bukkit.display.checkbox.EveryoneCheckbox;
 import com.almuramc.aqualock.bukkit.display.field.CloseTimerField;
 import com.almuramc.aqualock.bukkit.display.field.CoOwnerField;
 import com.almuramc.aqualock.bukkit.display.field.OwnerField;
@@ -64,7 +65,15 @@ public class ApplyButton extends GenericButton {
 			} else if (clazz.equals(CoOwnerField.class)) {
 				coowners = parseFieldToList(((CoOwnerField) widget).getText());
 			} else if (clazz.equals(UserField.class)) {
-				users = parseFieldToList(((UserField) widget).getText());
+				boolean everyone = false;
+				for (Widget inner : panel.getAttachedWidgets()) {
+					if (inner instanceof EveryoneCheckbox) {
+						everyone = ((EveryoneCheckbox) widget).isChecked();
+					}
+				}
+				final ArrayList<String> temp = new ArrayList<>();
+				temp.add("Everyone");
+				users = everyone == true ? temp : parseFieldToList(((UserField) widget).getText());
 			} else if (clazz.equals(CloseTimerField.class)) {
 				try {
 					timer = Long.parseLong(((CloseTimerField) widget).getText(), 10);

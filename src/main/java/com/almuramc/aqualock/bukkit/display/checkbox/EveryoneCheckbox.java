@@ -30,22 +30,4 @@ public class EveryoneCheckbox extends GenericCheckBox {
 	public EveryoneCheckbox() {
 		super("Allow Everyone");
 	}
-
-	@Override
-	public void onButtonClick(ButtonClickEvent event) {
-		final AquaPanel panel = (AquaPanel) getScreen();
-		if (isChecked()) {
-			for (Widget widget : panel.getAttachedWidgets()) {
-				if (widget instanceof UserField) {
-					((UserField) widget).setText("Everyone");
-				}
-			}
-		} else {
-			for (Widget widget : panel.getAttachedWidgets()) {
-				if (widget instanceof UserField) {
-					((UserField) widget).setText("");
-				}
-			}
-		}
-	}
 }
