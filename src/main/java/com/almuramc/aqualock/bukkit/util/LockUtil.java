@@ -124,6 +124,7 @@ public class LockUtil {
 			final Lock lock = registry.getLock(location.getWorld().getUID(), location.getBlockX(), location.getBlockY(), location.getBlockZ());
 			registry.removeLock(lock);
 			backend.removeLock(lock);
+			SpoutManager.getPlayer(player).sendNotification("Aqua", "Unlocked the block!", Material.CAKE);
 			final Block oBlock = BlockUtil.getDoubleDoor(location);
 			if (oBlock != null) {
 				backend.removeLock(registry.getLock(oBlock.getWorld().getUID(), oBlock.getX(), oBlock.getY(), oBlock.getZ()));
@@ -184,13 +185,37 @@ public class LockUtil {
 		//Update backend and registry
 		registry.addLock(lock);
 		backend.addLock(lock);
+		final Block oBlock = BlockUtil.getDoubleDoor(location);
+		if (oBlock != null) {
+			DoorBukkitLock otherLock = new DoorBukkitLock(playerName, coowners, users, passcode, oBlock.getLocation(), oBlock.getData(), useCost, timer);
+			registry.addLock(otherLock);
+			backend.addLock(otherLock);
+			if ((oBlock.getData() & 0x8) == 0x8) {
+				DoorBukkitLock bottomLeft = new DoorBukkitLock(playerName, coowners, users, passcode, location.getBlock().getRelative(BlockFace.DOWN).getLocation(), location.getBlock().getRelative(BlockFace.DOWN).getData(), useCost, timer);
+				registry.addLock(bottomLeft);
+				backend.addLock(bottomLeft);
+				DoorBukkitLock bottomRight = new DoorBukkitLock(playerName, coowners, users, passcode, oBlock.getRelative(BlockFace.DOWN).getLocation(), oBlock.getRelative(BlockFace.DOWN).getData(), useCost, timer);
+				registry.addLock(bottomRight);
+				backend.addLock(bottomRight);
+			} else {
+				DoorBukkitLock topLeft = new DoorBukkitLock(playerName, coowners, users, passcode, location.getBlock().getRelative(BlockFace.UP).getLocation(), location.getBlock().getRelative(BlockFace.UP).getData(), useCost, timer);
+				registry.addLock(topLeft);
+				backend.addLock(topLeft);
+				DoorBukkitLock topRight = new DoorBukkitLock(playerName, coowners, users, passcode, oBlock.getRelative(BlockFace.UP).getLocation(), oBlock.getRelative(BlockFace.UP).getData(), useCost, timer);
+				registry.addLock(topRight);
+				backend.addLock(topRight);
+			}
+		}
+		SpoutManager.getPlayer(player).sendNotification("Aqua", "Updated the block!", Material.CAKE);
 		return true;
 	}
 
 	public static void use(String playerName, String passcode, Location location, double useCost) {
 		checkLocation(location);
 		final Player player = checkNameAndGetPlayer(playerName);
-		performAction(player, passcode, location, useCost, "USE");
+		if (performAction(player, passcode, location, useCost, "USE")) {
+			SpoutManager.getPlayer(player).sendNotification("Aqua", "Used the block!", Material.CAKE);
+		}
 	}
 
 	public static boolean performAction(Player player, String passcode, Location location, double useCost, String action) {

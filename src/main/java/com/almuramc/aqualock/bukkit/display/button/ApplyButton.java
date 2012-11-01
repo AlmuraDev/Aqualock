@@ -66,9 +66,17 @@ public class ApplyButton extends GenericButton {
 			} else if (clazz.equals(UserField.class)) {
 				users = parseFieldToList(((UserField) widget).getText());
 			} else if (clazz.equals(CloseTimerField.class)) {
-				timer = Long.parseLong(((CloseTimerField) widget).getText(), 10);
+				try {
+					timer = Long.parseLong(((CloseTimerField) widget).getText(), 10);
+				} catch (Exception e) {
+					//do nothing
+				}
 			} else if (clazz.equals(UseCostField.class)) {
-				cost = Double.parseDouble(((UseCostField) widget).getText());
+				try {
+					cost = Double.parseDouble(((UseCostField) widget).getText());
+				} catch (Exception e) {
+					//do nothing
+				}
 			}
 		}
 		final Location loc = panel.getLocation();

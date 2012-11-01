@@ -25,6 +25,7 @@ import com.almuramc.aqualock.bukkit.AqualockPlugin;
 import com.almuramc.aqualock.bukkit.util.BlockUtil;
 import com.almuramc.aqualock.bukkit.util.LockUtil;
 import com.almuramc.aqualock.bukkit.util.PermissionUtil;
+import com.almuramc.bolt.lock.Lock;
 import com.almuramc.bolt.registry.Registry;
 
 import org.bukkit.Bukkit;
@@ -55,28 +56,34 @@ public class AqualockCommands implements CommandExecutor {
 			return false;
 		}
 		Player player = (Player) commandSender;
-		//TODO Possibly see if they enter params after lock? This suffices for now.
-		Block target = BlockUtil.getTarget(player, null, 4);
-		if (target == null) {
-			player.sendMessage(plugin.getPrefix() + "No valid block found in a four block line of sight.");
-		}
-		if (strings[0].equalsIgnoreCase("lock")) {
-			if (PermissionUtil.canLock(player)) {
-				LockUtil.lock(player.getName(), null, null, "", target.getLocation(), target.getData(), 0, 0);
+		if (strings[0].equalsIgnoreCase("check")) {
+			Block target = BlockUtil.getTarget(player, null, 4);
+			if (target == null) {
+				player.sendMessage(plugin.getPrefix() + "No valid block found in a four block line of sight.");
 			}
-			return true;
-		} else if (strings[0].equalsIgnoreCase("unlock")) {
-			if (PermissionUtil.canUnlock(player)) {
-				LockUtil.unlock(player.getName(), "", target.getLocation());
-			}
-			return true;
-		} else if (strings[0].equalsIgnoreCase("update")) {
-			if (PermissionUtil.canUpdate(player)) {
-				LockUtil.update(player.getName(), null, null, "", target.getLocation(), target.getData(), 0, 0);
-			}
-			return true;
-		} else if (strings[0].equalsIgnoreCase("check")) {
 			check(player, target.getLocation());
+			return true;
+		} else if (strings[0].equalsIgnoreCase("clear")) {
+			if (!PermissionUtil.has(player, "aqualock.admin")) {
+				player.sendMessage(plugin.getPrefix() + "You do not have permission to clear a person's locks!");
+				return true;
+			}
+			if (strings.length < 2) {
+				player.sendMessage(plugin.getPrefix() + "Need to specify a player's name as a parameter.");
+				return true;
+			}
+			final Player playerToClear = Bukkit.getPlayerExact(strings[1]);
+			if (playerToClear == null) {
+				player.sendMessage(plugin.getPrefix() + "Need to specify a valid player's name as a parameter.");
+				return true;
+			}
+			//EXPENSIVE, BLAME DOCKTER
+			for (Lock lock : plugin.getRegistry().getAll()) {
+				if (lock.getOwner().equals(playerToClear.getName())) {
+					plugin.getRegistry().removeLock(lock);
+					plugin.getBackend().removeLock(lock);
+				}
+			}
 			return true;
 		}
 		return false;

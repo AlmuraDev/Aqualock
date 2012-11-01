@@ -160,6 +160,7 @@ public class BlockUtil {
 			final Block finalBlock = block;
 			final Block finalOBlock = oBlock;
 			final DoorBukkitLock lock = (DoorBukkitLock) AqualockPlugin.getRegistry().getLock(finalBlock.getWorld().getUID(), finalBlock.getX(), finalBlock.getY(), finalBlock.getZ());
+			System.out.println(lock.getAutocloseTimer());
 			if (lock.getAutocloseTimer() > 0) {
 				AqualockPlugin.getInstance().getServer().getScheduler().scheduleSyncDelayedTask(AqualockPlugin.getInstance(), new Runnable() {
 					@Override

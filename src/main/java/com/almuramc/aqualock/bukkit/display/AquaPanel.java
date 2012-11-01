@@ -281,6 +281,7 @@ public class AquaPanel extends GenericPopup {
 					((UnlockButton) widget).setEnabled(false);
 				}
 			}
+			applyButton.setText("Lock");
 			closeTimerField.setText("5");
 			costToCreateLabel.setText("Cost to create:");
 			this.setDirty(true);
@@ -338,6 +339,7 @@ public class AquaPanel extends GenericPopup {
 		if (lock instanceof DoorBukkitLock) {
 			closeTimerField.setText(Long.toString(((DoorBukkitLock) lock).getAutocloseTimer()).replaceAll("[^\\d.]", ""));
 		}
+		applyButton.setText("Update");
 		this.setDirty(true);
 	}
 
