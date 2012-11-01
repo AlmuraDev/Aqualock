@@ -19,12 +19,7 @@
  */
 package com.almuramc.aqualock.bukkit.display.checkbox;
 
-import com.almuramc.aqualock.bukkit.display.AquaPanel;
-import com.almuramc.aqualock.bukkit.display.field.UserField;
-
-import org.getspout.spoutapi.event.screen.ButtonClickEvent;
 import org.getspout.spoutapi.gui.GenericCheckBox;
-import org.getspout.spoutapi.gui.Widget;
 
 public class EveryoneCheckbox extends GenericCheckBox {
 	public EveryoneCheckbox() {
