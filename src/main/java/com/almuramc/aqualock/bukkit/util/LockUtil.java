@@ -19,7 +19,6 @@
  */
 package com.almuramc.aqualock.bukkit.util;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
