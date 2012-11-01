@@ -300,11 +300,15 @@ public class AquaPanel extends GenericPopup {
 		coownersField.setText(output.toString());
 		final List<String> users = lock.getUsers();
 		output.delete(0, output.length());
-		for (int i = 0; i < users.size(); i++) {
-			if (i > 0) {
-				output.append(", ");
+		if (everyoneCheckbox.isChecked()) {
+			output.append("");
+		} else {
+			for (int i = 0; i < users.size(); i++) {
+				if (i > 0) {
+					output.append(", ");
+				}
+				output.append(users.get(i));
 			}
-			output.append(users.get(i));
 		}
 		usersField.setText(output.toString());
 		//Change label names for modifying locks

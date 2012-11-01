@@ -68,7 +68,7 @@ public class ApplyButton extends GenericButton {
 				boolean everyone = false;
 				for (Widget inner : panel.getAttachedWidgets()) {
 					if (inner instanceof EveryoneCheckbox) {
-						everyone = ((EveryoneCheckbox) widget).isChecked();
+						everyone = ((EveryoneCheckbox) inner).isChecked();
 					}
 				}
 				final ArrayList<String> temp = new ArrayList<>();
