@@ -42,6 +42,8 @@ import com.almuramc.aqualock.bukkit.display.label.OwnerLabel;
 import com.almuramc.aqualock.bukkit.display.label.PasswordLabel;
 import com.almuramc.aqualock.bukkit.display.label.UseCostLabel;
 import com.almuramc.aqualock.bukkit.display.label.UserLabel;
+import com.almuramc.aqualock.bukkit.lock.BukkitLock;
+import com.almuramc.aqualock.bukkit.lock.DoorBukkitLock;
 import com.almuramc.aqualock.bukkit.util.LockUtil;
 import com.almuramc.bolt.lock.Lock;
 
@@ -279,6 +281,7 @@ public class AquaPanel extends GenericPopup {
 					((UnlockButton) widget).setEnabled(false);
 				}
 			}
+			closeTimerField.setText("5");
 			costToCreateLabel.setText("Cost to create:");
 			this.setDirty(true);
 			return;
@@ -330,6 +333,10 @@ public class AquaPanel extends GenericPopup {
 				unlockButton.setTooltip("Click this to free this lock!");
 				unlockButton.setEnabled(true);
 			}
+		}
+		costToUseField.setText(Double.toString(((BukkitLock) lock).getUseCost()));
+		if (lock instanceof DoorBukkitLock) {
+			closeTimerField.setText(Long.toString(((DoorBukkitLock) lock).getAutocloseTimer()).replaceAll("[^\\d.]", ""));
 		}
 		this.setDirty(true);
 	}

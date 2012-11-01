@@ -62,17 +62,17 @@ public class AqualockCommands implements CommandExecutor {
 		}
 		if (strings[0].equalsIgnoreCase("lock")) {
 			if (PermissionUtil.canLock(player)) {
-				LockUtil.lock(player.getName(), target.getLocation());
+				LockUtil.lock(player.getName(), null, null, "", target.getLocation(), target.getData(), 0, 0);
 			}
 			return true;
 		} else if (strings[0].equalsIgnoreCase("unlock")) {
 			if (PermissionUtil.canUnlock(player)) {
-				LockUtil.unlock(player.getName(), target.getLocation());
+				LockUtil.unlock(player.getName(), "", target.getLocation());
 			}
 			return true;
 		} else if (strings[0].equalsIgnoreCase("update")) {
 			if (PermissionUtil.canUpdate(player)) {
-				LockUtil.update(player.getName(), target.getLocation());
+				LockUtil.update(player.getName(), null, null, "", target.getLocation(), target.getData(), 0, 0);
 			}
 			return true;
 		} else if (strings[0].equalsIgnoreCase("check")) {

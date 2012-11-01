@@ -21,49 +21,24 @@ package com.almuramc.aqualock.bukkit.lock;
 
 import java.util.List;
 
-import com.almuramc.bolt.lock.type.BasicLock;
-
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import org.bukkit.Location;
 
-/**
- * Basic Bukkit-like lock extension that stores block data.
- */
-public class BukkitLock extends BasicLock {
-	private String passcode;
-	private byte data;
-	private double useCost;
+public class DoorBukkitLock extends BukkitLock {
+	private long autocloseTimer;
 
-	public BukkitLock(String owner, List<String> coowners, List<String> users, String passcode, Location location, byte data, double useCost) {
-		super(owner, coowners, users, location.getWorld().getUID(), location.getBlockX(), location.getBlockY(), location.getBlockZ());
-		this.passcode = passcode;
-		this.data = data;
-		this.useCost = useCost;
+	public DoorBukkitLock(String owner, List<String> coowners, List<String> users, String passcode, Location location, byte data, double useCost, long autocloseTimer) {
+		super(owner, coowners, users, passcode, location, data, useCost);
+		this.autocloseTimer = autocloseTimer;
 	}
 
-	public String getPasscode() {
-		return passcode;
+	public long getAutocloseTimer() {
+		return autocloseTimer;
 	}
 
-	public void setPasscode(String passcode) {
-		this.passcode = passcode;
-	}
-
-	public byte getData() {
-		return data;
-	}
-
-	public void setData(byte data) {
-		this.data = data;
-	}
-
-	public double getUseCost() {
-		return useCost;
-	}
-
-	public void setUseCost(double useCost) {
-		this.useCost = useCost;
+	public void setAutocloseTimer(long autocloseTimer) {
+		this.autocloseTimer = autocloseTimer;
 	}
 
 	@Override
@@ -72,11 +47,9 @@ public class BukkitLock extends BasicLock {
 			return false;
 		}
 
-		final BukkitLock other = (BukkitLock) obj;
+		final DoorBukkitLock other = (DoorBukkitLock) obj;
 		return new org.apache.commons.lang3.builder.EqualsBuilder()
-				.append(this.passcode, other.passcode)
-				.append(this.data, other.data)
-				.append(this.useCost, other.useCost)
+				.append(this.autocloseTimer, other.autocloseTimer)
 				.isEquals();
 	}
 
@@ -84,9 +57,7 @@ public class BukkitLock extends BasicLock {
 	public String toString() {
 		return new ToStringBuilder(this)
 				.append(super.toString())
-				.append("passcode", passcode)
-				.append("data", data)
-				.append("cost", useCost)
+				.append("autoclosetimer", autocloseTimer)
 				.toString();
 	}
 }

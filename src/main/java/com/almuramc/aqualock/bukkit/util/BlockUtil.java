@@ -19,11 +19,12 @@
  */
 package com.almuramc.aqualock.bukkit.util;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+
+import com.almuramc.aqualock.bukkit.AqualockPlugin;
+import com.almuramc.aqualock.bukkit.lock.DoorBukkitLock;
 
 import org.bukkit.Effect;
 import org.bukkit.Location;
@@ -31,7 +32,6 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
-import org.bukkit.material.Door;
 
 /**
  * Class with helper functions that deal with blocks
@@ -67,19 +67,26 @@ public class BlockUtil {
 	 * If the list returned is empty, it isn't a double door.
 	 * @return Empty list if not in a double door or the 4 blocks comprising the double door.
 	 */
-	public static List<Location> getDoubleDoor(Location location) {
+	public static Block getDoubleDoor(Location location) {
 		//Passed in block is not a double door
 		final Block block = location.getBlock();
 		if (!isDoorMaterial(block.getType())) {
-			return Collections.emptyList();
+			return null;
 		}
-		final ArrayList<Location> doors = new ArrayList<Location>(2);
-		doors.add(block.getLocation());
-		Block other = findAdjacentBlock(location.getBlock(), location.getBlock().getType());
-		if (other != null) {
-			doors.add(other.getLocation());
+		Block found;
+
+		// Try a wooden door
+		if ((found = findAdjacentBlock(block, Material.WOODEN_DOOR)) != null) {
+			return found;
 		}
-		return doors;
+
+		// Now an iron door
+		if ((found = findAdjacentBlock(block, Material.IRON_DOOR_BLOCK)) != null) {
+			return found;
+		}
+
+		// Nothing at all :-(
+		return null;
 	}
 
 	public static void changeDoorStates(boolean allowDoorToOpen, Block... doors) {
@@ -113,7 +120,6 @@ public class BlockUtil {
 
 	/**
 	 * Find a block that is adjacent to another block given a Material
-	 *
 	 * @param block
 	 * @param material
 	 * @param ignore
@@ -134,29 +140,34 @@ public class BlockUtil {
 		return null;
 	}
 
-	private static boolean isDoorMaterial(Material material) {
+	public static boolean isDoorMaterial(Material material) {
 		return material == Material.IRON_DOOR_BLOCK || material == Material.WOODEN_DOOR || material == Material.FENCE_GATE;
 	}
 
 	public static boolean onDoorInteract(Block block) {
-		if (isDoorMaterial(block.getType())) {
+		if (!isDoorMaterial(block.getType())) {
 			return false;
 		}
 		// Are we looking at the top half?
-		// If we are, we need to get the bottom half instead
-		Door source = (Door) block.getState().getData();
-		if (source.isTopHalf()) {
-			// Inspect the bottom half instead, fool!
+		if ((block.getData() & 0x8) == 0x8) {
+			// Inspect the bottom half instead.
 			block = block.getRelative(BlockFace.DOWN);
 		}
-		final List <Location> other = getDoubleDoor(block.getLocation());
-		Block oBlock = other.get(2).getBlock();
-		final Door otherSrc = (Door) oBlock.getState().getData();
-		if (otherSrc.isTopHalf()) {
-			oBlock = oBlock.getRelative(BlockFace.DOWN);
-		}
-		if (other != null) {
-			changeDoorStates(true, ((block.getType() == Material.WOODEN_DOOR || block.getType() == Material.FENCE_GATE) ? null : block), oBlock);
+		Block oBlock = getDoubleDoor(block.getLocation());
+		System.out.println(oBlock);
+		changeDoorStates(true, (block.getType() == Material.WOODEN_DOOR ? null : block), oBlock);
+		if ((block.getData() & 0x4) != 0) {
+			final Block finalBlock = block;
+			final Block finalOBlock = oBlock;
+			final DoorBukkitLock lock = (DoorBukkitLock) AqualockPlugin.getRegistry().getLock(finalBlock.getWorld().getUID(), finalBlock.getX(), finalBlock.getY(), finalBlock.getZ());
+			if (lock.getAutocloseTimer() > 0) {
+				AqualockPlugin.getInstance().getServer().getScheduler().scheduleSyncDelayedTask(AqualockPlugin.getInstance(), new Runnable() {
+					@Override
+					public void run() {
+						changeDoorStates(false, finalBlock, finalOBlock);
+					}
+				}, lock.getAutocloseTimer() * 20);
+			}
 		}
 		return true;
 	}

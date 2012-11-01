@@ -21,6 +21,7 @@ package com.almuramc.aqualock.bukkit;
 
 import java.util.List;
 
+import com.almuramc.aqualock.bukkit.lock.BukkitLock;
 import com.almuramc.aqualock.bukkit.util.BlockUtil;
 import com.almuramc.aqualock.bukkit.util.LockUtil;
 import com.almuramc.bolt.lock.Lock;
@@ -28,7 +29,6 @@ import com.almuramc.bolt.registry.CommonRegistry;
 
 import org.getspout.spoutapi.SpoutManager;
 
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -49,7 +49,6 @@ import org.bukkit.event.block.LeavesDecayEvent;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.weather.LightningStrikeEvent;
-import org.bukkit.material.Door;
 
 public class AqualockListener implements Listener {
 	private final AqualockPlugin plugin;
@@ -68,12 +67,21 @@ public class AqualockListener implements Listener {
 		final Player breaker = event.getPlayer();
 		final Block breaking = event.getBlock();
 		final Lock lock = registry.getLock(breaking.getWorld().getUID(), breaking.getX(), breaking.getY(), breaking.getZ());
+		final Block top = breaking.getRelative(BlockFace.UP);
+		if (BlockUtil.isDoorMaterial(top.getType())) {
+			if (!BlockUtil.isDoorMaterial(top.getRelative(BlockFace.UP).getType())) {
+				if (registry.contains(top.getWorld().getUID(), top.getX(), top.getY(), top.getZ())) {
+					SpoutManager.getPlayer(breaker).sendNotification("Aqua", "Locked door above!", Material.LAVA_BUCKET);
+					event.setCancelled(true);
+					return;
+				}
+			}
+		}
 		if (lock != null) {
 			if (!lock.getOwner().equals(breaker.getName())) {
 				if (!(lock.getCoOwners().contains(breaker.getName()))) {
 					SpoutManager.getPlayer(breaker).sendNotification("Aqua", "This block is locked!", Material.LAVA_BUCKET);
 					event.setCancelled(true);
-					return;
 				}
 			}
 		}
@@ -139,14 +147,11 @@ public class AqualockListener implements Listener {
 				event.setCancelled(true);
 				return;
 			}
-			if (!LockUtil.performAction(interacter, "", interacted.getLocation(), "USE")) {
+			if (!LockUtil.performAction(interacter, "", interacted.getLocation(), ((BukkitLock) lock).getUseCost(), "USE")) {
 				event.setCancelled(true);
 				return;
 			}
-			final List<Location> doors = BlockUtil.getDoubleDoor(interacted.getLocation());
-			if (!doors.isEmpty()) {
-				BlockUtil.onDoorInteract(interacted);
-			}
+			BlockUtil.onDoorInteract(interacted);
 		}
 	}
 

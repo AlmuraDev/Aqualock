@@ -72,6 +72,10 @@ public class AqualockPlugin extends JavaPlugin {
 		SpoutManager.getKeyBindingManager().registerBinding("Aqua Panel", Keyboard.KEY_Y, "Opens the lock panel", new AquaPanelDelegate(this), this);
 	}
 
+	public static AqualockPlugin getInstance() {
+		return instance;
+	}
+
 	public static CommonRegistry getRegistry() {
 		return registry;
 	}

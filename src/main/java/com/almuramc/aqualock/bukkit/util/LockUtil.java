@@ -27,6 +27,7 @@ import java.util.UUID;
 import com.almuramc.aqualock.bukkit.AqualockPlugin;
 import com.almuramc.aqualock.bukkit.configuration.AqualockConfiguration;
 import com.almuramc.aqualock.bukkit.lock.BukkitLock;
+import com.almuramc.aqualock.bukkit.lock.DoorBukkitLock;
 import com.almuramc.bolt.lock.Lock;
 import com.almuramc.bolt.registry.CommonRegistry;
 import com.almuramc.bolt.storage.Storage;
@@ -38,6 +39,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 
 /**
@@ -61,7 +64,7 @@ public class LockUtil {
 	 * @param location
 	 * @param data
 	 */
-	public static boolean lock(String playerName, List<String> coowners, List<String> users, String passcode, Location location, byte data) {
+	public static boolean lock(String playerName, List<String> coowners, List<String> users, String passcode, Location location, byte data, double useCost, long autocloseTimer) {
 		checkLocation(location);
 		final Player player = checkNameAndGetPlayer(playerName);
 		if (coowners == null) {
@@ -71,25 +74,39 @@ public class LockUtil {
 			users = new ArrayList<>(1);
 			users.add("Everyone");
 		}
-		if (!performAction(player, passcode, location, "LOCK")) {
+		if (!performAction(player, passcode, location, 0, "LOCK")) {
 			return false;
 		}
-		final BukkitLock lock = new BukkitLock(playerName, coowners, users, passcode, location, data);
+		Lock lock;
+		if (BlockUtil.isDoorMaterial(location.getBlock().getType())) {
+			lock = new DoorBukkitLock(playerName, coowners, users, passcode, location, data, useCost, autocloseTimer);
+		} else {
+			lock = new BukkitLock(playerName, coowners, users, passcode, location, data, useCost);
+		}
 		//After all that is said and done, add the lock made to the registry and backend.
 		SpoutManager.getPlayer(player).sendNotification("Aqua", "Locked the block!", Material.CAKE);
 		registry.addLock(lock);
 		backend.addLock(lock);
-		final List<Location> doors = BlockUtil.getDoubleDoor(location);
-		if (doors != null) {
-			//Loop through the blocks (will be 2 iterations)
-			for (Location loc : doors) {
-				//If the lock created in this method's location is not the location of this iteration then its the second door, lock it.
-				if (!loc.equals(location)) {
-					final BukkitLock other = new BukkitLock(lock.getOwner(), lock.getCoOwners(), lock.getUsers(), lock.getPasscode(), loc, loc.getBlock().getData());
-					player.sendMessage(AqualockPlugin.getPrefix() + "Detected a door at " + loc.toString() + "so locking it as well");
-					registry.addLock(other);
-					backend.addLock(other);
-				}
+		//If the lock created in this method's location is not the location of this iteration then its the second door, lock it.
+		final Block oBlock = BlockUtil.getDoubleDoor(location);
+		if (oBlock != null) {
+			DoorBukkitLock otherLock = new DoorBukkitLock(playerName, coowners, users, passcode, oBlock.getLocation(), oBlock.getData(), useCost, autocloseTimer);
+			registry.addLock(otherLock);
+			backend.addLock(otherLock);
+			if ((oBlock.getData() & 0x8) == 0x8) {
+				DoorBukkitLock bottomLeft = new DoorBukkitLock(playerName, coowners, users, passcode, location.getBlock().getRelative(BlockFace.DOWN).getLocation(), location.getBlock().getRelative(BlockFace.DOWN).getData(), useCost, autocloseTimer);
+				registry.addLock(bottomLeft);
+				backend.addLock(bottomLeft);
+				DoorBukkitLock bottomRight = new DoorBukkitLock(playerName, coowners, users, passcode, oBlock.getRelative(BlockFace.DOWN).getLocation(), oBlock.getRelative(BlockFace.DOWN).getData(), useCost, autocloseTimer);
+				registry.addLock(bottomRight);
+				backend.addLock(bottomRight);
+			} else {
+				DoorBukkitLock topLeft = new DoorBukkitLock(playerName, coowners, users, passcode, location.getBlock().getRelative(BlockFace.UP).getLocation(), location.getBlock().getRelative(BlockFace.UP).getData(), useCost, autocloseTimer);
+				registry.addLock(topLeft);
+				backend.addLock(topLeft);
+				DoorBukkitLock topRight = new DoorBukkitLock(playerName, coowners, users, passcode, oBlock.getRelative(BlockFace.UP).getLocation(), oBlock.getRelative(BlockFace.UP).getData(), useCost, autocloseTimer);
+				registry.addLock(topRight);
+				backend.addLock(topRight);
 			}
 		}
 		return true;
@@ -103,10 +120,30 @@ public class LockUtil {
 	public static boolean unlock(String playerName, String passcode, Location location) {
 		checkLocation(location);
 		final Player player = checkNameAndGetPlayer(playerName);
-		if (performAction(player, passcode, location, "UNLOCK")) {
+		if (performAction(player, passcode, location, 0, "UNLOCK")) {
 			final Lock lock = registry.getLock(location.getWorld().getUID(), location.getBlockX(), location.getBlockY(), location.getBlockZ());
 			registry.removeLock(lock);
 			backend.removeLock(lock);
+			final Block oBlock = BlockUtil.getDoubleDoor(location);
+			if (oBlock != null) {
+				backend.removeLock(registry.getLock(oBlock.getWorld().getUID(), oBlock.getX(), oBlock.getY(), oBlock.getZ()));
+				registry.removeLock(oBlock.getWorld().getUID(), oBlock.getX(), oBlock.getY(), oBlock.getZ());
+				if ((oBlock.getData() & 0x8) == 0x8) {
+					final Block bottomLeft = location.getBlock().getRelative(BlockFace.DOWN);
+					backend.removeLock(registry.getLock(bottomLeft.getWorld().getUID(), bottomLeft.getX(), bottomLeft.getY(), bottomLeft.getZ()));
+					registry.removeLock(bottomLeft.getWorld().getUID(), bottomLeft.getX(), bottomLeft.getY(), bottomLeft.getZ());
+					final Block bottomRight = oBlock.getRelative(BlockFace.DOWN);
+					backend.removeLock(registry.getLock(bottomRight.getWorld().getUID(), bottomRight.getX(), bottomRight.getY(), bottomRight.getZ()));
+					registry.removeLock(bottomRight.getWorld().getUID(), bottomRight.getX(), bottomRight.getY(), bottomRight.getZ());
+				} else {
+					final Block topLeft = location.getBlock().getRelative(BlockFace.UP);
+					backend.removeLock(registry.getLock(topLeft.getWorld().getUID(), topLeft.getX(), topLeft.getY(), topLeft.getZ()));
+					registry.removeLock(topLeft.getWorld().getUID(), topLeft.getX(), topLeft.getY(), topLeft.getZ());
+					final Block topRight = oBlock.getRelative(BlockFace.UP);
+					backend.removeLock(registry.getLock(topRight.getWorld().getUID(), topRight.getX(), topRight.getY(), topRight.getZ()));
+					registry.removeLock(topRight.getWorld().getUID(), topRight.getX(), topRight.getY(), topRight.getZ());
+				}
+			}
 			return true;
 		}
 		return false;
@@ -119,7 +156,7 @@ public class LockUtil {
 	 * @param location
 	 * @param data
 	 */
-	public static void update(String playerName, List<String> coowners, List<String> users, String passcode, Location location, byte data) {
+	public static boolean update(String playerName, List<String> coowners, List<String> users, String passcode, Location location, byte data, double useCost, long timer) {
 		checkLocation(location);
 		Player player = checkNameAndGetPlayer(playerName);
 		if (coowners == null) {
@@ -129,27 +166,34 @@ public class LockUtil {
 			users = new ArrayList<>(1);
 			users.add("Everyone");
 		}
-		if (!performAction(player, passcode, location, "UPDATE")) {
-			return;
+		if (!performAction(player, passcode, location, useCost, "UPDATE")) {
+			return false;
 		}
-		final BukkitLock lock = (BukkitLock) registry.getLock(location.getWorld().getUID(), location.getBlockX(), location.getBlockY(), location.getBlockZ());
+		final Lock lock = registry.getLock(location.getWorld().getUID(), location.getBlockX(), location.getBlockY(), location.getBlockZ());
 		lock.setOwner(playerName);
 		lock.setCoOwners(coowners.toArray(new String[coowners.size()]));
 		lock.setUsers(users.toArray(new String[users.size()]));
-		lock.setPasscode(passcode);
-		lock.setData(data);
+		if (lock instanceof BukkitLock) {
+			((BukkitLock) lock).setUseCost(useCost);
+			((BukkitLock) lock).setPasscode(passcode);
+			((BukkitLock) lock).setData(data);
+			if (lock instanceof DoorBukkitLock) {
+				((DoorBukkitLock) lock).setAutocloseTimer(timer);
+			}
+		}
 		//Update backend and registry
 		registry.addLock(lock);
 		backend.addLock(lock);
+		return true;
 	}
 
-	public static void use(String playerName, String passcode, Location location) {
+	public static void use(String playerName, String passcode, Location location, double useCost) {
 		checkLocation(location);
 		final Player player = checkNameAndGetPlayer(playerName);
-		performAction(player, passcode, location, "USE");
+		performAction(player, passcode, location, useCost, "USE");
 	}
 
-	public static boolean performAction(Player player, String passcode, Location location, String action) {
+	public static boolean performAction(Player player, String passcode, Location location, double useCost, String action) {
 		final World world = location.getWorld();
 		final UUID worldIdentifier = world.getUID();
 		final int x = location.getBlockX();
@@ -251,19 +295,18 @@ public class LockUtil {
 							splayer.sendNotification("Aqua", "You have no account!", Material.LAVA_BUCKET);
 							return false;
 						}
-						final double value = config.getCosts().getUseCost(location.getBlock().getType());
-						if (!EconomyUtil.hasEnough(player, value)) {
+						if (!EconomyUtil.hasEnough(player, useCost)) {
 							splayer.sendNotification("Aqua", "Not enough money!", Material.LAVA_BUCKET);
 							return false;
 						}
-						if (value > 0) {
-							splayer.sendNotification("Aqua", "Charged for use: " + value, Material.POTION);
-						} else if (value < 0) {
-							splayer.sendNotification("Aqua", "Received for use: " + value, Material.CAKE);
+						if (useCost > 0) {
+							splayer.sendNotification("Aqua", "Charged for use: " + useCost, Material.POTION);
+						} else if (useCost < 0) {
+							splayer.sendNotification("Aqua", "Received for use: " + useCost, Material.CAKE);
 						} else {
 							splayer.sendNotification("Aqua", "Use was free!", Material.APPLE);
 						}
-						EconomyUtil.apply(player, value);
+						EconomyUtil.apply(player, useCost);
 					}
 				}
 				return true;
@@ -278,6 +321,8 @@ public class LockUtil {
 							canUpdate = true;
 						}
 					}
+				} else {
+					canUpdate = true;
 				}
 				if (!canUpdate) {
 					splayer.sendNotification("Aqua", "Not the Owner/CoOwner!", Material.LAVA_BUCKET);
@@ -303,10 +348,9 @@ public class LockUtil {
 						}
 						EconomyUtil.apply(player, value);
 					}
-					return true;
 				}
 		}
-		return false;
+		return true;
 	}
 
 	public static boolean canPerformAction(Player player, String action) {
@@ -336,44 +380,6 @@ public class LockUtil {
 				return false;
 		}
 		return true;
-	}
-	////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//////////////////////////////////////Overloaded Methods///////////////////////////////////////////////
-	//////////////////////////////////////Don't touch these!//////////////////////////////////////////////
-	/////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	public static void lock(String owner, List<String> coowners, String passcode, Location location) {
-		checkLocation(location);
-		lock(owner, coowners, null, passcode, location, location.getBlock().getData());
-	}
-
-	public static void lock(String owner, List<String> coowners, Location location) {
-		checkLocation(location);
-		lock(owner, coowners, null, "", location, location.getBlock().getData());
-	}
-
-	public static void lock(String owner, Location location) {
-		checkLocation(location);
-		lock(owner, null, null, "", location, location.getBlock().getData());
-	}
-
-	public static void unlock(String playerName, Location location) {
-		unlock(playerName, "", location);
-	}
-
-	public static void update(String playerName, List<String> coowners, String passcode, Location location) {
-		checkLocation(location);
-		update(playerName, coowners, null, passcode, location, location.getBlock().getData());
-	}
-
-	public static void update(String playerName, List<String> coowners, Location location) {
-		checkLocation(location);
-		update(playerName, coowners, null, "", location, location.getBlock().getData());
-	}
-
-	public static void update(String playerName, Location location) {
-		checkLocation(location);
-		update(playerName, null, location);
 	}
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -24,15 +24,19 @@ import java.util.List;
 
 import com.almuramc.aqualock.bukkit.AqualockPlugin;
 import com.almuramc.aqualock.bukkit.display.AquaPanel;
+import com.almuramc.aqualock.bukkit.display.field.CloseTimerField;
 import com.almuramc.aqualock.bukkit.display.field.CoOwnerField;
 import com.almuramc.aqualock.bukkit.display.field.OwnerField;
 import com.almuramc.aqualock.bukkit.display.field.PasswordField;
+import com.almuramc.aqualock.bukkit.display.field.UseCostField;
 import com.almuramc.aqualock.bukkit.display.field.UserField;
 import com.almuramc.aqualock.bukkit.util.LockUtil;
 
 import org.getspout.spoutapi.event.screen.ButtonClickEvent;
 import org.getspout.spoutapi.gui.GenericButton;
 import org.getspout.spoutapi.gui.Widget;
+
+import org.bukkit.Location;
 
 public class ApplyButton extends GenericButton {
 	private final AqualockPlugin plugin;
@@ -49,6 +53,8 @@ public class ApplyButton extends GenericButton {
 		List<String> coowners = null;
 		List<String> users = null;
 		String password = "";
+		double cost = 0;
+		long timer = 0;
 		for (Widget widget : panel.getAttachedWidgets()) {
 			final Class clazz = widget.getClass();
 			if (clazz.equals(OwnerField.class)) {
@@ -59,9 +65,25 @@ public class ApplyButton extends GenericButton {
 				coowners = parseFieldToList(((CoOwnerField) widget).getText());
 			} else if (clazz.equals(UserField.class)) {
 				users = parseFieldToList(((UserField) widget).getText());
+			} else if (clazz.equals(CloseTimerField.class)) {
+				timer = Long.parseLong(((CloseTimerField) widget).getText(), 10);
+			} else if (clazz.equals(UseCostField.class)) {
+				cost = Double.parseDouble(((UseCostField) widget).getText());
 			}
 		}
-		if (LockUtil.lock(owner, coowners, users, password, panel.getLocation(), panel.getLocation().getBlock().getData())) {
+		final Location loc = panel.getLocation();
+		boolean close = true;
+		if (AqualockPlugin.getRegistry().contains(loc.getWorld().getUID(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ())) {
+			if (!LockUtil.update(owner, coowners, users, password, panel.getLocation(), panel.getLocation().getBlock().getData(), cost, timer)) {
+				close = false;
+			}
+
+		} else {
+			 if (!LockUtil.lock(owner, coowners, users, password, panel.getLocation(), panel.getLocation().getBlock().getData(), cost, timer)) {
+				 close = false;
+			 }
+		}
+		if (close) {
 			panel.close();
 		}
 	}
