@@ -286,6 +286,7 @@ public class AquaPanel extends GenericPopup {
 			costToCreateLabel.setText("Cost to create:");
 			costToUseField.setText("0.0");
 			damageOnFailField.setText("0.0");
+			unlockButton.setVisible(false);
 			this.setDirty(true);
 			return;
 		}
@@ -302,8 +303,9 @@ public class AquaPanel extends GenericPopup {
 		coownersField.setText(output.toString());
 		final List<String> users = lock.getUsers();
 		output.delete(0, output.length());
-		if (everyoneCheckbox.isChecked()) {
+		if (everyoneCheckbox.isChecked() || users.contains("Everyone")) {
 			output.append("");
+			everyoneCheckbox.setChecked(true);
 		} else {
 			for (int i = 0; i < users.size(); i++) {
 				if (i > 0) {
@@ -338,6 +340,7 @@ public class AquaPanel extends GenericPopup {
 			}
 			if (canUnlock) {
 				unlockButton.setTooltip("Click this to free this lock!");
+				unlockButton.setVisible(true);
 				unlockButton.setEnabled(true);
 			}
 		}

@@ -32,7 +32,6 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
-import org.bukkit.material.Sign;
 
 /**
  * Class with helper functions that deal with blocks
