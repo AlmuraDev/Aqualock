@@ -77,11 +77,10 @@ public class ApplyButton extends GenericButton {
 			if (!LockUtil.update(owner, coowners, users, password, panel.getLocation(), panel.getLocation().getBlock().getData(), cost, timer)) {
 				close = false;
 			}
-
 		} else {
-			 if (!LockUtil.lock(owner, coowners, users, password, panel.getLocation(), panel.getLocation().getBlock().getData(), cost, timer)) {
-				 close = false;
-			 }
+			if (!LockUtil.lock(owner, coowners, users, password, panel.getLocation(), panel.getLocation().getBlock().getData(), cost, timer)) {
+				close = false;
+			}
 		}
 		if (close) {
 			panel.close();
