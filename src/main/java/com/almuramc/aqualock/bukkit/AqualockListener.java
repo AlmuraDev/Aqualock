@@ -69,7 +69,8 @@ public class AqualockListener implements Listener {
 		final Lock lock = registry.getLock(breaking.getWorld().getUID(), breaking.getX(), breaking.getY(), breaking.getZ());
 		final Block top = breaking.getRelative(BlockFace.UP);
 		if (BlockUtil.isDoorMaterial(top.getType())) {
-			if (!BlockUtil.isDoorMaterial(top.getRelative(BlockFace.UP).getType())) {
+			final Block temp = top.getRelative(BlockFace.UP);
+			if (BlockUtil.isDoorMaterial(temp.getType())) {
 				if (registry.contains(top.getWorld().getUID(), top.getX(), top.getY(), top.getZ())) {
 					SpoutManager.getPlayer(breaker).sendNotification("Aqua", "Locked door above!", Material.LAVA_BUCKET);
 					event.setCancelled(true);
@@ -82,8 +83,11 @@ public class AqualockListener implements Listener {
 				if (!(lock.getCoOwners().contains(breaker.getName()))) {
 					SpoutManager.getPlayer(breaker).sendNotification("Aqua", "This block is locked!", Material.LAVA_BUCKET);
 					event.setCancelled(true);
+					return;
 				}
 			}
+			SpoutManager.getPlayer(breaker).sendNotification("Aqua", "Unlock first!", Material.LAVA_BUCKET);
+			event.setCancelled(true);
 		}
 	}
 
