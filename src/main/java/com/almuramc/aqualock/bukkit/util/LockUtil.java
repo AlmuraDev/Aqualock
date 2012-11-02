@@ -121,6 +121,12 @@ public class LockUtil {
 				backend.addLock(top);
 			}
 		}
+		final Block cBlock = BlockUtil.getDoubleChest(location);
+		if (cBlock != null) {
+			BukkitLock clock = new BukkitLock(playerName, coowners, users, passcode, cBlock.getLocation(), data, useCost, damage);
+			registry.addLock(clock);
+			backend.addLock(clock);
+		}
 		return true;
 	}
 
@@ -168,6 +174,11 @@ public class LockUtil {
 					registry.removeLock(up.getWorld().getUID(), up.getX(), up.getY(), up.getZ());
 				}
 			}
+			final Block cBlock = BlockUtil.getDoubleChest(location);
+			if (cBlock != null) {
+				backend.removeLock(registry.getLock(cBlock.getWorld().getUID(), cBlock.getX(), cBlock.getY(), cBlock.getZ()));
+				registry.removeLock(cBlock.getWorld().getUID(), cBlock.getX(), cBlock.getY(), cBlock.getZ());
+			}
 			return true;
 		}
 		return false;
@@ -176,7 +187,7 @@ public class LockUtil {
 	/**
 	 * @param playerName
 	 * @param coowners
-	 * @param passcode                 f
+	 * @param passcode
 	 * @param location
 	 * @param data
 	 */
@@ -238,6 +249,12 @@ public class LockUtil {
 				registry.addLock(top);
 				backend.addLock(top);
 			}
+		}
+		final Block cBlock = BlockUtil.getDoubleChest(location);
+		if (cBlock != null) {
+			BukkitLock clock = new BukkitLock(playerName, coowners, users, passcode, cBlock.getLocation(), data, useCost, damage);
+			registry.addLock(clock);
+			backend.addLock(clock);
 		}
 		SpoutManager.getPlayer(player).sendNotification("Aqualock", "Updated the block!", Material.CAKE);
 		return true;

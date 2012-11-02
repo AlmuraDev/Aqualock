@@ -89,6 +89,14 @@ public class BlockUtil {
 		return null;
 	}
 
+	public static Block getDoubleChest(Location location) {
+		final Block block = location.getBlock();
+		if (!isChestMaterial(block.getType())) {
+			return null;
+		}
+		return findAdjacentBlock(block, Material.CHEST);
+	}
+
 	public static void changeDoorStates(boolean allowDoorToOpen, Block... doors) {
 		for (Block door : doors) {
 			if (door == null) {
@@ -167,7 +175,12 @@ public class BlockUtil {
 		return true;
 	}
 
+
 	public static boolean isDoorMaterial(Material material) {
 		return material == Material.IRON_DOOR_BLOCK || material == Material.WOODEN_DOOR || material == Material.FENCE_GATE;
+	}
+
+	public static boolean isChestMaterial(Material material) {
+		return material == Material.CHEST && material != Material.ENDER_CHEST;
 	}
 }
