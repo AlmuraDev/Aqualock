@@ -176,7 +176,7 @@ public class LockUtil {
 	/**
 	 * @param playerName
 	 * @param coowners
-	 * @param passcode
+	 * @param passcode                 f
 	 * @param location
 	 * @param data
 	 */
@@ -249,7 +249,6 @@ public class LockUtil {
 		if (!performAction(player, passcode, location, useCost, "USE")) {
 			return false;
 		}
-		SpoutManager.getPlayer(player).sendNotification("Aqualock", "Used the block!", Material.CAKE);
 		return true;
 	}
 
