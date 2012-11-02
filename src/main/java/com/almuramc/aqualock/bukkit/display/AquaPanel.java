@@ -67,7 +67,7 @@ public class AquaPanel extends GenericPopup {
 	private final GenericCheckBox everyoneCheckbox;
 	private final GenericLabel usersLabel, coownersLabel, costToUseLabel, damageOnFailLabel, costToCreateOutputLabel, costToCreateLabel, passwordLabel, ownerLabel, closeTimerLabel;
 	private final GenericTextField usersField, coownersField, costToUseField, damageOnFailField, passwordField, ownerField, closeTimerField;
-	private final GenericTexture borderTexture;
+	private final GenericTexture borderTexture, aquaPhoto;
 	//Geo
 	private Location location;
 
@@ -81,6 +81,14 @@ public class AquaPanel extends GenericPopup {
 				.setHeight(200)
 				.shiftXPos(-185)
 				.shiftYPos(-80);
+		aquaPhoto = new GenericTexture("http://www.almuramc.com/images/aqualock.png");
+		aquaPhoto
+				.setAnchor(WidgetAnchor.CENTER_CENTER)
+				.setPriority(RenderPriority.Normal)
+				.setWidth(60)
+				.setHeight(60)
+				.shiftXPos(-120)
+				.shiftYPos(-70);
 		closeButton = new CloseButton(plugin);
 		closeButton
 				.setAuto(true)
@@ -243,7 +251,7 @@ public class AquaPanel extends GenericPopup {
 				.setWidth(40)
 				.shiftXPos(15)
 				.shiftYPos(-65);
-		attachWidgets(plugin, borderTexture, closeButton, applyButton, unlockButton, usersField, usersLabel, coownersField, coownersLabel,
+		attachWidgets(plugin, borderTexture, aquaPhoto, closeButton, applyButton, unlockButton, usersField, usersLabel, coownersField, coownersLabel,
 				costToUseField, costToUseLabel, damageOnFailField, damageOnFailLabel, costToCreateOutputLabel,
 				costToCreateLabel, everyoneCheckbox, passwordField, passwordLabel, ownerField, ownerLabel, closeTimerField, closeTimerLabel);
 		passwordField.setFocus(true);
