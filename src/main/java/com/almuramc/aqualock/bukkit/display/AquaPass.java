@@ -20,7 +20,6 @@
 package com.almuramc.aqualock.bukkit.display;
 
 import java.util.HashMap;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.almuramc.aqualock.bukkit.AqualockPlugin;
 import com.almuramc.aqualock.bukkit.display.button.CloseButton;
@@ -35,7 +34,6 @@ import com.almuramc.bolt.lock.Lock;
 
 import org.getspout.spoutapi.gui.GenericButton;
 import org.getspout.spoutapi.gui.GenericLabel;
-import org.getspout.spoutapi.gui.GenericPopup;
 import org.getspout.spoutapi.gui.GenericTextField;
 import org.getspout.spoutapi.gui.GenericTexture;
 import org.getspout.spoutapi.gui.RenderPriority;

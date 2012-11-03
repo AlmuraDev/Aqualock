@@ -19,18 +19,16 @@
  */
 package com.almuramc.aqualock.bukkit.display;
 
-import org.getspout.spoutapi.gui.Color;
-import org.getspout.spoutapi.gui.GenericCheckBox;
-import org.getspout.spoutapi.gui.GenericLabel;
 import org.getspout.spoutapi.gui.GenericPopup;
-import org.getspout.spoutapi.gui.GenericTextField;
-import org.getspout.spoutapi.gui.Widget;
 
 import org.bukkit.Location;
 
 public abstract class CachedGeoPopup extends GenericPopup {
 	public abstract boolean isOpen();
+
 	public abstract void setOpen(boolean open);
+
 	public abstract Location getLocation();
+
 	public abstract void setLocation(Location location);
 }

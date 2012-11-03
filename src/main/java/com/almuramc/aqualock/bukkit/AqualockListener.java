@@ -25,7 +25,6 @@ import java.util.List;
 import com.almuramc.aqualock.bukkit.display.AquaPanel;
 import com.almuramc.aqualock.bukkit.display.AquaPass;
 import com.almuramc.aqualock.bukkit.display.CachedGeoPopup;
-import com.almuramc.aqualock.bukkit.display.field.PasswordField;
 import com.almuramc.aqualock.bukkit.input.AquaPanelDelegate;
 import com.almuramc.aqualock.bukkit.lock.BukkitLock;
 import com.almuramc.aqualock.bukkit.util.BlockUtil;
@@ -36,7 +35,6 @@ import com.almuramc.bolt.registry.CommonRegistry;
 import org.getspout.spoutapi.SpoutManager;
 import org.getspout.spoutapi.event.screen.ScreenCloseEvent;
 import org.getspout.spoutapi.gui.Screen;
-import org.getspout.spoutapi.gui.Widget;
 import org.getspout.spoutapi.player.SpoutPlayer;
 
 import org.bukkit.Location;
@@ -257,7 +255,7 @@ public class AqualockListener implements Listener {
 					if (!lock.getPasscode().equals(passwordScreen.getPassword())) {
 						player.sendNotification("Aqualock", "Invalid password!", Material.LAVA_BUCKET);
 						return;
-						}
+					}
 				}
 				AquaPanel panel;
 				//Check for GUI cache, create new cache if necessary, attach new panel
