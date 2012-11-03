@@ -19,7 +19,9 @@
  */
 package com.almuramc.aqualock.bukkit.display;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.almuramc.aqualock.bukkit.AqualockPlugin;
 import com.almuramc.aqualock.bukkit.display.button.ApplyButton;
@@ -60,7 +62,7 @@ import org.getspout.spoutapi.gui.WidgetAnchor;
 
 import org.bukkit.Location;
 
-public class AquaPanel extends GenericPopup {
+public class AquaPanel extends CachedGeoPopup {
 	private final AqualockPlugin plugin;
 	//Widgets
 	private final GenericButton closeButton, applyButton, unlockButton;
@@ -70,6 +72,7 @@ public class AquaPanel extends GenericPopup {
 	private final GenericTexture borderTexture, aquaPhoto;
 	//Geo
 	private Location location;
+	private static HashMap<Location, Boolean> openedLocations = new HashMap<>();
 
 	public AquaPanel(AqualockPlugin plugin) {
 		this.plugin = plugin;
@@ -266,6 +269,7 @@ public class AquaPanel extends GenericPopup {
 	 * Populates the panel with information from the backend
 	 */
 	public void populate(Lock lock) {
+		openedLocations.put(location, true);
 		if (lock == null) {
 			for (Widget widget : getAttachedWidgets()) {
 				if (widget instanceof GenericTextField && (!(widget instanceof OwnerField))) {
@@ -361,11 +365,25 @@ public class AquaPanel extends GenericPopup {
 		this.setDirty(true);
 	}
 
+	@Override
+	public boolean isOpen() {
+		return openedLocations.get(location) == null ? false : openedLocations.get(location);
+	}
+
+	@Override
+	public void setOpen(boolean open) {
+		openedLocations.put(location, open);
+	}
+
 	public Location getLocation() {
 		return location;
 	}
 
 	public void setLocation(Location location) {
 		this.location = location;
+	}
+
+	public static boolean isOpen(Location location) {
+		return openedLocations.get(location) == null ? false : openedLocations.get(location);
 	}
 }

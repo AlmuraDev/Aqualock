@@ -26,16 +26,11 @@ import org.getspout.spoutapi.gui.GenericPopup;
 import org.getspout.spoutapi.gui.GenericTextField;
 import org.getspout.spoutapi.gui.Widget;
 
-public class CachedPopup extends GenericPopup {
-	public void clear() {
-		for (Widget widget : getAttachedWidgets()) {
-			if (widget instanceof GenericTextField) {
-				((GenericTextField) widget).setText("");
-			} else if (widget instanceof GenericCheckBox) {
-				((GenericCheckBox) widget).setChecked(false);
-			} else if (widget instanceof GenericLabel) {
-				((GenericLabel) widget).setTextColor(new Color("ffffff"));
-			}
-		}
-	}
+import org.bukkit.Location;
+
+public abstract class CachedGeoPopup extends GenericPopup {
+	public abstract boolean isOpen();
+	public abstract void setOpen(boolean open);
+	public abstract Location getLocation();
+	public abstract void setLocation(Location location);
 }

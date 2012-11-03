@@ -22,6 +22,11 @@ package com.almuramc.aqualock.bukkit;
 import java.util.Iterator;
 import java.util.List;
 
+import com.almuramc.aqualock.bukkit.display.AquaPanel;
+import com.almuramc.aqualock.bukkit.display.AquaPass;
+import com.almuramc.aqualock.bukkit.display.CachedGeoPopup;
+import com.almuramc.aqualock.bukkit.display.field.PasswordField;
+import com.almuramc.aqualock.bukkit.input.AquaPanelDelegate;
 import com.almuramc.aqualock.bukkit.lock.BukkitLock;
 import com.almuramc.aqualock.bukkit.util.BlockUtil;
 import com.almuramc.aqualock.bukkit.util.LockUtil;
@@ -29,7 +34,12 @@ import com.almuramc.bolt.lock.Lock;
 import com.almuramc.bolt.registry.CommonRegistry;
 
 import org.getspout.spoutapi.SpoutManager;
+import org.getspout.spoutapi.event.screen.ScreenCloseEvent;
+import org.getspout.spoutapi.gui.Screen;
+import org.getspout.spoutapi.gui.Widget;
+import org.getspout.spoutapi.player.SpoutPlayer;
 
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -144,6 +154,11 @@ public class AqualockListener implements Listener {
 				event.setCancelled(true);
 				return;
 			}
+			if (lock instanceof BukkitLock && BlockUtil.shouldOpenPassPanel(interacted.getType())) {
+				AquaPass passwordPopup = new AquaPass(AqualockPlugin.getInstance());
+				passwordPopup.populate(lock);
+				SpoutManager.getPlayer(interacter).getMainScreen().attachPopupScreen(passwordPopup);
+			}
 			if (!LockUtil.use(interacter.getName(), "", interacted.getLocation(), ((BukkitLock) lock).getUseCost())) {
 				event.setCancelled(true);
 				return;
@@ -226,5 +241,41 @@ public class AqualockListener implements Listener {
 	public void onBlockPhysics(BlockPhysicsEvent event) {
 		final Block block = event.getBlock();
 		event.setCancelled(registry.contains(block.getWorld().getUID(), block.getX(), block.getY(), block.getZ()));
+	}
+
+	@EventHandler(priority = EventPriority.MONITOR)
+	public void onScreenClose(ScreenCloseEvent event) {
+		final Screen screen = event.getScreen();
+		if (screen instanceof CachedGeoPopup) {
+			final Location location = ((CachedGeoPopup) screen).getLocation();
+			((CachedGeoPopup) screen).setOpen(false);
+			if (screen instanceof AquaPass) {
+				final SpoutPlayer player = event.getPlayer();
+				final BukkitLock lock = (BukkitLock) registry.getLock(location.getWorld().getUID(), location.getBlockX(), location.getBlockY(), location.getBlockZ());
+				final AquaPass passwordScreen = (AquaPass) screen;
+				if (!lock.getPasscode().isEmpty()) {
+					if (!lock.getPasscode().equals(passwordScreen.getPassword())) {
+						player.sendNotification("Aqualock", "Invalid password!", Material.LAVA_BUCKET);
+						return;
+						}
+				}
+				AquaPanel panel;
+				//Check for GUI cache, create new cache if necessary, attach new panel
+				if (!AquaPanelDelegate.panels.containsKey(event.getPlayer().getUniqueId())) {
+					panel = new AquaPanel(plugin);
+					AquaPanelDelegate.panels.put(player.getUniqueId(), panel);
+					player.getMainScreen().attachPopupScreen(panel);
+				} else {
+					//Has a cached panel, so attach it
+					panel = AquaPanelDelegate.panels.get(player.getUniqueId());
+					if (panel.isOpen(location)) {
+						return;
+					}
+					player.getMainScreen().attachPopupScreen(AquaPanelDelegate.panels.get(player.getUniqueId()));
+				}
+				panel.setLocation(location);
+				panel.populate(registry.getLock(location.getWorld().getUID(), location.getBlockX(), location.getBlockY(), location.getBlockZ()));
+			}
+		}
 	}
 }

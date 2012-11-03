@@ -175,12 +175,41 @@ public class BlockUtil {
 		return true;
 	}
 
-
 	public static boolean isDoorMaterial(Material material) {
 		return material == Material.IRON_DOOR_BLOCK || material == Material.WOODEN_DOOR || material == Material.FENCE_GATE;
 	}
 
 	public static boolean isChestMaterial(Material material) {
 		return material == Material.CHEST && material != Material.ENDER_CHEST;
+	}
+
+	public static boolean shouldOpenPassPanel(Material material) {
+		switch (material) {
+			case CHEST:
+				break;
+			case ENDER_CHEST:
+				break;
+			case DISPENSER:
+				break;
+			case WORKBENCH:
+				break;
+			case STONE_BUTTON:
+				break;
+			case WOODEN_DOOR:
+				break;
+			case IRON_DOOR_BLOCK:
+				break;
+			case FURNACE:
+				break;
+			case LEVER:
+				break;
+			case BREWING_STAND:
+				break;
+			case ENCHANTMENT_TABLE:
+				break;
+			default:
+				return false;
+		}
+		return true;
 	}
 }

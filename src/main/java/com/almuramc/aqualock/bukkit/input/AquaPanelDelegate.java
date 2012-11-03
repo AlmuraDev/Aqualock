@@ -24,6 +24,8 @@ import java.util.UUID;
 
 import com.almuramc.aqualock.bukkit.AqualockPlugin;
 import com.almuramc.aqualock.bukkit.display.AquaPanel;
+import com.almuramc.aqualock.bukkit.display.AquaPass;
+import com.almuramc.aqualock.bukkit.lock.BukkitLock;
 import com.almuramc.aqualock.bukkit.util.BlockUtil;
 import com.almuramc.aqualock.bukkit.util.LockUtil;
 import com.almuramc.bolt.lock.Lock;
@@ -38,7 +40,7 @@ import org.bukkit.block.Block;
 
 public class AquaPanelDelegate implements BindingExecutionDelegate {
 	private final AqualockPlugin plugin;
-	private static final HashMap<UUID, AquaPanel> panels = new HashMap<UUID, AquaPanel>();
+	public static final HashMap<UUID, AquaPanel> panels = new HashMap<UUID, AquaPanel>();
 
 	public AquaPanelDelegate(AqualockPlugin plugin) {
 		this.plugin = plugin;
@@ -63,6 +65,13 @@ public class AquaPanelDelegate implements BindingExecutionDelegate {
 			player.sendMessage(plugin.getPrefix() + "You are not allowed to open the panel!");
 			return;
 		}
+		if (lock instanceof BukkitLock && lock != null) {
+			AquaPass passwordPanel = new AquaPass(plugin);
+			passwordPanel.setLocation(block.getLocation());
+			passwordPanel.populate(lock);
+			player.getMainScreen().attachPopupScreen(passwordPanel);
+			return;
+		}
 		//Check for GUI cache, create new cache if necessary, attach new panel
 		if (!panels.containsKey(player.getUniqueId())) {
 			panel = new AquaPanel(plugin);
@@ -71,7 +80,9 @@ public class AquaPanelDelegate implements BindingExecutionDelegate {
 		} else {
 			//Has a cached panel, so attach it
 			panel = panels.get(player.getUniqueId());
-			player.getMainScreen().attachPopupScreen(panels.get(player.getUniqueId()));
+			if (!panel.isOpen()) {
+				player.getMainScreen().attachPopupScreen(panels.get(player.getUniqueId()));
+			}
 		}
 		panel.setLocation(block.getLocation());
 		panel.populate(lock);

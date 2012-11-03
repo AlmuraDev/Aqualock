@@ -19,59 +19,40 @@
  */
 package com.almuramc.aqualock.bukkit.display;
 
-import java.util.List;
+import java.util.HashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.almuramc.aqualock.bukkit.AqualockPlugin;
-import com.almuramc.aqualock.bukkit.display.button.ApplyButton;
 import com.almuramc.aqualock.bukkit.display.button.CloseButton;
 import com.almuramc.aqualock.bukkit.display.button.UnlockButton;
-import com.almuramc.aqualock.bukkit.display.checkbox.EveryoneCheckbox;
-import com.almuramc.aqualock.bukkit.display.field.CloseTimerField;
-import com.almuramc.aqualock.bukkit.display.field.CoOwnerField;
-import com.almuramc.aqualock.bukkit.display.field.DamageField;
-import com.almuramc.aqualock.bukkit.display.field.OwnerField;
 import com.almuramc.aqualock.bukkit.display.field.PasswordField;
-import com.almuramc.aqualock.bukkit.display.field.UseCostField;
-import com.almuramc.aqualock.bukkit.display.field.UserField;
-import com.almuramc.aqualock.bukkit.display.label.CloseTimerLabel;
-import com.almuramc.aqualock.bukkit.display.label.CoOwnerLabel;
 import com.almuramc.aqualock.bukkit.display.label.CostToUseValueLabel;
-import com.almuramc.aqualock.bukkit.display.label.CreateCostLabel;
-import com.almuramc.aqualock.bukkit.display.label.CreateCostValueLabel;
-import com.almuramc.aqualock.bukkit.display.label.DamageLabel;
 import com.almuramc.aqualock.bukkit.display.label.OwnerLabel;
 import com.almuramc.aqualock.bukkit.display.label.PasswordLabel;
 import com.almuramc.aqualock.bukkit.display.label.RealOwnersLabel;
 import com.almuramc.aqualock.bukkit.display.label.UseCostLabel;
-import com.almuramc.aqualock.bukkit.display.label.UserLabel;
-import com.almuramc.aqualock.bukkit.lock.BukkitLock;
-import com.almuramc.aqualock.bukkit.lock.DoorBukkitLock;
-import com.almuramc.aqualock.bukkit.util.LockUtil;
 import com.almuramc.bolt.lock.Lock;
 
-import org.getspout.spoutapi.gui.Color;
 import org.getspout.spoutapi.gui.GenericButton;
-import org.getspout.spoutapi.gui.GenericCheckBox;
 import org.getspout.spoutapi.gui.GenericLabel;
 import org.getspout.spoutapi.gui.GenericPopup;
 import org.getspout.spoutapi.gui.GenericTextField;
 import org.getspout.spoutapi.gui.GenericTexture;
 import org.getspout.spoutapi.gui.RenderPriority;
-import org.getspout.spoutapi.gui.Widget;
 import org.getspout.spoutapi.gui.WidgetAnchor;
 
 import org.bukkit.Location;
 
-public class AquaPass extends GenericPopup {
+public class AquaPass extends CachedGeoPopup {
 	private final AqualockPlugin plugin;
 	//Widgets
 	private final GenericButton unlockButton, closeButton;
-	
 	private final GenericLabel costToUseLabel, costToUseOutputLabel, passwordLabel, ownerLabel, realOwnersOutputLabel;
 	private final GenericTextField passwordField;
 	private final GenericTexture borderTexture, aquaPhoto;
 	//Geo
 	private Location location;
+	private static HashMap<Location, Boolean> openedLocations = new HashMap<>();
 
 	public AquaPass(AqualockPlugin plugin) {
 		this.plugin = plugin;
@@ -98,7 +79,7 @@ public class AquaPass extends GenericPopup {
 				.setHeight(18)
 				.setWidth(40)
 				.shiftXPos(142)
-				.shiftYPos(87);		
+				.shiftYPos(87);
 		unlockButton = new UnlockButton(plugin);
 		unlockButton
 				.setAuto(true)
@@ -107,7 +88,7 @@ public class AquaPass extends GenericPopup {
 				.setHeight(18)
 				.setWidth(40)
 				.shiftXPos(40)
-				.shiftYPos(87);	
+				.shiftYPos(87);
 		costToUseLabel = new UseCostLabel("Cost to use:");
 		costToUseLabel
 				.setAuto(true)
@@ -167,10 +148,24 @@ public class AquaPass extends GenericPopup {
 	/**
 	 * Populates the panel with information from the backend
 	 */
-	public void populate(Lock lock) {		
-		
-		realOwnersOutputLabel.setText(lock.getOwner());		
+	public void populate(Lock lock) {
+		openedLocations.put(getLocation(), true);
+		realOwnersOutputLabel.setText(lock.getOwner());
 		this.setDirty(true);
+	}
+
+	@Override
+	public boolean isOpen() {
+		return openedLocations.get(location) == null ? false : openedLocations.get(location);
+	}
+
+	@Override
+	public void setOpen(boolean open) {
+		openedLocations.put(location, open);
+	}
+
+	public static boolean isOpen(Location location) {
+		return openedLocations.get(location) == null ? false : openedLocations.get(location);
 	}
 
 	public Location getLocation() {
@@ -179,5 +174,9 @@ public class AquaPass extends GenericPopup {
 
 	public void setLocation(Location location) {
 		this.location = location;
+	}
+
+	public String getPassword() {
+		return passwordField.getText();
 	}
 }
