@@ -66,9 +66,9 @@ public class AquaPass extends CachedGeoPopup {
 		aquaPhoto
 				.setAnchor(WidgetAnchor.CENTER_CENTER)
 				.setPriority(RenderPriority.Normal)
-				.setWidth(60)
-				.setHeight(60)
-				.shiftXPos(-90)
+				.setWidth(40)
+				.setHeight(40)
+				.shiftXPos(-100)
 				.shiftYPos(-55);
 		closeButton = new CloseButton(plugin);
 		closeButton
@@ -76,8 +76,8 @@ public class AquaPass extends CachedGeoPopup {
 				.setAnchor(WidgetAnchor.CENTER_CENTER)
 				.setHeight(18)
 				.setWidth(40)
-				.shiftXPos(142)
-				.shiftYPos(87);
+				.shiftXPos(42)
+				.shiftYPos(17);
 		unlockButton = new UnlockButton(plugin);
 		unlockButton
 				.setAuto(true)
@@ -85,16 +85,16 @@ public class AquaPass extends CachedGeoPopup {
 				.setAnchor(WidgetAnchor.CENTER_CENTER)
 				.setHeight(18)
 				.setWidth(40)
-				.shiftXPos(40)
-				.shiftYPos(87);
+				.shiftXPos(-10)
+				.shiftYPos(17);
 		costToUseLabel = new UseCostLabel("Cost to use:");
 		costToUseLabel
 				.setAuto(true)
 				.setAnchor(WidgetAnchor.CENTER_CENTER)
 				.setHeight(10)
 				.setWidth(40)
-				.shiftXPos(-132)
-				.shiftYPos(43);
+				.shiftXPos(-46)
+				.shiftYPos(-25);
 		costToUseOutputLabel = new CostToUseValueLabel("");
 		costToUseOutputLabel
 				.setAuto(true)
@@ -108,32 +108,32 @@ public class AquaPass extends CachedGeoPopup {
 				.setAnchor(WidgetAnchor.CENTER_CENTER)
 				.setHeight(14)
 				.setWidth(107)
-				.shiftXPos(70)
-				.shiftYPos(-49);
+				.shiftXPos(-25)
+				.shiftYPos(-3);
 		passwordLabel = new PasswordLabel("Password:");
 		passwordLabel
 				.setAuto(true)
 				.setAnchor(WidgetAnchor.CENTER_CENTER)
 				.setHeight(8)
 				.setWidth(40)
-				.shiftXPos(15)
-				.shiftYPos(-45);
+				.shiftXPos(-80)
+				.shiftYPos(0);
 		realOwnersOutputLabel = new RealOwnersLabel("");
 		realOwnersOutputLabel
 				.setAuto(true)
 				.setAnchor(WidgetAnchor.CENTER_CENTER)
 				.setHeight(10)
 				.setWidth(40)
-				.shiftXPos(-68)
-				.shiftYPos(0);
+				.shiftXPos(0)
+				.shiftYPos(-40);
 		ownerLabel = new OwnerLabel("Owner:");
 		ownerLabel
 				.setAuto(true)
 				.setAnchor(WidgetAnchor.CENTER_CENTER)
 				.setHeight(10)
 				.setWidth(40)
-				.shiftXPos(15)
-				.shiftYPos(-65);
+				.shiftXPos(-40)
+				.shiftYPos(-40);
 		attachWidgets(plugin, borderTexture, aquaPhoto, closeButton, unlockButton, realOwnersOutputLabel, costToUseLabel, costToUseOutputLabel, passwordField, passwordLabel, ownerLabel);
 		passwordField.setFocus(true);
 		passwordField.setTabIndex(0);
