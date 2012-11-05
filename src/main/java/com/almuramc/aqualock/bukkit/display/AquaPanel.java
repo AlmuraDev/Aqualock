@@ -275,6 +275,7 @@ public class AquaPanel extends CachedGeoPopup {
 				} else if (widget instanceof GenericCheckBox) {
 					((GenericCheckBox) widget).setChecked(false);
 				} else if (widget instanceof OwnerField) {
+					System.out.println(getPlayer());
 					((OwnerField) widget).setText(getPlayer().getName());
 				} else if (widget instanceof CreateCostValueLabel) {
 					final double value = plugin.getConfiguration().getCosts().getLockCost(getLocation().getBlock().getType());

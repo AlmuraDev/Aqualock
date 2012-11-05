@@ -30,6 +30,7 @@ import com.almuramc.aqualock.bukkit.display.label.OwnerLabel;
 import com.almuramc.aqualock.bukkit.display.label.PasswordLabel;
 import com.almuramc.aqualock.bukkit.display.label.RealOwnersLabel;
 import com.almuramc.aqualock.bukkit.display.label.UseCostLabel;
+import com.almuramc.aqualock.bukkit.lock.BukkitLock;
 import com.almuramc.bolt.lock.Lock;
 
 import org.getspout.spoutapi.gui.GenericButton;
@@ -149,6 +150,8 @@ public class AquaPass extends CachedGeoPopup {
 	public void populate(Lock lock) {
 		openedLocations.put(getLocation(), true);
 		realOwnersOutputLabel.setText(lock.getOwner());
+		costToUseOutputLabel.setText(Double.toString(((BukkitLock) lock).getUseCost()));
+		unlockButton.setEnabled(true);
 		this.setDirty(true);
 	}
 

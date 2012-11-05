@@ -21,6 +21,7 @@ package com.almuramc.aqualock.bukkit.display.button;
 
 import com.almuramc.aqualock.bukkit.AqualockPlugin;
 import com.almuramc.aqualock.bukkit.display.AquaPanel;
+import com.almuramc.aqualock.bukkit.display.AquaPass;
 import com.almuramc.aqualock.bukkit.display.field.PasswordField;
 import com.almuramc.aqualock.bukkit.util.LockUtil;
 
@@ -40,9 +41,7 @@ public class UnlockButton extends GenericButton {
 
 	@Override
 	public void onButtonClick(ButtonClickEvent event) {
-		//TODO perms and such...
-		final AquaPanel panel = (AquaPanel) getScreen();
-		final Location location = panel.getLocation();
+		final AquaPass panel = (AquaPass) getScreen();
 		String password = "";
 		for (Widget widget : panel.getAttachedWidgets()) {
 			if (widget instanceof PasswordField) {

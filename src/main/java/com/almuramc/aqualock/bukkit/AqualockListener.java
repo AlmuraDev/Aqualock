@@ -251,10 +251,12 @@ public class AqualockListener implements Listener {
 				final SpoutPlayer player = event.getPlayer();
 				final BukkitLock lock = (BukkitLock) registry.getLock(location.getWorld().getUID(), location.getBlockX(), location.getBlockY(), location.getBlockZ());
 				final AquaPass passwordScreen = (AquaPass) screen;
-				if (!lock.getPasscode().isEmpty()) {
-					if (!lock.getPasscode().equals(passwordScreen.getPassword())) {
-						player.sendNotification("Aqualock", "Invalid password!", Material.LAVA_BUCKET);
-						return;
+				if (lock != null) {
+					if (lock.getPasscode() != null && !lock.getPasscode().isEmpty()) {
+						if (passwordScreen.getPassword() != null && !(passwordScreen.getPassword().isEmpty()) && !lock.getPasscode().equals(passwordScreen.getPassword())) {
+							player.sendNotification("Aqualock", "Invalid password!", Material.LAVA_BUCKET);
+							return;
+						}
 					}
 				}
 				AquaPanel panel;

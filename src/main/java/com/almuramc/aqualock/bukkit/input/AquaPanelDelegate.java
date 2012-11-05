@@ -65,7 +65,7 @@ public class AquaPanelDelegate implements BindingExecutionDelegate {
 			player.sendMessage(plugin.getPrefix() + "You are not allowed to open the panel!");
 			return;
 		}
-		if (lock instanceof BukkitLock && lock != null && BlockUtil.shouldOpenPassPanel(block.getType())) {
+		if (lock != null && BlockUtil.shouldOpenPassPanel(block.getType())) {
 			AquaPass passwordPanel = new AquaPass(plugin);
 			passwordPanel.setLocation(block.getLocation());
 			passwordPanel.populate(lock);
