@@ -275,8 +275,8 @@ public class AquaPanel extends CachedGeoPopup {
 				} else if (widget instanceof GenericCheckBox) {
 					((GenericCheckBox) widget).setChecked(false);
 				} else if (widget instanceof OwnerField) {
-					System.out.println(getPlayer());
-					((OwnerField) widget).setText(getPlayer().getName());
+					System.out.println(getScreen().getPlayer());
+					((OwnerField) widget).setText(getScreen().getPlayer().getName());
 				} else if (widget instanceof CreateCostValueLabel) {
 					final double value = plugin.getConfiguration().getCosts().getLockCost(getLocation().getBlock().getType());
 					String hexColor = "ffffff"; //white
@@ -337,8 +337,8 @@ public class AquaPanel extends CachedGeoPopup {
 		}
 		costToCreateOutputLabel.setText(Double.toString(value).replaceAll("[^\\d.]", ""));
 		costToCreateOutputLabel.setTextColor(new Color(hexColor));
-		if (LockUtil.canPerformAction(getPlayer(), "UNLOCK")) {
-			final String name = getPlayer().getName();
+		if (LockUtil.canPerformAction(getScreen().getPlayer(), "UNLOCK")) {
+			final String name = getScreen().getPlayer().getName();
 			boolean canUnlock;
 			if (!ownerField.getText().equals(name)) {
 				if (!coowners.contains(name)) {

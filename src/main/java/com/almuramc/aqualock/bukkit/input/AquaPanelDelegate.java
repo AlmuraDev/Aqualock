@@ -65,25 +65,15 @@ public class AquaPanelDelegate implements BindingExecutionDelegate {
 			player.sendMessage(plugin.getPrefix() + "You are not allowed to open the panel!");
 			return;
 		}
-		if (lock != null && BlockUtil.shouldOpenPassPanel(block.getType())) {
-			AquaPass passwordPanel = new AquaPass(plugin);
-			passwordPanel.setLocation(block.getLocation());
-			passwordPanel.populate(lock);
-			player.getMainScreen().attachPopupScreen(passwordPanel);
-			return;
-		}
 		//Check for GUI cache, create new cache if necessary, attach new panel
 		if (!panels.containsKey(player.getUniqueId())) {
 			panel = new AquaPanel(plugin);
 			panels.put(player.getUniqueId(), panel);
-			player.getMainScreen().attachPopupScreen(panel);
 		} else {
 			//Has a cached panel, so attach it
 			panel = panels.get(player.getUniqueId());
-			if (!panel.isOpen()) {
-				player.getMainScreen().attachPopupScreen(panels.get(player.getUniqueId()));
-			}
 		}
+		player.getMainScreen().attachPopupScreen(panel);
 		panel.setLocation(block.getLocation());
 		panel.populate(lock);
 	}

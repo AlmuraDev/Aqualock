@@ -156,6 +156,8 @@ public class AqualockListener implements Listener {
 				AquaPass passwordPopup = new AquaPass(AqualockPlugin.getInstance());
 				passwordPopup.populate(lock);
 				SpoutManager.getPlayer(interacter).getMainScreen().attachPopupScreen(passwordPopup);
+				//event.setCancelled(true);
+				//return;
 			}
 			if (!LockUtil.use(interacter.getName(), "", interacted.getLocation(), ((BukkitLock) lock).getUseCost())) {
 				event.setCancelled(true);
@@ -243,17 +245,19 @@ public class AqualockListener implements Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onScreenClose(ScreenCloseEvent event) {
+		System.out.println("Screen closed");
 		final Screen screen = event.getScreen();
 		if (screen instanceof CachedGeoPopup) {
 			final Location location = ((CachedGeoPopup) screen).getLocation();
 			((CachedGeoPopup) screen).setOpen(false);
 			if (screen instanceof AquaPass) {
 				final SpoutPlayer player = event.getPlayer();
-				final BukkitLock lock = (BukkitLock) registry.getLock(location.getWorld().getUID(), location.getBlockX(), location.getBlockY(), location.getBlockZ());
+				final Lock lock = registry.getLock(location.getWorld().getUID(), location.getBlockX(), location.getBlockY(), location.getBlockZ());
 				final AquaPass passwordScreen = (AquaPass) screen;
 				if (lock != null) {
-					if (lock.getPasscode() != null && !lock.getPasscode().isEmpty()) {
-						if (passwordScreen.getPassword() != null && !(passwordScreen.getPassword().isEmpty()) && !lock.getPasscode().equals(passwordScreen.getPassword())) {
+					BukkitLock temp = (BukkitLock) lock;
+					if (temp.getPasscode() != null && !temp.getPasscode().isEmpty()) {
+						if (passwordScreen.getPassword() != null && !(passwordScreen.getPassword().isEmpty()) && !temp.getPasscode().equals(passwordScreen.getPassword())) {
 							player.sendNotification("Aqualock", "Invalid password!", Material.LAVA_BUCKET);
 							return;
 						}
@@ -264,17 +268,15 @@ public class AqualockListener implements Listener {
 				if (!AquaPanelDelegate.panels.containsKey(event.getPlayer().getUniqueId())) {
 					panel = new AquaPanel(plugin);
 					AquaPanelDelegate.panels.put(player.getUniqueId(), panel);
-					player.getMainScreen().attachPopupScreen(panel);
 				} else {
 					//Has a cached panel, so attach it
 					panel = AquaPanelDelegate.panels.get(player.getUniqueId());
-					if (panel.isOpen(location)) {
-						return;
-					}
-					player.getMainScreen().attachPopupScreen(AquaPanelDelegate.panels.get(player.getUniqueId()));
 				}
-				panel.setLocation(location);
-				panel.populate(registry.getLock(location.getWorld().getUID(), location.getBlockX(), location.getBlockY(), location.getBlockZ()));
+				if (!panel.isOpen()) {
+					player.getMainScreen().attachPopupScreen(panel);
+					panel.setLocation(location);
+					panel.populate(registry.getLock(location.getWorld().getUID(), location.getBlockX(), location.getBlockY(), location.getBlockZ()));
+				}
 			}
 		}
 	}

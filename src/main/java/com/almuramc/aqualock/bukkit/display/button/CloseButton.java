@@ -20,9 +20,11 @@
 package com.almuramc.aqualock.bukkit.display.button;
 
 import com.almuramc.aqualock.bukkit.AqualockPlugin;
+import com.almuramc.aqualock.bukkit.display.CachedGeoPopup;
 
 import org.getspout.spoutapi.event.screen.ButtonClickEvent;
 import org.getspout.spoutapi.gui.GenericButton;
+import org.getspout.spoutapi.gui.Screen;
 
 public class CloseButton extends GenericButton {
 	private final AqualockPlugin plugin;
@@ -34,6 +36,6 @@ public class CloseButton extends GenericButton {
 
 	@Override
 	public void onButtonClick(ButtonClickEvent event) {
-		event.getPlayer().getMainScreen().closePopup();
+		((CachedGeoPopup) event.getScreen()).onClose();
 	}
 }
