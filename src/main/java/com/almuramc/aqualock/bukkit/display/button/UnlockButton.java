@@ -20,8 +20,6 @@
 package com.almuramc.aqualock.bukkit.display.button;
 
 import com.almuramc.aqualock.bukkit.AqualockPlugin;
-import com.almuramc.aqualock.bukkit.display.AquaPanel;
-import com.almuramc.aqualock.bukkit.display.AquaPass;
 import com.almuramc.aqualock.bukkit.display.CachedGeoPopup;
 import com.almuramc.aqualock.bukkit.display.field.PasswordField;
 import com.almuramc.aqualock.bukkit.util.LockUtil;
@@ -29,8 +27,6 @@ import com.almuramc.aqualock.bukkit.util.LockUtil;
 import org.getspout.spoutapi.event.screen.ButtonClickEvent;
 import org.getspout.spoutapi.gui.GenericButton;
 import org.getspout.spoutapi.gui.Widget;
-
-import org.bukkit.Location;
 
 public class UnlockButton extends GenericButton {
 	private final AqualockPlugin plugin;

@@ -24,7 +24,6 @@ import com.almuramc.aqualock.bukkit.display.CachedGeoPopup;
 
 import org.getspout.spoutapi.event.screen.ButtonClickEvent;
 import org.getspout.spoutapi.gui.GenericButton;
-import org.getspout.spoutapi.gui.Screen;
 
 public class CloseButton extends GenericButton {
 	private final AqualockPlugin plugin;
