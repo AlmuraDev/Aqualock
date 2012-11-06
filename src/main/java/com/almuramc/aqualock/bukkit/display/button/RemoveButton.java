@@ -21,34 +21,32 @@ package com.almuramc.aqualock.bukkit.display.button;
 
 import com.almuramc.aqualock.bukkit.AqualockPlugin;
 import com.almuramc.aqualock.bukkit.display.CachedGeoPopup;
+import com.almuramc.aqualock.bukkit.display.field.PasswordField;
+import com.almuramc.aqualock.bukkit.util.LockUtil;
 
-import net.minecraft.server.Block;
-import net.minecraft.server.EntityPlayer;
-import net.minecraft.server.ItemInWorldManager;
 import org.getspout.spoutapi.event.screen.ButtonClickEvent;
 import org.getspout.spoutapi.gui.GenericButton;
+import org.getspout.spoutapi.gui.Widget;
 
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.craftbukkit.CraftWorld;
-import org.bukkit.craftbukkit.entity.CraftPlayer;
-import org.bukkit.entity.Player;
-
-public class UnlockButton extends GenericButton {
+public class RemoveButton extends GenericButton {
 	private final AqualockPlugin plugin;
 
-	public UnlockButton(AqualockPlugin plugin) {
-		super("Unlock");
+	public RemoveButton(AqualockPlugin plugin) {
+		super("Remove");
 		this.plugin = plugin;
 	}
 
 	@Override
 	public void onButtonClick(ButtonClickEvent event) {
-		final Location location = ((CachedGeoPopup) event.getScreen()).getLocation();
-		final Material material = location.getBlock().getType();
-		final Player player = event.getPlayer();
-		final ItemInWorldManager hack = new ItemInWorldManager(((CraftWorld) location.getWorld()).getHandle());
-		hack.player = ((CraftPlayer) player).getHandle();
-		hack.dig(location.getBlockX(), location.getBlockY(), location.getBlockZ(), 0);
+		final CachedGeoPopup panel = (CachedGeoPopup) event.getScreen();
+		String password = "";
+		for (Widget widget : panel.getAttachedWidgets()) {
+			if (widget instanceof PasswordField) {
+				password = ((PasswordField) widget).getText();
+			}
+		}
+		if (LockUtil.unlock(getScreen().getPlayer().getName(), password, panel.getLocation())) {
+			((CachedGeoPopup) event.getScreen()).onClose();
+		}
 	}
 }

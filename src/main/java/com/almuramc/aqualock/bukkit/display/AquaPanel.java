@@ -25,7 +25,7 @@ import java.util.List;
 import com.almuramc.aqualock.bukkit.AqualockPlugin;
 import com.almuramc.aqualock.bukkit.display.button.ApplyButton;
 import com.almuramc.aqualock.bukkit.display.button.CloseButton;
-import com.almuramc.aqualock.bukkit.display.button.UnlockButton;
+import com.almuramc.aqualock.bukkit.display.button.RemoveButton;
 import com.almuramc.aqualock.bukkit.display.checkbox.EveryoneCheckbox;
 import com.almuramc.aqualock.bukkit.display.field.CloseTimerField;
 import com.almuramc.aqualock.bukkit.display.field.CoOwnerField;
@@ -106,7 +106,7 @@ public class AquaPanel extends CachedGeoPopup {
 				.setWidth(40)
 				.shiftXPos(90)
 				.shiftYPos(87);
-		unlockButton = new UnlockButton(plugin);
+		unlockButton = new RemoveButton(plugin);
 		unlockButton
 				.setAuto(true)
 				.setEnabled(false)
@@ -287,9 +287,9 @@ public class AquaPanel extends CachedGeoPopup {
 					}
 					((CreateCostValueLabel) widget).setText(Double.toString(value).replaceAll("[^\\d.]", ""));
 					((CreateCostValueLabel) widget).setTextColor(new Color(hexColor));
-				} else if (widget instanceof UnlockButton) {
+				} else if (widget instanceof RemoveButton) {
 					widget.setTooltip("You cannot unlock a lock that doesn't exist!");
-					((UnlockButton) widget).setEnabled(false);
+					((RemoveButton) widget).setEnabled(false);
 				}
 			}
 			applyButton.setText("Lock");

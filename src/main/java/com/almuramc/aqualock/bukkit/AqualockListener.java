@@ -138,6 +138,7 @@ public class AqualockListener implements Listener {
 	public void onPlayerInteract(PlayerInteractEvent event) {
 		Player interacter = event.getPlayer();
 		Block interacted = event.getClickedBlock();
+		Thread.dumpStack();
 		if (interacted == null) {
 			return;
 		}
@@ -154,10 +155,11 @@ public class AqualockListener implements Listener {
 			}
 			if (lock instanceof BukkitLock && BlockUtil.shouldOpenPassPanel(interacted.getType())) {
 				AquaPass passwordPopup = new AquaPass(AqualockPlugin.getInstance());
+				passwordPopup.setLocation(interacted.getLocation());
 				passwordPopup.populate(lock);
 				SpoutManager.getPlayer(interacter).getMainScreen().attachPopupScreen(passwordPopup);
-				//event.setCancelled(true);
-				//return;
+				event.setCancelled(true);
+				return;
 			}
 			if (!LockUtil.use(interacter.getName(), "", interacted.getLocation(), ((BukkitLock) lock).getUseCost())) {
 				event.setCancelled(true);
