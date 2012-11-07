@@ -22,6 +22,7 @@ package com.almuramc.aqualock.bukkit;
 import com.almuramc.aqualock.bukkit.command.AqualockCommands;
 import com.almuramc.aqualock.bukkit.configuration.AqualockConfiguration;
 import com.almuramc.aqualock.bukkit.input.AquaPanelDelegate;
+import com.almuramc.aqualock.bukkit.util.DependencyUtil;
 import com.almuramc.aqualock.common.AquaCommonRegistry;
 import com.almuramc.bolt.registry.CommonRegistry;
 import com.almuramc.bolt.storage.SqlStorage;
@@ -44,6 +45,7 @@ public class AqualockPlugin extends JavaPlugin {
 	private static Permission permission;
 	private static Economy economy;
 	private static AqualockConfiguration configuration;
+	private static DependencyUtil dependency;
 
 	static {
 		registry = new AquaCommonRegistry();
@@ -70,6 +72,12 @@ public class AqualockPlugin extends JavaPlugin {
 		this.getCommand("aqualock").setExecutor(new AqualockCommands(this));
 		this.getServer().getPluginManager().registerEvents(new AqualockListener(this), this);
 		SpoutManager.getKeyBindingManager().registerBinding("Aqua Panel", Keyboard.KEY_Y, "Opens the lock panel", new AquaPanelDelegate(this), this);
+		dependency = new DependencyUtil(this);
+		dependency.setupResidence();
+	}
+
+	public static DependencyUtil getDependency() {
+		return dependency;
 	}
 
 	public static AqualockPlugin getInstance() {

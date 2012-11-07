@@ -30,6 +30,8 @@ import com.almuramc.aqualock.bukkit.lock.DoorBukkitLock;
 import com.almuramc.bolt.lock.Lock;
 import com.almuramc.bolt.registry.CommonRegistry;
 import com.almuramc.bolt.storage.Storage;
+import com.bekvon.bukkit.residence.Residence;
+import com.bekvon.bukkit.residence.protection.ClaimedResidence;
 
 import org.getspout.spoutapi.SpoutManager;
 import org.getspout.spoutapi.player.SpoutPlayer;
@@ -75,6 +77,14 @@ public class LockUtil {
 		}
 		if (!performAction(player, passcode, location, 0, "LOCK")) {
 			return false;
+		}
+		if (AqualockPlugin.getDependency().isResidenceEnabled()) {
+			final ClaimedResidence res = Residence.getResidenceManager().getByLoc(location);
+			if (res != null) {
+				if (!res.getPermissions().playerHas(player.getName(), "lockable", true)) {
+					return false;
+				}
+			}
 		}
 		Lock lock;
 		if (BlockUtil.isDoorMaterial(location.getBlock().getType())) {

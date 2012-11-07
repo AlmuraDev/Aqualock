@@ -71,6 +71,13 @@
 			<version>dev-SNAPSHOT</version>
 			<scope>compile</scope>
 		</dependency>
+		<dependency>
+			<groupId>com.bekvon.bukkit</groupId>
+			<artifactId>Residence</artifactId>
+			<version>2.3.9</version>
+			<scope>system</scope>
+			<systemPath>${basedir}/lib/Residence.jar</systemPath>
+		</dependency>
 	</dependencies>
 
 	<build>

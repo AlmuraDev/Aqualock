@@ -20,19 +20,22 @@
 package com.almuramc.aqualock.bukkit.display.button;
 
 import com.almuramc.aqualock.bukkit.AqualockPlugin;
+import com.almuramc.aqualock.bukkit.display.AquaPass;
 import com.almuramc.aqualock.bukkit.display.CachedGeoPopup;
+import com.almuramc.aqualock.bukkit.lock.BukkitLock;
+import com.almuramc.aqualock.bukkit.util.BlockUtil;
 
-import net.minecraft.server.Block;
-import net.minecraft.server.EntityPlayer;
-import net.minecraft.server.ItemInWorldManager;
+import org.getspout.spoutapi.SpoutManager;
 import org.getspout.spoutapi.event.screen.ButtonClickEvent;
 import org.getspout.spoutapi.gui.GenericButton;
+import org.getspout.spoutapi.player.SpoutPlayer;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.CraftWorld;
-import org.bukkit.craftbukkit.entity.CraftPlayer;
-import org.bukkit.entity.Player;
+import org.bukkit.block.Block;
+import org.bukkit.block.Chest;
+import org.bukkit.block.Furnace;
 
 public class UnlockButton extends GenericButton {
 	private final AqualockPlugin plugin;
@@ -45,10 +48,43 @@ public class UnlockButton extends GenericButton {
 	@Override
 	public void onButtonClick(ButtonClickEvent event) {
 		final Location location = ((CachedGeoPopup) event.getScreen()).getLocation();
-		final Material material = location.getBlock().getType();
-		final Player player = event.getPlayer();
-		final ItemInWorldManager hack = new ItemInWorldManager(((CraftWorld) location.getWorld()).getHandle());
-		hack.player = ((CraftPlayer) player).getHandle();
-		hack.dig(location.getBlockX(), location.getBlockY(), location.getBlockZ(), 0);
+		final SpoutPlayer player = SpoutManager.getPlayer(event.getPlayer());
+		final Block block = location.getBlock();
+		final String password = ((AquaPass) event.getScreen()).getPassword();
+		final BukkitLock lock = (BukkitLock) plugin.getRegistry().getLock(block.getWorld().getUID(), block.getX(), block.getY(), block.getZ());
+		if (!lock.getPasscode().equals(password)) {
+			player.sendNotification("Aqualock", "Invalid password!", Material.LAVA_BUCKET);
+			return;
+		}
+		((CachedGeoPopup) event.getScreen()).onClose();
+		switch (location.getBlock().getType()) {
+			case CHEST:
+				final Chest chest = (Chest) location.getBlock().getState();
+				Bukkit.getScheduler().scheduleSyncDelayedTask(AqualockPlugin.getInstance(), new Runnable() {
+					@Override
+					public void run() {
+						player.openInventory(chest.getInventory());
+					}
+				}, 10L);
+				break;
+			case WOODEN_DOOR:
+				BlockUtil.onDoorInteract(block);
+				break;
+			case IRON_DOOR_BLOCK:
+				BlockUtil.onDoorInteract(block);
+				break;
+			case IRON_DOOR:
+				BlockUtil.onDoorInteract(block);
+				break;
+			case FURNACE:
+				final Furnace furnace = (Furnace) block.getState();
+				Bukkit.getScheduler().scheduleSyncDelayedTask(AqualockPlugin.getInstance(), new Runnable() {
+					@Override
+					public void run() {
+						player.openInventory(furnace.getInventory());
+					}
+				}, 10L);
+				break;
+		}
 	}
 }

@@ -158,7 +158,7 @@ public class BlockUtil {
 			block = block.getRelative(BlockFace.DOWN);
 		}
 		Block oBlock = getDoubleDoor(block.getLocation());
-		changeDoorStates(true, (block.getType() == Material.WOODEN_DOOR ? null : block), oBlock);
+		changeDoorStates(true, block, oBlock);
 		if ((block.getData() & 0x4) != 0) {
 			final Block finalBlock = block;
 			final Block finalOBlock = oBlock;

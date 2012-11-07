@@ -6,6 +6,7 @@ website: ${project.organization.url}
 
 main: com.almuramc.aqualock.bukkit.AqualockPlugin
 depend: [Spout, Vault]
+softdepend: [Residence]
 load: POSTWORLD
 
 commands:

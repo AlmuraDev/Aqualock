@@ -23,7 +23,6 @@ import java.util.HashMap;
 
 import com.almuramc.aqualock.bukkit.AqualockPlugin;
 import com.almuramc.aqualock.bukkit.display.button.CloseButton;
-import com.almuramc.aqualock.bukkit.display.button.RemoveButton;
 import com.almuramc.aqualock.bukkit.display.button.UnlockButton;
 import com.almuramc.aqualock.bukkit.display.field.PasswordField;
 import com.almuramc.aqualock.bukkit.display.label.CostToUseValueLabel;
