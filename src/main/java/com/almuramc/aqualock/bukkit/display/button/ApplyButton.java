@@ -100,7 +100,7 @@ public class ApplyButton extends GenericButton {
 					}
 					damage = value;
 				} catch (Exception e) {
-					//do nothing
+					System.out.println(e.getStackTrace());
 				}
 			}
 		}

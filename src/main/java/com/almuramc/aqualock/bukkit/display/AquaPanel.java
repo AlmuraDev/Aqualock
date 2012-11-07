@@ -296,7 +296,7 @@ public class AquaPanel extends CachedGeoPopup {
 			closeTimerField.setText("5");
 			costToCreateLabel.setText("Cost to create:");
 			costToUseField.setText("0.0");
-			damageOnFailField.setText("0.0");
+			damageOnFailField.setText("0");
 			unlockButton.setVisible(false);
 			this.setDirty(true);
 			return;

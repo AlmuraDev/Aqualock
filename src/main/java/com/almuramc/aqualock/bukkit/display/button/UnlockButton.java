@@ -24,6 +24,7 @@ import com.almuramc.aqualock.bukkit.display.AquaPass;
 import com.almuramc.aqualock.bukkit.display.CachedGeoPopup;
 import com.almuramc.aqualock.bukkit.lock.BukkitLock;
 import com.almuramc.aqualock.bukkit.util.BlockUtil;
+import com.almuramc.aqualock.bukkit.util.LockUtil;
 
 import org.getspout.spoutapi.SpoutManager;
 import org.getspout.spoutapi.event.screen.ButtonClickEvent;
@@ -54,6 +55,10 @@ public class UnlockButton extends GenericButton {
 		final BukkitLock lock = (BukkitLock) plugin.getRegistry().getLock(block.getWorld().getUID(), block.getX(), block.getY(), block.getZ());
 		if (!lock.getPasscode().equals(password)) {
 			player.sendNotification("Aqualock", "Invalid password!", Material.LAVA_BUCKET);
+			player.damage(lock.getDamage());
+			return;
+		}
+		if (!LockUtil.use(player.getName(), password, block.getLocation(), lock.getUseCost())) {
 			return;
 		}
 		((CachedGeoPopup) event.getScreen()).onClose();

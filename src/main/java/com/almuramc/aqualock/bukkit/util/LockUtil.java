@@ -221,6 +221,7 @@ public class LockUtil {
 			((BukkitLock) lock).setUseCost(useCost);
 			((BukkitLock) lock).setPasscode(passcode);
 			((BukkitLock) lock).setData(data);
+			((BukkitLock) lock).setDamage(damage);
 			if (lock instanceof DoorBukkitLock) {
 				((DoorBukkitLock) lock).setAutocloseTimer(timer);
 			}
@@ -390,12 +391,12 @@ public class LockUtil {
 				if (lock == null) {
 					return true;
 				}
-				boolean canUpdate = false;
+				boolean canUpdate;
 				if (!name.equals(lock.getOwner())) {
-					for (String pname : lock.getCoOwners()) {
-						if (name.equals(pname)) {
-							canUpdate = true;
-						}
+					if (lock.getCoOwners().contains(name)) {
+						canUpdate = true;
+					} else {
+						canUpdate = false;
 					}
 				} else {
 					canUpdate = true;
@@ -448,7 +449,7 @@ public class LockUtil {
 				}
 				break;
 			case "UPDATE":
-				if (!PermissionUtil.canUse(player)) {
+				if (!PermissionUtil.canUpdate(player)) {
 					return false;
 				}
 				break;
