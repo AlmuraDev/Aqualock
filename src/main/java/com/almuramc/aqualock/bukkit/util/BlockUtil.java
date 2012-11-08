@@ -32,6 +32,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
+import org.bukkit.material.Door;
 
 /**
  * Class with helper functions that deal with blocks
@@ -163,7 +164,8 @@ public class BlockUtil {
 		} else {
 			changeDoorStates(true, block, oBlock);
 		}
-		if ((block.getData() & 0x4) == 0) {
+		Door source = (Door) block.getState().getData();
+		if (source.isOpen()) {
 			final Block finalBlock = block;
 			final Block finalOBlock = oBlock;
 			final DoorBukkitLock lock = (DoorBukkitLock) AqualockPlugin.getRegistry().getLock(finalBlock.getWorld().getUID(), finalBlock.getX(), finalBlock.getY(), finalBlock.getZ());
