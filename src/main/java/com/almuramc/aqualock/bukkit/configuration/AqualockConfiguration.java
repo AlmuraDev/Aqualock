@@ -68,6 +68,10 @@ public final class AqualockConfiguration {
 		langConfig.reload();
 	}
 
+	public final long getDoubleDoorTimer() {
+		return config.getLong("default-double-door-timer", 5L);
+	}
+
 	public final CostConfiguration getCosts() {
 		return costConfig;
 	}

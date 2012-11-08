@@ -28,6 +28,7 @@
 #   The port that is forwarded to allow connections to the mysql instance.
 ##########################
 hotkey: KEY_L
+default-double-door-timer: 5
 sql:
     mode: h2
     #MySQL only
