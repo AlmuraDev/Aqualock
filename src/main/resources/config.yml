@@ -1,5 +1,33 @@
-#in seconds
-double-door-close-timer: 5
+##########################
+# config.yml
+#
+# general explanation:
+#
+# hotkey: KEY_L
+#   Determines the hotkey used to open the panel. If this is entered in in-correctly, this will default to KEY_L.
+#
+# sql explanation:
+#
+# mode: h2
+#   Determines the sql mode to use for the backend. Available options are mysql (needs additional configuration), sqlite, and h2. The
+#   default setting is h2
+#
+# name: minecraft
+#   Determines the name of the database on the mysql instance.
+#
+# username: minecraft
+#   The username that has rights to make modifications to the mysql instance.
+#
+# password: minecraft
+#   The password for the above username.
+#
+# host: localhost
+#   The address to the mysql instance where installed.
+#
+# port: 25564
+#   The port that is forwarded to allow connections to the mysql instance.
+##########################
+hotkey: KEY_L
 sql:
     mode: h2
     #MySQL only
@@ -8,4 +36,3 @@ sql:
     password: minecraft
     host: localhost
     port: 25564
-    

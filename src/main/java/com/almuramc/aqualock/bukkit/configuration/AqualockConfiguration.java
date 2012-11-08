@@ -20,6 +20,7 @@
 package com.almuramc.aqualock.bukkit.configuration;
 
 import java.io.File;
+import java.util.logging.Level;
 
 import com.almuramc.aqualock.bukkit.AqualockPlugin;
 import com.alta189.simplesave.Configuration;
@@ -27,8 +28,10 @@ import com.alta189.simplesave.h2.H2Configuration;
 import com.alta189.simplesave.mysql.MySQLConfiguration;
 import com.alta189.simplesave.sqlite.SQLiteConfiguration;
 
+import org.getspout.spoutapi.keyboard.Keyboard;
 import org.yaml.snakeyaml.error.YAMLException;
 
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 
 public final class AqualockConfiguration {
@@ -41,6 +44,9 @@ public final class AqualockConfiguration {
 	public AqualockConfiguration(AqualockPlugin plugin) {
 		this.plugin = plugin;
 		//Read in default config.yml
+		if (!new File(plugin.getDataFolder(), "config.yml").exists()) {
+			plugin.saveDefaultConfig();
+		}
 		config = plugin.getConfig();
 		//Setup cost file
 		File costYml = new File(plugin.getDataFolder(), "cost.yml");
@@ -82,5 +88,36 @@ public final class AqualockConfiguration {
 			default:
 				throw new YAMLException("Specified mode for SQL configuration: " + mode + " is invalid.");
 		}
+	}
+
+	public Keyboard getHotkey() {
+		final String hotkey = config.getString("hotkey", "KEY_L");
+		Keyboard key = Keyboard.KEY_L;
+		try {
+			key = Keyboard.valueOf(hotkey);
+		} catch (Exception e) {
+			Bukkit.getLogger().log(Level.WARNING, AqualockPlugin.getPrefix() + "The entry " + hotkey + " in your config is invalid! Defaulting to l...");
+		}
+		return key;
+	}
+
+	public final String getDatabaseName() {
+		return config.getString("sql.mode.name", "minecraft");
+	}
+
+	public final String getUsername() {
+		return config.getString("sql.mode.username", "minecraft");
+	}
+
+	public final String getPassword() {
+		return config.getString("sql.mode.password", "minecraft");
+	}
+
+	public final String getHost() {
+		return config.getString("sql.mode.host", "localhost");
+	}
+
+	public final int getPort() {
+		return config.getInt("sql.mode.port", 25564);
 	}
 }

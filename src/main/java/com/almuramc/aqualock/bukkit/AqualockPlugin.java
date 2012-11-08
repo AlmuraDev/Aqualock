@@ -27,11 +27,11 @@ import com.almuramc.aqualock.common.AquaCommonRegistry;
 import com.almuramc.bolt.registry.CommonRegistry;
 import com.almuramc.bolt.storage.SqlStorage;
 import com.almuramc.bolt.storage.Storage;
+import com.alta189.simplesave.mysql.MySQLConfiguration;
 
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 import org.getspout.spoutapi.SpoutManager;
-import org.getspout.spoutapi.keyboard.Keyboard;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -66,12 +66,16 @@ public class AqualockPlugin extends JavaPlugin {
 			Bukkit.getLogger().info(getPrefix() + "Failed to initialize Vault for economy, skipping...");
 		}
 		configuration = new AqualockConfiguration(this);
-		backend = new SqlStorage(configuration.getSqlConfiguration(), getDataFolder());
+		if (configuration.getSqlConfiguration() instanceof MySQLConfiguration) {
+			backend = new SqlStorage(configuration.getSqlConfiguration(), getDataFolder(), configuration.getDatabaseName(), configuration.getHost(), configuration.getUsername(), configuration.getPassword(), configuration.getPort());
+		} else {
+			backend = new SqlStorage(configuration.getSqlConfiguration(), getDataFolder());
+		}
 		backend.onLoad();
 		registry.onLoad(backend);
 		this.getCommand("aqualock").setExecutor(new AqualockCommands(this));
 		this.getServer().getPluginManager().registerEvents(new AqualockListener(this), this);
-		SpoutManager.getKeyBindingManager().registerBinding("Aqua Panel", Keyboard.KEY_L, "Opens the lock panel", new AquaPanelDelegate(this), this);
+		SpoutManager.getKeyBindingManager().registerBinding("Aqua Panel", configuration.getHotkey(), "Opens the lock panel", new AquaPanelDelegate(this), this);
 		dependency = new DependencyUtil(this);
 		dependency.setupResidence();
 	}
