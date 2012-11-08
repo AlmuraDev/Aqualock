@@ -102,8 +102,8 @@ public class AquaPass extends CachedGeoPopup {
 				.setAnchor(WidgetAnchor.CENTER_CENTER)
 				.setHeight(10)
 				.setWidth(40)
-				.shiftXPos(-68)
-				.shiftYPos(0);
+				.shiftXPos(15)
+				.shiftYPos(-25);
 		passwordField = new PasswordField();
 		passwordField
 				.setAnchor(WidgetAnchor.CENTER_CENTER)

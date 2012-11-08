@@ -73,13 +73,13 @@ public class UnlockButton extends GenericButton {
 				}, 10L);
 				break;
 			case WOODEN_DOOR:
-				BlockUtil.onDoorInteract(block);
+				BlockUtil.onDoorInteract(block, false);
 				break;
 			case IRON_DOOR_BLOCK:
-				BlockUtil.onDoorInteract(block);
+				BlockUtil.onDoorInteract(block, false);
 				break;
 			case IRON_DOOR:
-				BlockUtil.onDoorInteract(block);
+				BlockUtil.onDoorInteract(block, false);
 				break;
 			case FURNACE:
 				final Furnace furnace = (Furnace) block.getState();

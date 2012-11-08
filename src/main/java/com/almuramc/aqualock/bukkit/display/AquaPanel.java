@@ -112,8 +112,8 @@ public class AquaPanel extends CachedGeoPopup {
 				.setEnabled(false)
 				.setAnchor(WidgetAnchor.CENTER_CENTER)
 				.setHeight(18)
-				.setWidth(40)
-				.shiftXPos(40)
+				.setWidth(45)
+				.shiftXPos(33)
 				.shiftYPos(87);
 		usersField = new UserField();
 		usersField
@@ -216,7 +216,7 @@ public class AquaPanel extends CachedGeoPopup {
 		everyoneCheckbox
 				.setAuto(true)
 				.setAnchor(WidgetAnchor.CENTER_CENTER)
-				.setHeight(10)
+				.setHeight(15)
 				.setWidth(40)
 				.shiftXPos(-165)
 				.shiftYPos(87);
@@ -259,7 +259,6 @@ public class AquaPanel extends CachedGeoPopup {
 		passwordField.setTabIndex(0);
 		passwordField.setMaximumCharacters(15);
 		passwordField.setMaximumLines(1);
-		passwordField.setPasswordField(true);
 		this.setTransparent(true);
 	}
 

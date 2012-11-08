@@ -26,6 +26,7 @@ import com.almuramc.aqualock.bukkit.display.AquaPass;
 import com.almuramc.aqualock.bukkit.lock.BukkitLock;
 import com.almuramc.aqualock.bukkit.util.BlockUtil;
 import com.almuramc.aqualock.bukkit.util.LockUtil;
+import com.almuramc.aqualock.bukkit.util.PermissionUtil;
 import com.almuramc.bolt.lock.Lock;
 import com.almuramc.bolt.registry.CommonRegistry;
 
@@ -145,19 +146,28 @@ public class AqualockListener implements Listener {
 				event.setCancelled(true);
 				return;
 			}
-			if (lock instanceof BukkitLock && BlockUtil.shouldOpenPassPanel(interacted.getType())) {
-				AquaPass passwordPopup = new AquaPass(AqualockPlugin.getInstance());
-				passwordPopup.setLocation(interacted.getLocation());
-				passwordPopup.populate(lock);
-				SpoutManager.getPlayer(interacter).getMainScreen().attachPopupScreen(passwordPopup);
-				event.setCancelled(true);
-				return;
+			if (BlockUtil.shouldOpenPassPanel(interacted.getType())) {
+				final String password = ((BukkitLock) lock).getPasscode();
+				if (!PermissionUtil.has(interacter, interacted.getWorld(), "aqualock.admin") && password != null && !password.isEmpty()) {
+					AquaPass passwordPopup = new AquaPass(AqualockPlugin.getInstance());
+					passwordPopup.setLocation(interacted.getLocation());
+					passwordPopup.populate(lock);
+					SpoutManager.getPlayer(interacter).getMainScreen().attachPopupScreen(passwordPopup);
+					event.setCancelled(true);
+					return;
+				}
+				if (!LockUtil.use(interacter.getName(), "", interacted.getLocation(), ((BukkitLock) lock).getUseCost())) {
+					event.setCancelled(true);
+					return;
+				}
+				SpoutManager.getPlayer(interacter).sendNotification("Aqualock", "Opened with fingerprint", Material.CAKE);
+			} else {
+				if (!LockUtil.use(interacter.getName(), "", interacted.getLocation(), ((BukkitLock) lock).getUseCost())) {
+					event.setCancelled(true);
+					return;
+				}
 			}
-			if (!LockUtil.use(interacter.getName(), "", interacted.getLocation(), ((BukkitLock) lock).getUseCost())) {
-				event.setCancelled(true);
-				return;
-			}
-			BlockUtil.onDoorInteract(interacted);
+			BlockUtil.onDoorInteract(interacted, true);
 		}
 	}
 
