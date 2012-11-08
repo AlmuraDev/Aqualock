@@ -94,7 +94,7 @@ public class AquaPass extends CachedGeoPopup {
 				.setAnchor(WidgetAnchor.CENTER_CENTER)
 				.setHeight(10)
 				.setWidth(40)
-				.shiftXPos(0)
+				.shiftXPos(-40)
 				.shiftYPos(-25);
 		costToUseOutputLabel = new CostToUseValueLabel("");
 		costToUseOutputLabel
@@ -102,7 +102,7 @@ public class AquaPass extends CachedGeoPopup {
 				.setAnchor(WidgetAnchor.CENTER_CENTER)
 				.setHeight(10)
 				.setWidth(40)
-				.shiftXPos(35)
+				.shiftXPos(20)
 				.shiftYPos(-25);
 		passwordField = new PasswordField();
 		passwordField
