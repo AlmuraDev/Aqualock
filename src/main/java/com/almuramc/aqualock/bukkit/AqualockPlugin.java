@@ -71,7 +71,7 @@ public class AqualockPlugin extends JavaPlugin {
 		registry.onLoad(backend);
 		this.getCommand("aqualock").setExecutor(new AqualockCommands(this));
 		this.getServer().getPluginManager().registerEvents(new AqualockListener(this), this);
-		SpoutManager.getKeyBindingManager().registerBinding("Aqua Panel", Keyboard.KEY_Y, "Opens the lock panel", new AquaPanelDelegate(this), this);
+		SpoutManager.getKeyBindingManager().registerBinding("Aqua Panel", Keyboard.KEY_L, "Opens the lock panel", new AquaPanelDelegate(this), this);
 		dependency = new DependencyUtil(this);
 		dependency.setupResidence();
 	}
