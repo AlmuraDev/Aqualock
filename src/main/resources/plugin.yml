@@ -31,13 +31,13 @@ permissions:
         default: false
     aqualock.lock.cost:
         description: Charges you for locking blocks.
-        default: true
+        default: false
     aqualock.unlock.cost:
         description: Charges you for unlocking blocks. This will have no effect for blocks the user isn't an owner of.
-        default: true
+        default: false
     aqualock.update.cost:
         description: Charges you for updating blocks. This will have no effect for blocks the user isn't an owner of.
-        default: true
+        default: false
     aqualock.use.cost:
         description: Charges you for interacting with blocks. This will have no effect for blocks the user isn't an owner of or co-owners isn't set to everyone.
-        default: true
+        default: false
