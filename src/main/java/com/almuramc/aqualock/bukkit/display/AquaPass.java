@@ -69,7 +69,7 @@ public class AquaPass extends CachedGeoPopup {
 				.setPriority(RenderPriority.Normal)
 				.setWidth(40)
 				.setHeight(40)
-				.shiftXPos(-100)
+				.shiftXPos(-90)
 				.shiftYPos(-55);
 		closeButton = new CloseButton(plugin);
 		closeButton
@@ -94,7 +94,7 @@ public class AquaPass extends CachedGeoPopup {
 				.setAnchor(WidgetAnchor.CENTER_CENTER)
 				.setHeight(10)
 				.setWidth(40)
-				.shiftXPos(-46)
+				.shiftXPos(0)
 				.shiftYPos(-25);
 		costToUseOutputLabel = new CostToUseValueLabel("");
 		costToUseOutputLabel
@@ -102,7 +102,7 @@ public class AquaPass extends CachedGeoPopup {
 				.setAnchor(WidgetAnchor.CENTER_CENTER)
 				.setHeight(10)
 				.setWidth(40)
-				.shiftXPos(15)
+				.shiftXPos(35)
 				.shiftYPos(-25);
 		passwordField = new PasswordField();
 		passwordField
