@@ -205,7 +205,7 @@ public class AquaPanel extends CachedGeoPopup {
 				.setWidth(40)
 				.shiftXPos(-70)
 				.shiftYPos(60);
-		closeTimerLabel = new CloseTimerLabel("Auto Close Timer:");
+		closeTimerLabel = new CloseTimerLabel("Auto close timer:");
 		closeTimerLabel
 				.setAuto(true)
 				.setAnchor(WidgetAnchor.CENTER_CENTER)
