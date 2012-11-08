@@ -33,7 +33,7 @@ public abstract class CachedGeoPopup extends GenericPopup {
 	public abstract void setLocation(Location location);
 
 	public void onClose() {
-		getPlayer().getMainScreen().removeWidget(this);
-		getPlayer().closeActiveWindow();
+		getScreen().removeWidget(this);
+		getScreen().getPlayer().closeActiveWindow();
 	}
 }
