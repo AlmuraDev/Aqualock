@@ -165,7 +165,7 @@ public class BlockUtil {
 			changeDoorStates(true, block, oBlock);
 		}
 		Door source = (Door) block.getState().getData();
-		if (source.isOpen()) {
+		if ((block.getData() & 0x4) == 0 || source.isOpen()) {
 			final Block finalBlock = block;
 			final Block finalOBlock = oBlock;
 			final DoorBukkitLock lock = (DoorBukkitLock) AqualockPlugin.getRegistry().getLock(finalBlock.getWorld().getUID(), finalBlock.getX(), finalBlock.getY(), finalBlock.getZ());
