@@ -182,7 +182,11 @@ public class BlockUtil {
 	}
 
 	public static boolean isDoorMaterial(Material material) {
-		return material == Material.IRON_DOOR_BLOCK || material == Material.WOODEN_DOOR || material == Material.FENCE_GATE;
+		return material == Material.IRON_DOOR_BLOCK || material == Material.WOODEN_DOOR;
+	}
+
+	public static boolean isFenceGateMaterial(Material material) {
+		return material == Material.FENCE_GATE;
 	}
 
 	public static boolean isChestMaterial(Material material) {
