@@ -45,7 +45,7 @@ public class RemoveButton extends GenericButton {
 				password = ((PasswordField) widget).getText();
 			}
 		}
-		if (LockUtil.unlock(getScreen().getPlayer().getName(), password, panel.getLocation())) {
+		if (LockUtil.unlock(panel.getPlayer().getName(), password, panel.getLocation())) {
 			((CachedGeoPopup) event.getScreen()).onClose();
 		}
 	}
