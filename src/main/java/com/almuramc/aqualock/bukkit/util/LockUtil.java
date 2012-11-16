@@ -328,7 +328,7 @@ public class LockUtil {
 						canUnlock = false;
 					}
 				}
-				if (!canUnlock) {
+				if (!canUnlock && !PermissionUtil.canUnlock(player)) {
 					splayer.sendNotification("Aqualock", "Cannot unlock the lock!", Material.LAVA_BUCKET);
 					return false;
 				}
@@ -358,14 +358,18 @@ public class LockUtil {
 				if (lock == null) {
 					return true;
 				}
+                boolean canUse = true;
 				if (!name.equals(lock.getOwner())) {
 					if (!lock.getCoOwners().contains(name)) {
 						if (!lock.getUsers().contains(name) && !lock.getUsers().contains("Everyone")) {
-							splayer.sendNotification("Aqualock", "Not in the users list!", Material.LAVA_BUCKET);
-							return false;
+                            canUse = false;
 						}
 					}
 				}
+                if (!canUse && !PermissionUtil.canUse(player)) {
+                    splayer.sendNotification("Aqualock", "Not in the allowed list!", Material.LAVA_BUCKET);
+                    return false;
+                }
 				if (AqualockPlugin.getEconomies() != null) {
 					if (EconomyUtil.shouldChargeForUse(player)) {
 						if (!EconomyUtil.hasAccount(player)) {
@@ -391,17 +395,13 @@ public class LockUtil {
 				if (lock == null) {
 					return true;
 				}
-				boolean canUpdate;
+				boolean canUpdate = true;
 				if (!name.equals(lock.getOwner())) {
-					if (lock.getCoOwners().contains(name)) {
-						canUpdate = true;
-					} else {
+					if (!lock.getCoOwners().contains(name)) {
 						canUpdate = false;
-					}
-				} else {
-					canUpdate = true;
-				}
-				if (!canUpdate) {
+                    }
+                }
+				if (!canUpdate && PermissionUtil.canUpdate(player)) {
 					splayer.sendNotification("Aqualock", "Not the Owner/CoOwner!", Material.LAVA_BUCKET);
 					return false;
 				}
