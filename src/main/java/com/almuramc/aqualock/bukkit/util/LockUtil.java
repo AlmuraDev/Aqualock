@@ -359,18 +359,23 @@ public class LockUtil {
 					return true;
 				}
                 boolean canUse = true;
+				boolean shouldCharge = true;
 				if (!name.equals(lock.getOwner())) {
 					if (!lock.getCoOwners().contains(name)) {
 						if (!lock.getUsers().contains(name) && !lock.getUsers().contains("Everyone")) {
                             canUse = false;
 						}
+					} else {
+						shouldCharge = false;
 					}
+				} else {
+					shouldCharge = false;
 				}
                 if (!canUse && !PermissionUtil.canUse(player)) {
                     splayer.sendNotification("Aqualock", "Not in the allowed list!", Material.LAVA_BUCKET);
                     return false;
                 }
-				if (AqualockPlugin.getEconomies() != null) {
+				if (AqualockPlugin.getEconomies() != null && shouldCharge) {
 					if (EconomyUtil.shouldChargeForUse(player)) {
 						if (!EconomyUtil.hasAccount(player)) {
 							splayer.sendNotification("Aqualock", "You have no account!", Material.LAVA_BUCKET);
@@ -388,6 +393,12 @@ public class LockUtil {
 							splayer.sendNotification("Aqualock", "Use was free!", Material.APPLE);
 						}
 						EconomyUtil.apply(player, useCost);
+						Player owner = Bukkit.getPlayer(lock.getOwner());
+						if (!owner.isOnline()) {
+							EconomyUtil.apply(Bukkit.getOfflinePlayer(lock.getOwner()).getPlayer(), Math.abs(useCost));
+						} else {
+							EconomyUtil.apply(owner, Math.abs(useCost));
+						}
 					}
 				}
 				return true;
