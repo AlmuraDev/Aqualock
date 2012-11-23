@@ -150,6 +150,9 @@ public class LockUtil {
 		final Player player = checkNameAndGetPlayer(playerName);
 		if (performAction(player, passcode, location, 0, "UNLOCK")) {
 			final Lock lock = registry.getLock(location.getWorld().getUID(), location.getBlockX(), location.getBlockY(), location.getBlockZ());
+			if (lock == null)  {
+				return false;
+			}
 			registry.removeLock(lock);
 			backend.removeLock(lock);
 			SpoutManager.getPlayer(player).sendNotification("Aqualock", "Unlocked the block!", Material.CAKE);
