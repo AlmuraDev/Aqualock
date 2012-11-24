@@ -331,7 +331,7 @@ public class LockUtil {
 						canUnlock = false;
 					}
 				}
-				if (!canUnlock && !PermissionUtil.canUnlock(player)) {
+				if (!canUnlock || !PermissionUtil.canUnlock(player)) {
 					splayer.sendNotification("Aqualock", "Cannot unlock the lock!", Material.LAVA_BUCKET);
 					return false;
 				}
@@ -374,7 +374,7 @@ public class LockUtil {
 				} else {
 					shouldCharge = false;
 				}
-                if (!canUse && !PermissionUtil.canUse(player)) {
+                if (!canUse || !PermissionUtil.canUse(player)) {
                     splayer.sendNotification("Aqualock", "Not in the allowed list!", Material.LAVA_BUCKET);
                     return false;
                 }
@@ -415,7 +415,7 @@ public class LockUtil {
 						canUpdate = false;
                     }
                 }
-				if (!canUpdate && !PermissionUtil.canUpdate(player)) {
+				if (!canUpdate || !PermissionUtil.canUpdate(player)) {
 					splayer.sendNotification("Aqualock", "Not the Owner/CoOwner!", Material.LAVA_BUCKET);
 					return false;
 				}

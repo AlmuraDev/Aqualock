@@ -73,7 +73,7 @@ public class AquaPanelDelegate implements BindingExecutionDelegate {
 					canUpdate = false;
 				}
 			}
-			if (!canUpdate && !PermissionUtil.canUpdate(player)) {
+			if (!canUpdate || !PermissionUtil.canUpdate(player)) {
 				player.sendNotification("Aqualock", "Not the Owner/CoOwner!", Material.LAVA_BUCKET);
 				return;
 			}
