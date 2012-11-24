@@ -318,7 +318,7 @@ public class AquaPanel extends CachedGeoPopup {
 		coownersField.setText(output.toString());
 		final List<String> users = lock.getUsers();
 		output.delete(0, output.length());
-		if (everyoneCheckbox.isChecked() || users.contains("Everyone")) {
+		if (users.size() == 1 && users.contains("Everyone")) {
 			output.append("");
 			everyoneCheckbox.setChecked(true);
 		} else {
