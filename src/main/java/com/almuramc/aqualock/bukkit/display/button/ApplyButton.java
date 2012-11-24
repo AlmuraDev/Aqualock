@@ -87,14 +87,13 @@ public class ApplyButton extends GenericButton {
 				}
 			} else if (clazz.equals(DamageField.class)) {
 				try {
-					int value = Integer.parseInt(((DamageField) widget).getText());
-					if (value < 0) {
-						value = Math.abs(value);
+					damage = Integer.parseInt(((DamageField) widget).getText());
+					if (damage < 0) {
+						damage = Math.abs(damage);
 					}
-					if (value > 20) {
-						value = 20;
+					if (damage > 20) {
+						damage = 20;
 					}
-					damage = value;
 				} catch (Exception e) {
 					//do nothing
 				}
