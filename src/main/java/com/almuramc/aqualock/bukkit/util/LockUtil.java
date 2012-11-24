@@ -417,7 +417,7 @@ public class LockUtil {
 						canUpdate = false;
                     }
                 }
-				if (!canUpdate && PermissionUtil.canUpdate(player)) {
+				if (!canUpdate && !PermissionUtil.canUpdate(player)) {
 					splayer.sendNotification("Aqualock", "Not the Owner/CoOwner!", Material.LAVA_BUCKET);
 					return false;
 				}

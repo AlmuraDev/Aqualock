@@ -26,6 +26,7 @@ import com.almuramc.aqualock.bukkit.AqualockPlugin;
 import com.almuramc.aqualock.bukkit.display.AquaPanel;
 import com.almuramc.aqualock.bukkit.util.BlockUtil;
 import com.almuramc.aqualock.bukkit.util.LockUtil;
+import com.almuramc.aqualock.bukkit.util.PermissionUtil;
 import com.almuramc.bolt.lock.Lock;
 
 import org.getspout.spoutapi.event.input.KeyBindingEvent;
@@ -34,6 +35,7 @@ import org.getspout.spoutapi.keyboard.BindingExecutionDelegate;
 import org.getspout.spoutapi.player.SpoutPlayer;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 
 public class AquaPanelDelegate implements BindingExecutionDelegate {
@@ -62,6 +64,19 @@ public class AquaPanelDelegate implements BindingExecutionDelegate {
 		if (!LockUtil.canPerformAction(player, lock == null ? "LOCK" : "UPDATE")) {
 			player.sendMessage(plugin.getPrefix() + "You are not allowed to open the panel!");
 			return;
+		}
+		final String name = player.getName();
+		if (lock != null) {
+			boolean canUpdate = true;
+			if (!name.equals(lock.getOwner())) {
+				if (!lock.getCoOwners().contains(name)) {
+					canUpdate = false;
+				}
+			}
+			if (!canUpdate && !PermissionUtil.canUpdate(player)) {
+				player.sendNotification("Aqualock", "Not the Owner/CoOwner!", Material.LAVA_BUCKET);
+				return;
+			}
 		}
 		//Check for GUI cache, create new cache if necessary, attach new panel
 		if (!panels.containsKey(player.getUniqueId())) {
