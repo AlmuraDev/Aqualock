@@ -73,9 +73,11 @@ public class AquaPanelDelegate implements BindingExecutionDelegate {
 					canUpdate = false;
 				}
 			}
-			if (!canUpdate || !PermissionUtil.canUpdate(player)) {
-				player.sendNotification("Aqualock", "Not the Owner/CoOwner!", Material.LAVA_BUCKET);
-				return;
+			if (!PermissionUtil.has(player, "aqualock.admin")) {
+				if (!canUpdate || !PermissionUtil.canUpdate(player)) {
+					player.sendNotification("Aqualock", "Not in the allowed list!", Material.LAVA_BUCKET);
+					return;
+				}
 			}
 		}
 		//Check for GUI cache, create new cache if necessary, attach new panel
