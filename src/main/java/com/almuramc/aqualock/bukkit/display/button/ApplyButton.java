@@ -95,9 +95,13 @@ public class ApplyButton extends GenericButton {
 				} catch (Exception e) {
 					//do nothing
 				}
-			} else if (clazz.equals(EveryoneCheckbox.class)) {
+			}
+		}
+
+		for (Widget widget : panel.getAttachedWidgets()) {
+			if (widget.getClass().equals(EveryoneCheckbox.class)) {
 				if (((CheckBox) widget).isChecked()) {
-					users.clear();
+					users = new ArrayList<>();
 					users.add("Everyone");
 				}
 			}
