@@ -91,6 +91,9 @@ public class ApplyButton extends GenericButton {
 					if (value < 0) {
 						value = Math.abs(value);
 					}
+					if (value > 20) {
+						value = 20;
+					}
 					damage = value;
 				} catch (Exception e) {
 					//do nothing
@@ -100,7 +103,7 @@ public class ApplyButton extends GenericButton {
 
 		for (Widget widget : panel.getAttachedWidgets()) {
 			if (widget.getClass().equals(EveryoneCheckbox.class)) {
-				if (((CheckBox) widget).isChecked()) {
+				if (((EveryoneCheckbox) widget).isChecked()) {
 					users = new ArrayList<>();
 					users.add("Everyone");
 				}
