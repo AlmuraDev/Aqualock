@@ -374,12 +374,10 @@ public class LockUtil {
 				} else {
 					shouldCharge = false;
 				}
-                if (!canUse || !PermissionUtil.canUse(player)) {
+                if (!canUse && !PermissionUtil.canUse(player)) {
                     splayer.sendNotification("Aqualock", "Not in the allowed list!", Material.LAVA_BUCKET);
                     return false;
                 }
-				System.out.println("Name of user: " + name);
-				System.out.println("Names in allowed users list: " + lock.getUsers().toString());
 				if (AqualockPlugin.getEconomies() != null && shouldCharge) {
 					if (EconomyUtil.shouldChargeForUse(player)) {
 						if (!EconomyUtil.hasAccount(player)) {
