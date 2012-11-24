@@ -91,9 +91,6 @@ public class ApplyButton extends GenericButton {
 					if (damage < 0) {
 						damage = Math.abs(damage);
 					}
-					if (damage > 20) {
-						damage = 20;
-					}
 				} catch (Exception e) {
 					//do nothing
 				}
