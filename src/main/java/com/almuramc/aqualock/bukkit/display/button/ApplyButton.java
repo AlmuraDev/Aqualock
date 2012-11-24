@@ -35,6 +35,7 @@ import com.almuramc.aqualock.bukkit.display.field.UserField;
 import com.almuramc.aqualock.bukkit.util.LockUtil;
 
 import org.getspout.spoutapi.event.screen.ButtonClickEvent;
+import org.getspout.spoutapi.gui.CheckBox;
 import org.getspout.spoutapi.gui.GenericButton;
 import org.getspout.spoutapi.gui.Widget;
 
@@ -67,15 +68,7 @@ public class ApplyButton extends GenericButton {
 			} else if (clazz.equals(CoOwnerField.class)) {
 				coowners = parseFieldToList(((CoOwnerField) widget).getText());
 			} else if (clazz.equals(UserField.class)) {
-				boolean everyone = false;
-				for (Widget inner : panel.getAttachedWidgets()) {
-					if (inner instanceof EveryoneCheckbox) {
-						everyone = ((EveryoneCheckbox) inner).isChecked();
-					}
-				}
-				final ArrayList<String> temp = new ArrayList<>();
-				temp.add("Everyone");
-				users = everyone == true ? temp : parseFieldToList(((UserField) widget).getText());
+				users = parseFieldToList(((UserField) widget).getText());
 			} else if (clazz.equals(CloseTimerField.class)) {
 				try {
 					timer = Long.parseLong(((CloseTimerField) widget).getText(), 10);
@@ -101,6 +94,11 @@ public class ApplyButton extends GenericButton {
 					damage = value;
 				} catch (Exception e) {
 					//do nothing
+				}
+			} else if (clazz.equals(EveryoneCheckbox.class)) {
+				if (((CheckBox) widget).isChecked()) {
+					users.clear();
+					users.add("Everyone");
 				}
 			}
 		}
