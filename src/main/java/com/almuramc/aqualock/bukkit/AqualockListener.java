@@ -77,7 +77,12 @@ public class AqualockListener implements Listener {
 				if (!(lock.getCoOwners().contains(breaker.getName()))) {
 					SpoutManager.getPlayer(breaker).sendNotification("Aqualock", "This block is locked!", Material.LAVA_BUCKET);
 					event.setCancelled(true);
-					breaker.setHealth(breaker.getHealth() - ((BukkitLock) lock).getDamage());
+					int damage = ((BukkitLock) lock).getDamage();
+					if (damage > breaker.getHealth())
+					{
+						damage = breaker.getHealth();
+					}
+					breaker.setHealth(breaker.getHealth() - damage);
 					return;
 				}
 			}
