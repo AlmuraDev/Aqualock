@@ -134,9 +134,9 @@ public class ApplyButton extends GenericButton {
 			if (chars[i] == ' ') {
 				continue;
 			}
-			if (i == chars.length) {
-				temp.add(parsed.toString());
+			if (i == chars.length - 1) {
 				parsed.append(chars[i]);
+				temp.add(parsed.toString());
 				continue;
 			}
 			parsed.append(chars[i]);
