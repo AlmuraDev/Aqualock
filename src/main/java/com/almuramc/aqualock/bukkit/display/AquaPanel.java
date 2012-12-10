@@ -256,10 +256,13 @@ public class AquaPanel extends CachedGeoPopup {
 		attachWidgets(plugin, borderTexture, aquaPhoto, closeButton, applyButton, unlockButton, usersField, usersLabel, coownersField, coownersLabel,
 				costToUseField, costToUseLabel, damageOnFailField, damageOnFailLabel, costToCreateOutputLabel,
 				costToCreateLabel, everyoneCheckbox, passwordField, passwordLabel, ownerField, ownerLabel, closeTimerField, closeTimerLabel);
-		passwordField.setFocus(true);
-		passwordField.setTabIndex(0);
-		passwordField.setMaximumCharacters(15);
-		passwordField.setMaximumLines(1);
+		ownerField
+				.setEnabled(false);
+		passwordField
+				.setFocus(true)
+				.setTabIndex(0)
+				.setMaximumCharacters(15)
+				.setMaximumLines(1);
 		this.setTransparent(true);
 	}
 
