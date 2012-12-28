@@ -48,7 +48,6 @@ import com.almuramc.aqualock.bukkit.lock.DoorBukkitLock;
 import com.almuramc.aqualock.bukkit.util.LockUtil;
 import com.almuramc.bolt.lock.Lock;
 
-import net.minecraft.server.ExceptionPlayerNotFound;
 import org.getspout.spoutapi.gui.Color;
 import org.getspout.spoutapi.gui.GenericButton;
 import org.getspout.spoutapi.gui.GenericCheckBox;
