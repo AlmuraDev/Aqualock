@@ -64,12 +64,6 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.spout</groupId>
-			<artifactId>spoutapi</artifactId>
-			<version>dev-SNAPSHOT</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
 			<groupId>com.almuramc</groupId>
 			<artifactId>bolt</artifactId>
 			<version>dev-SNAPSHOT</version>
