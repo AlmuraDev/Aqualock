@@ -21,7 +21,8 @@ package com.almuramc.aqualock.bukkit.lock;
 
 import java.util.List;
 
-import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
 
 import org.bukkit.Location;
 
@@ -48,7 +49,7 @@ public class DoorBukkitLock extends BukkitLock {
 		}
 
 		final DoorBukkitLock other = (DoorBukkitLock) obj;
-		return new org.apache.commons.lang3.builder.EqualsBuilder()
+		return new EqualsBuilder()
 				.append(this.autocloseTimer, other.autocloseTimer)
 				.isEquals();
 	}

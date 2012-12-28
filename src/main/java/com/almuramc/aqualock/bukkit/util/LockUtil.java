@@ -150,7 +150,7 @@ public class LockUtil {
 		final Player player = checkNameAndGetPlayer(playerName);
 		if (performAction(player, passcode, location, 0, "UNLOCK")) {
 			final Lock lock = registry.getLock(location.getWorld().getUID(), location.getBlockX(), location.getBlockY(), location.getBlockZ());
-			if (lock == null)  {
+			if (lock == null) {
 				return false;
 			}
 			registry.removeLock(lock);
@@ -363,12 +363,12 @@ public class LockUtil {
 				if (lock == null) {
 					return true;
 				}
-                boolean canUse = true;
+				boolean canUse = true;
 				boolean shouldCharge = true;
 				if (!name.equals(lock.getOwner())) {
 					if (!lock.getCoOwners().contains(name)) {
 						if (!lock.getUsers().contains(name) && !lock.getUsers().contains("Everyone")) {
-                            canUse = false;
+							canUse = false;
 						}
 					} else {
 						shouldCharge = false;
@@ -378,10 +378,10 @@ public class LockUtil {
 				}
 				if (!PermissionUtil.has(player, "aqualock.admin")) {
 					if (!canUse || !PermissionUtil.canUse(player)) {
-                    	splayer.sendNotification("Aqualock", "Not in the allowed list!", Material.LAVA_BUCKET);
-                    	return false;
+						splayer.sendNotification("Aqualock", "Not in the allowed list!", Material.LAVA_BUCKET);
+						return false;
 					}
-                }
+				}
 				if (AqualockPlugin.getEconomies() != null && shouldCharge) {
 					if (EconomyUtil.shouldChargeForUse(player)) {
 						if (!EconomyUtil.hasAccount(player)) {
@@ -417,8 +417,8 @@ public class LockUtil {
 				if (!name.equals(lock.getOwner())) {
 					if (!lock.getCoOwners().contains(name)) {
 						canUpdate = false;
-                    }
-                }
+					}
+				}
 				if (!PermissionUtil.has(player, "aqualock.admin")) {
 					if (!canUpdate || !PermissionUtil.canUpdate(player)) {
 						splayer.sendNotification("Aqualock", "Not in the allowed list!", Material.LAVA_BUCKET);

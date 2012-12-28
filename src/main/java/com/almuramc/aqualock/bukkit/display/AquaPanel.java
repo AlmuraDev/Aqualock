@@ -296,8 +296,7 @@ public class AquaPanel extends CachedGeoPopup {
 			applyButton.setText("Lock");
 			try {
 				closeTimerField.setText(Long.toString(AqualockPlugin.getConfiguration().getDoubleDoorTimer(), 10));
-			} catch (Exception e)
-			{
+			} catch (Exception e) {
 				closeTimerField.setText("5");
 			}
 			costToCreateLabel.setText("Cost to create:");
