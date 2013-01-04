@@ -39,6 +39,7 @@ import org.getspout.spoutapi.player.SpoutPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -401,9 +402,10 @@ public class LockUtil {
 						}
 						EconomyUtil.apply(player, useCost);
 						Player owner = Bukkit.getPlayer(lock.getOwner());
-						if (!owner.isOnline()) {
-							EconomyUtil.apply(Bukkit.getOfflinePlayer(lock.getOwner()).getPlayer(), Math.abs(useCost));
-						} else {
+						if (owner != null && !owner.isOnline()) {
+							owner = Bukkit.getOfflinePlayer(lock.getOwner()).getPlayer();
+							EconomyUtil.apply(owner, Math.abs(useCost));
+						} else if (owner != null && owner.isOnline()) {
 							EconomyUtil.apply(owner, Math.abs(useCost));
 						}
 					}
