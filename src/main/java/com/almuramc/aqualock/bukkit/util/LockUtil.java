@@ -497,7 +497,10 @@ public class LockUtil {
 		}
 		Player player = Bukkit.getPlayerExact(name);
 		if (player == null) {
-			throw new IllegalArgumentException("No player found matching name: " + name + " found on this server!");
+			player = Bukkit.getOfflinePlayer(name).getPlayer();
+			if (player == null) {
+				throw new IllegalArgumentException("No player found matching name: " + name + " found on this server!");
+			}
 		}
 		return player;
 	}
