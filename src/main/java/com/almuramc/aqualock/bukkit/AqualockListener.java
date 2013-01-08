@@ -67,7 +67,7 @@ public class AqualockListener implements Listener {
 		this.plugin = plugin;
 	}
 
-	@EventHandler(priority = EventPriority.MONITOR)
+	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 	public void onBlockBreak(BlockBreakEvent event) {
 		final Player breaker = event.getPlayer();
 		final Block breaking = event.getBlock();
@@ -86,7 +86,7 @@ public class AqualockListener implements Listener {
 		}
 	}
 
-	@EventHandler(priority = EventPriority.MONITOR)
+	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 	public void onBlockPlace(BlockPlaceEvent event) {
 		final Player player = event.getPlayer();
 		final Block block = event.getBlock();
@@ -101,7 +101,7 @@ public class AqualockListener implements Listener {
 		}
 	}
 
-	@EventHandler(priority = EventPriority.MONITOR)
+	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 	public void onBlockDamage(BlockDamageEvent event) {
 		final Player player = event.getPlayer();
 		final Block block = event.getBlock();
@@ -116,19 +116,19 @@ public class AqualockListener implements Listener {
 		}
 	}
 
-	@EventHandler(priority = EventPriority.MONITOR)
+	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 	public void onBlockFromTo(BlockFromToEvent event) {
 		final Block block = event.getBlock();
 		event.setCancelled(registry.getLock(block.getWorld().getUID(), block.getX(), block.getY(), block.getZ()) != null);
 	}
 
-	@EventHandler(priority = EventPriority.MONITOR)
+	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 	public void onLeavesDecay(LeavesDecayEvent event) {
 		final Block block = event.getBlock();
 		event.setCancelled(registry.getLock(block.getWorld().getUID(), block.getX(), block.getY(), block.getZ()) != null);
 	}
 
-	@EventHandler(priority = EventPriority.MONITOR)
+	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 	public void onPlayerInteract(PlayerInteractEvent event) {
 		Player interacter = event.getPlayer();
 		Block interacted = event.getClickedBlock();
@@ -171,7 +171,7 @@ public class AqualockListener implements Listener {
 		}
 	}
 
-	@EventHandler(priority = EventPriority.MONITOR)
+	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 	public void onSignChange(SignChangeEvent event) {
 		final Player player = event.getPlayer();
 		final Block block = event.getBlock();
@@ -186,25 +186,25 @@ public class AqualockListener implements Listener {
 		}
 	}
 
-	@EventHandler(priority = EventPriority.MONITOR)
+	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 	public void onBlockIgnite(BlockIgniteEvent event) {
 		final Block block = event.getBlock().getLocation().getBlock();
 		event.setCancelled(registry.getLock(block.getWorld().getUID(), block.getX(), block.getY(), block.getZ()) != null);
 	}
 
-	@EventHandler(priority = EventPriority.MONITOR)
+	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 	public void onLightningStrike(LightningStrikeEvent event) {
 		final Block block = event.getLightning().getLocation().getBlock();
 		event.setCancelled(registry.getLock(block.getWorld().getUID(), block.getX(), block.getY(), block.getZ()) != null);
 	}
 
-	@EventHandler(priority = EventPriority.MONITOR)
+	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 	public void onBlockFade(BlockFadeEvent event) {
 		final Block block = event.getBlock();
 		event.setCancelled(registry.getLock(block.getWorld().getUID(), block.getX(), block.getY(), block.getZ()) != null);
 	}
 
-	@EventHandler(priority = EventPriority.MONITOR)
+	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 	public void onPistonExtend(BlockPistonExtendEvent event) {
 		if (event.getLength() > 0) {
 			final List<Block> moving = event.getBlocks();
@@ -216,7 +216,7 @@ public class AqualockListener implements Listener {
 		}
 	}
 
-	@EventHandler(priority = EventPriority.MONITOR)
+	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 	public void onPistonRetract(BlockPistonRetractEvent event) {
 		final Block moved = event.getRetractLocation().getBlock();
 		if (registry.contains(moved.getWorld().getUID(), moved.getX(), moved.getY(), moved.getZ())) {
@@ -224,13 +224,13 @@ public class AqualockListener implements Listener {
 		}
 	}
 
-	@EventHandler(priority = EventPriority.MONITOR)
+	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 	public void onBlockBurn(BlockBurnEvent event) {
 		final Block block = event.getBlock();
 		event.setCancelled(registry.getLock(block.getWorld().getUID(), block.getX(), block.getY(), block.getZ()) != null);
 	}
 
-	@EventHandler(priority = EventPriority.MONITOR)
+	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 	public void onEntityExplode(EntityExplodeEvent event) {
 		Iterator<Block> iter = event.blockList().iterator();
 		while (iter.hasNext()) {
@@ -241,7 +241,7 @@ public class AqualockListener implements Listener {
 		}
 	}
 
-	@EventHandler(priority = EventPriority.MONITOR)
+	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 	public void onBlockPhysics(BlockPhysicsEvent event) {
 		final Block block = event.getBlock();
 		event.setCancelled(registry.contains(block.getWorld().getUID(), block.getX(), block.getY(), block.getZ()));
