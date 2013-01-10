@@ -24,6 +24,7 @@ import com.almuramc.aqualock.bukkit.AqualockPlugin;
 import net.milkbowl.vault.economy.Economy;
 
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 public class EconomyUtil {
@@ -33,15 +34,15 @@ public class EconomyUtil {
 		economy = AqualockPlugin.getEconomies();
 	}
 
-	public static boolean hasAccount(Player player) {
+	public static boolean hasAccount(OfflinePlayer player) {
 		return economy.hasAccount(player.getName());
 	}
 
-	public static boolean hasEnough(Player player, double amount) {
+	public static boolean hasEnough(OfflinePlayer player, double amount) {
 		return economy.has(player.getName(), amount);
 	}
 
-	public static void apply(Player player, double amount) {
+	public static void apply(OfflinePlayer player, double amount) {
 		economy.withdrawPlayer(player.getName(), amount);
 	}
 

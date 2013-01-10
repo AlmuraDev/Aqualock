@@ -51,6 +51,7 @@ public class ApplyButton extends GenericButton {
 	@Override
 	public void onButtonClick(ButtonClickEvent event) {
 		final AquaPanel panel = (AquaPanel) event.getScreen();
+		String modifier = event.getPlayer().getName();
 		String owner = "";
 		List<String> coowners = null;
 		List<String> users = null;
@@ -107,7 +108,7 @@ public class ApplyButton extends GenericButton {
 		final Location loc = panel.getLocation();
 		boolean close = true;
 		if (AqualockPlugin.getRegistry().contains(loc.getWorld().getUID(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ())) {
-			if (!LockUtil.update(owner, coowners, users, password, panel.getLocation(), panel.getLocation().getBlock().getData(), cost, damage, timer)) {
+			if (!LockUtil.update(modifier, owner, coowners, users, password, panel.getLocation(), panel.getLocation().getBlock().getData(), cost, damage, timer)) {
 				close = false;
 			}
 		} else {

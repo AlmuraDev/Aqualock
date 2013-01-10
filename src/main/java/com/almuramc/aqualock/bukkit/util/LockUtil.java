@@ -69,7 +69,7 @@ public class LockUtil {
 	 */
 	public static boolean lock(String playerName, List<String> coowners, List<String> users, String passcode, Location location, byte data, double useCost, int damage, long autocloseTimer) {
 		checkLocation(location);
-		final Player player = checkNameAndGetPlayer(playerName);
+		final OfflinePlayer player = checkNameAndGetPlayer(playerName);
 		if (coowners == null) {
 			coowners = Collections.emptyList();
 		}
@@ -94,7 +94,8 @@ public class LockUtil {
 			lock = new BukkitLock(playerName, coowners, users, passcode, location, data, useCost, damage);
 		}
 		//After all that is said and done, add the lock made to the registry and backend.
-		SpoutManager.getPlayer(player).sendNotification("Aqualock", "Locked the block!", Material.CAKE);
+		final Player online = player.getPlayer();
+		SpoutManager.getPlayer(online).sendNotification("Aqualock", "Locked the block!", Material.CAKE);
 		registry.addLock(lock);
 		backend.addLock(lock);
 		//If the lock created in this method's location is not the location of this iteration then its the second door, lock it.
@@ -148,7 +149,7 @@ public class LockUtil {
 	 */
 	public static boolean unlock(String playerName, String passcode, Location location) {
 		checkLocation(location);
-		final Player player = checkNameAndGetPlayer(playerName);
+		final OfflinePlayer player = checkNameAndGetPlayer(playerName);
 		if (performAction(player, passcode, location, 0, "UNLOCK")) {
 			final Lock lock = registry.getLock(location.getWorld().getUID(), location.getBlockX(), location.getBlockY(), location.getBlockZ());
 			if (lock == null) {
@@ -156,7 +157,8 @@ public class LockUtil {
 			}
 			registry.removeLock(lock);
 			backend.removeLock(lock);
-			SpoutManager.getPlayer(player).sendNotification("Aqualock", "Unlocked the block!", Material.CAKE);
+			final Player online = player.getPlayer();
+			SpoutManager.getPlayer(online).sendNotification("Aqualock", "Unlocked the block!", Material.CAKE);
 			final Block oBlock = BlockUtil.getDoubleDoor(location);
 			if (oBlock != null) {
 				backend.removeLock(registry.getLock(oBlock.getWorld().getUID(), oBlock.getX(), oBlock.getY(), oBlock.getZ()));
@@ -205,20 +207,21 @@ public class LockUtil {
 	 * @param location
 	 * @param data
 	 */
-	public static boolean update(String playerName, List<String> coowners, List<String> users, String passcode, Location location, byte data, double useCost, int damage, long timer) {
+	public static boolean update(String modifier, String owner, List<String> coowners, List<String> users, String passcode, Location location, byte data, double useCost, int damage, long timer) {
 		checkLocation(location);
-		Player player = checkNameAndGetPlayer(playerName);
+		final Player modifying = checkNameAndGetPlayer(modifier).getPlayer();
+		final OfflinePlayer player = checkNameAndGetPlayer(owner);
 		if (coowners == null) {
 			coowners = Collections.emptyList();
 		}
 		if (users == null) {
 			users = Collections.emptyList();
 		}
-		if (!performAction(player, passcode, location, useCost, "UPDATE")) {
+		if (!performAction(modifying, passcode, location, useCost, "UPDATE")) {
 			return false;
 		}
 		final Lock lock = registry.getLock(location.getWorld().getUID(), location.getBlockX(), location.getBlockY(), location.getBlockZ());
-		lock.setOwner(playerName);
+		lock.setOwner(owner);
 		lock.setCoOwners(coowners.toArray(new String[coowners.size()]));
 		lock.setUsers(users.toArray(new String[users.size()]));
 		if (lock instanceof BukkitLock) {
@@ -235,56 +238,56 @@ public class LockUtil {
 		backend.addLock(lock);
 		final Block oBlock = BlockUtil.getDoubleDoor(location);
 		if (oBlock != null) {
-			DoorBukkitLock otherLock = new DoorBukkitLock(playerName, coowners, users, passcode, oBlock.getLocation(), oBlock.getData(), useCost, damage, timer);
+			DoorBukkitLock otherLock = new DoorBukkitLock(owner, coowners, users, passcode, oBlock.getLocation(), oBlock.getData(), useCost, damage, timer);
 			registry.addLock(otherLock);
 			backend.addLock(otherLock);
 			if ((oBlock.getData() & 0x8) == 0x8) {
-				DoorBukkitLock bottomLeft = new DoorBukkitLock(playerName, coowners, users, passcode, location.getBlock().getRelative(BlockFace.DOWN).getLocation(), location.getBlock().getRelative(BlockFace.DOWN).getData(), useCost, damage, timer);
+				DoorBukkitLock bottomLeft = new DoorBukkitLock(owner, coowners, users, passcode, location.getBlock().getRelative(BlockFace.DOWN).getLocation(), location.getBlock().getRelative(BlockFace.DOWN).getData(), useCost, damage, timer);
 				registry.addLock(bottomLeft);
 				backend.addLock(bottomLeft);
-				DoorBukkitLock bottomRight = new DoorBukkitLock(playerName, coowners, users, passcode, oBlock.getRelative(BlockFace.DOWN).getLocation(), oBlock.getRelative(BlockFace.DOWN).getData(), useCost, damage, timer);
+				DoorBukkitLock bottomRight = new DoorBukkitLock(owner, coowners, users, passcode, oBlock.getRelative(BlockFace.DOWN).getLocation(), oBlock.getRelative(BlockFace.DOWN).getData(), useCost, damage, timer);
 				registry.addLock(bottomRight);
 				backend.addLock(bottomRight);
 			} else {
-				DoorBukkitLock topLeft = new DoorBukkitLock(playerName, coowners, users, passcode, location.getBlock().getRelative(BlockFace.UP).getLocation(), location.getBlock().getRelative(BlockFace.UP).getData(), useCost, damage, timer);
+				DoorBukkitLock topLeft = new DoorBukkitLock(owner, coowners, users, passcode, location.getBlock().getRelative(BlockFace.UP).getLocation(), location.getBlock().getRelative(BlockFace.UP).getData(), useCost, damage, timer);
 				registry.addLock(topLeft);
 				backend.addLock(topLeft);
-				DoorBukkitLock topRight = new DoorBukkitLock(playerName, coowners, users, passcode, oBlock.getRelative(BlockFace.UP).getLocation(), oBlock.getRelative(BlockFace.UP).getData(), useCost, damage, timer);
+				DoorBukkitLock topRight = new DoorBukkitLock(owner, coowners, users, passcode, oBlock.getRelative(BlockFace.UP).getLocation(), oBlock.getRelative(BlockFace.UP).getData(), useCost, damage, timer);
 				registry.addLock(topRight);
 				backend.addLock(topRight);
 			}
 		} else if (BlockUtil.isDoorMaterial(location.getBlock().getType())) {
 			Door source = (Door) location.getBlock().getState().getData();
 			if (source.isTopHalf()) {
-				DoorBukkitLock bottom = new DoorBukkitLock(playerName, coowners, users, passcode, location.getBlock().getRelative(BlockFace.DOWN).getLocation(), location.getBlock().getRelative(BlockFace.DOWN).getData(), useCost, damage, timer);
+				DoorBukkitLock bottom = new DoorBukkitLock(owner, coowners, users, passcode, location.getBlock().getRelative(BlockFace.DOWN).getLocation(), location.getBlock().getRelative(BlockFace.DOWN).getData(), useCost, damage, timer);
 				registry.addLock(bottom);
 				backend.addLock(bottom);
 			} else {
-				DoorBukkitLock top = new DoorBukkitLock(playerName, coowners, users, passcode, location.getBlock().getRelative(BlockFace.UP).getLocation(), location.getBlock().getRelative(BlockFace.UP).getData(), useCost, damage, timer);
+				DoorBukkitLock top = new DoorBukkitLock(owner, coowners, users, passcode, location.getBlock().getRelative(BlockFace.UP).getLocation(), location.getBlock().getRelative(BlockFace.UP).getData(), useCost, damage, timer);
 				registry.addLock(top);
 				backend.addLock(top);
 			}
 		}
 		final Block cBlock = BlockUtil.getDoubleChest(location);
 		if (cBlock != null) {
-			BukkitLock clock = new BukkitLock(playerName, coowners, users, passcode, cBlock.getLocation(), data, useCost, damage);
+			BukkitLock clock = new BukkitLock(owner, coowners, users, passcode, cBlock.getLocation(), data, useCost, damage);
 			registry.addLock(clock);
 			backend.addLock(clock);
 		}
-		SpoutManager.getPlayer(player).sendNotification("Aqualock", "Updated the block!", Material.CAKE);
+		SpoutManager.getPlayer(modifying).sendNotification("Aqualock", "Updated the block!", Material.CAKE);
 		return true;
 	}
 
 	public static boolean use(String playerName, String passcode, Location location, double useCost) {
 		checkLocation(location);
-		final Player player = checkNameAndGetPlayer(playerName);
+		final OfflinePlayer player = checkNameAndGetPlayer(playerName);
 		if (!performAction(player, passcode, location, useCost, "USE")) {
 			return false;
 		}
 		return true;
 	}
 
-	public static boolean performAction(Player player, String passcode, Location location, double useCost, String action) {
+	public static boolean performAction(OfflinePlayer player, String passcode, Location location, double useCost, String action) {
 		final World world = location.getWorld();
 		final UUID worldIdentifier = world.getUID();
 		final int x = location.getBlockX();
@@ -292,7 +295,8 @@ public class LockUtil {
 		final int z = location.getBlockZ();
 		final Lock lock = registry.getLock(worldIdentifier, x, y, z);
 		final String name = player.getName();
-		final SpoutPlayer splayer = SpoutManager.getPlayer(player);
+		final Player online = player.getPlayer();
+		final SpoutPlayer splayer = SpoutManager.getPlayer(online);
 		switch (action) {
 			case "LOCK":
 				if (lock != null) {
@@ -300,13 +304,13 @@ public class LockUtil {
 					return false;
 				}
 				if (AqualockPlugin.getEconomies() != null) {
-					if (EconomyUtil.shouldChargeForLock(player)) {
-						if (!EconomyUtil.hasAccount(player)) {
+					if (EconomyUtil.shouldChargeForLock(online)) {
+						if (!EconomyUtil.hasAccount(online)) {
 							splayer.sendNotification("Aqualock", "You have no account!", Material.LAVA_BUCKET);
 							return false;
 						}
 						final double value = config.getCosts().getLockCost(location.getBlock().getType());
-						if (!EconomyUtil.hasEnough(player, value)) {
+						if (!EconomyUtil.hasEnough(online, value)) {
 							splayer.sendNotification("Aqualock", "Not enough money!", Material.LAVA_BUCKET);
 							return false;
 						}
@@ -317,7 +321,7 @@ public class LockUtil {
 						} else {
 							splayer.sendNotification("Aqualock", "Lock was free!", Material.APPLE);
 						}
-						EconomyUtil.apply(player, value);
+						EconomyUtil.apply(online, value);
 					}
 				}
 				return true;
@@ -332,20 +336,20 @@ public class LockUtil {
 						canUnlock = false;
 					}
 				}
-				if (!PermissionUtil.has(player, "aqualock.admin")) {
-					if (!canUnlock || !PermissionUtil.canUnlock(player)) {
+				if (!PermissionUtil.has(online, "aqualock.admin")) {
+					if (!canUnlock || !PermissionUtil.canUnlock(online)) {
 						splayer.sendNotification("Aqualock", "Not in the allowed list!", Material.LAVA_BUCKET);
 						return false;
 					}
 				}
 				if (AqualockPlugin.getEconomies() != null) {
-					if (EconomyUtil.shouldChargeForUnlock(player)) {
-						if (!EconomyUtil.hasAccount(player)) {
+					if (EconomyUtil.shouldChargeForUnlock(online)) {
+						if (!EconomyUtil.hasAccount(online)) {
 							splayer.sendNotification("Aqualock", "You have no account!", Material.LAVA_BUCKET);
 							return false;
 						}
 						final double value = config.getCosts().getUnlockCost(location.getBlock().getType());
-						if (!EconomyUtil.hasEnough(player, value)) {
+						if (!EconomyUtil.hasEnough(online, value)) {
 							splayer.sendNotification("Aqualock", "Not enough money!", Material.LAVA_BUCKET);
 							return false;
 						}
@@ -356,7 +360,7 @@ public class LockUtil {
 						} else {
 							splayer.sendNotification("Aqualock", "Unlock was free!", Material.APPLE);
 						}
-						EconomyUtil.apply(player, value);
+						EconomyUtil.apply(online, value);
 					}
 				}
 				return true;
@@ -377,19 +381,19 @@ public class LockUtil {
 				} else {
 					shouldCharge = false;
 				}
-				if (!PermissionUtil.has(player, "aqualock.admin")) {
-					if (!canUse || !PermissionUtil.canUse(player)) {
+				if (!PermissionUtil.has(online, "aqualock.admin")) {
+					if (!canUse || !PermissionUtil.canUse(online)) {
 						splayer.sendNotification("Aqualock", "Not in the allowed list!", Material.LAVA_BUCKET);
 						return false;
 					}
 				}
 				if (AqualockPlugin.getEconomies() != null && shouldCharge) {
-					if (EconomyUtil.shouldChargeForUse(player)) {
-						if (!EconomyUtil.hasAccount(player)) {
+					if (EconomyUtil.shouldChargeForUse(online)) {
+						if (!EconomyUtil.hasAccount(online)) {
 							splayer.sendNotification("Aqualock", "You have no account!", Material.LAVA_BUCKET);
 							return false;
 						}
-						if (!EconomyUtil.hasEnough(player, useCost)) {
+						if (!EconomyUtil.hasEnough(online, useCost)) {
 							splayer.sendNotification("Aqualock", "Not enough money!", Material.LAVA_BUCKET);
 							return false;
 						}
@@ -400,14 +404,9 @@ public class LockUtil {
 						} else {
 							splayer.sendNotification("Aqualock", "Use was free!", Material.APPLE);
 						}
-						EconomyUtil.apply(player, useCost);
-						Player owner = Bukkit.getPlayer(lock.getOwner());
-						if (owner != null && !owner.isOnline()) {
-							owner = Bukkit.getOfflinePlayer(lock.getOwner()).getPlayer();
-							EconomyUtil.apply(owner, Math.abs(useCost));
-						} else if (owner != null && owner.isOnline()) {
-							EconomyUtil.apply(owner, Math.abs(useCost));
-						}
+						EconomyUtil.apply(online, useCost);
+						final OfflinePlayer owner = Bukkit.getOfflinePlayer(lock.getOwner());
+						EconomyUtil.apply(owner, Math.abs(useCost));
 					}
 				}
 				return true;
@@ -421,14 +420,14 @@ public class LockUtil {
 						canUpdate = false;
 					}
 				}
-				if (!PermissionUtil.has(player, "aqualock.admin")) {
-					if (!canUpdate || !PermissionUtil.canUpdate(player)) {
+				if (!PermissionUtil.has(online, "aqualock.admin")) {
+					if (!canUpdate || !PermissionUtil.canUpdate(online)) {
 						splayer.sendNotification("Aqualock", "Not in the allowed list!", Material.LAVA_BUCKET);
 						return false;
 					}
 				}
 				if (AqualockPlugin.getEconomies() != null) {
-					if (EconomyUtil.shouldChargeForUpdate(player)) {
+					if (EconomyUtil.shouldChargeForUpdate(online)) {
 						if (!EconomyUtil.hasAccount(player)) {
 							splayer.sendNotification("Aqualock", "You have no account!", Material.LAVA_BUCKET);
 							return false;
@@ -491,17 +490,10 @@ public class LockUtil {
 		}
 	}
 
-	private static Player checkNameAndGetPlayer(String name) {
+	private static OfflinePlayer checkNameAndGetPlayer(String name) {
 		if (name == null || name.isEmpty()) {
 			throw new IllegalArgumentException("Name cannot be null or empty!");
 		}
-		Player player = Bukkit.getPlayerExact(name);
-		if (player == null) {
-			player = Bukkit.getOfflinePlayer(name).getPlayer();
-			if (player == null) {
-				throw new IllegalArgumentException("No player found matching name: " + name + " found on this server!");
-			}
-		}
-		return player;
+		return Bukkit.getOfflinePlayer(name);
 	}
 }
