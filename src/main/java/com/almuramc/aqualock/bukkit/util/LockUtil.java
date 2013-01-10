@@ -331,7 +331,7 @@ public class LockUtil {
 					return true;
 				}
 				boolean canUnlock = true;
-				if (!name.equals(lock.getOwner())) {
+				if (!name.equalsIgnoreCase(lock.getOwner())) {
 					if (!lock.getCoOwners().contains(name)) {
 						canUnlock = false;
 					}
@@ -370,9 +370,9 @@ public class LockUtil {
 				}
 				boolean canUse = true;
 				boolean shouldCharge = true;
-				if (!name.equals(lock.getOwner())) {
-					if (!lock.getCoOwners().contains(name)) {
-						if (!lock.getUsers().contains(name) && !lock.getUsers().contains("Everyone")) {
+				if (!name.equalsIgnoreCase(lock.getOwner())) {
+					if (!lock.getCoOwners().contains(name.toLowerCase())) {
+						if (!lock.getUsers().contains(name.toLowerCase()) && !lock.getUsers().contains("everyone")) {
 							canUse = false;
 						}
 					} else {
@@ -415,8 +415,8 @@ public class LockUtil {
 					return true;
 				}
 				boolean canUpdate = true;
-				if (!name.equals(lock.getOwner())) {
-					if (!lock.getCoOwners().contains(name)) {
+				if (!name.equalsIgnoreCase(lock.getOwner())) {
+					if (!lock.getCoOwners().contains(name.toLowerCase())) {
 						canUpdate = false;
 					}
 				}

@@ -127,7 +127,7 @@ public class ApplyButton extends GenericButton {
 		final StringBuilder parsed = new StringBuilder();
 		for (int i = 0; i < chars.length; i++) {
 			if (chars[i] == ',') {
-				temp.add(parsed.toString());
+				temp.add(parsed.toString().toLowerCase());
 				parsed.delete(0, parsed.length());
 				continue;
 			}
@@ -136,7 +136,7 @@ public class ApplyButton extends GenericButton {
 			}
 			if (i == chars.length - 1) {
 				parsed.append(chars[i]);
-				temp.add(parsed.toString());
+				temp.add(parsed.toString().toLowerCase());
 				continue;
 			}
 			parsed.append(chars[i]);

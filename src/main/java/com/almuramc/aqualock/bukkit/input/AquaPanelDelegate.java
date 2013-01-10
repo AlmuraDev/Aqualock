@@ -68,8 +68,8 @@ public class AquaPanelDelegate implements BindingExecutionDelegate {
 		final String name = player.getName();
 		if (lock != null) {
 			boolean canUpdate = true;
-			if (!name.equals(lock.getOwner())) {
-				if (!lock.getCoOwners().contains(name)) {
+			if (!name.equalsIgnoreCase(lock.getOwner())) {
+				if (!lock.getCoOwners().contains(name.toLowerCase())) {
 					canUpdate = false;
 				}
 			}
