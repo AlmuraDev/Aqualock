@@ -101,7 +101,7 @@ public class ApplyButton extends GenericButton {
 			if (widget.getClass().equals(EveryoneCheckbox.class)) {
 				if (((EveryoneCheckbox) widget).isChecked()) {
 					users = new ArrayList<>();
-					users.add("Everyone");
+					users.add("everyone");
 				}
 			}
 		}

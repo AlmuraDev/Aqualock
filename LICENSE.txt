@@ -1,17 +1,3 @@
-The dual license described in this file is called the InspireNXE Development
-License.
-
------------------------------------------------------------------------
-
-The software is licensed under the GNU General Public License version
-3.0.
-
-An exception is made for all classes that do not utilize or reference
-any GPL licensed code. For these classes. they will be licensed as the
- SpoutDev License version 1 (provided below).
-
------------------------------------------------------------------------
-
                     GNU GENERAL PUBLIC LICENSE
                        Version 3, 29 June 2007
 
