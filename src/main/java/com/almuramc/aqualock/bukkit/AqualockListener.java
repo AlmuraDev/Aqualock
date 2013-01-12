@@ -168,6 +168,7 @@ public class AqualockListener implements Listener {
 				}
 			}
 			BlockUtil.onDoorInteract(interacted, true);
+			BlockUtil.onGateInteract(interacted);
 		}
 	}
 

@@ -33,6 +33,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.material.Door;
+import org.bukkit.material.Gate;
 
 /**
  * Class with helper functions that deal with blocks
@@ -181,6 +182,24 @@ public class BlockUtil {
 		return true;
 	}
 
+	public static boolean onGateInteract(Block block) {
+		if (!isFenceGateMaterial(block.getType())) {
+			return false;
+		}
+		final Block finalBlock = block;
+		final Gate gate = (Gate) block.getState().getData();
+		if (!gate.isOpen()) {
+			AqualockPlugin.getInstance().getServer().getScheduler().scheduleSyncDelayedTask(AqualockPlugin.getInstance(), new Runnable() {
+				@Override
+				public void run() {
+					System.out.println("Executing close task.");
+					finalBlock.setData((byte) (finalBlock.getData() ^ 0x4));
+				}
+			}, 100);
+		}
+		return true;
+	}
+
 	public static boolean isDoorMaterial(Material material) {
 		return material == Material.IRON_DOOR_BLOCK || material == Material.WOODEN_DOOR;
 	}
@@ -216,6 +235,8 @@ public class BlockUtil {
 			case BREWING_STAND:
 				break;
 			case ENCHANTMENT_TABLE:
+				break;
+			case FENCE_GATE:
 				break;
 			default:
 				return false;
