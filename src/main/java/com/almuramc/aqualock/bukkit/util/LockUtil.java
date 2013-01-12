@@ -372,7 +372,7 @@ public class LockUtil {
 				boolean shouldCharge = true;
 				if (!name.equalsIgnoreCase(lock.getOwner())) {
 					if (!lock.getCoOwners().contains(name.toLowerCase())) {
-						if (!lock.getUsers().contains(name.toLowerCase()) && !lock.getUsers().contains("everyone")) {
+						if (!lock.getUsers().contains(name.toLowerCase()) && (!lock.getUsers().contains("everyone") || !lock.getUsers().contains("Everyone"))) {
 							canUse = false;
 						}
 					} else {
