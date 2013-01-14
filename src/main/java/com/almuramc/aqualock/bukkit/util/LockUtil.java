@@ -332,7 +332,7 @@ public class LockUtil {
 				}
 				boolean canUnlock = true;
 				if (!name.equalsIgnoreCase(lock.getOwner())) {
-					if (!lock.getCoOwners().contains(name)) {
+					if (!lock.getCoOwners().contains(name.toLowerCase())) {
 						canUnlock = false;
 					}
 				}
@@ -372,8 +372,10 @@ public class LockUtil {
 				boolean shouldCharge = true;
 				if (!name.equalsIgnoreCase(lock.getOwner())) {
 					if (!lock.getCoOwners().contains(name.toLowerCase())) {
-						if (!lock.getUsers().contains(name.toLowerCase()) && (!lock.getUsers().contains("everyone") || !lock.getUsers().contains("Everyone"))) {
-							canUse = false;
+						if (!lock.getUsers().contains(name.toLowerCase())) {
+                            if (lock.getUsers().size() == 1 && !lock.getUsers().get(0).equalsIgnoreCase("Everyone")) {
+                                canUse = false;
+                            }
 						}
 					} else {
 						shouldCharge = false;
