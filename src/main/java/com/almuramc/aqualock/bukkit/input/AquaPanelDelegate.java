@@ -40,7 +40,6 @@ import org.bukkit.block.Block;
 
 public class AquaPanelDelegate implements BindingExecutionDelegate {
 	private final AqualockPlugin plugin;
-	public static final HashMap<UUID, AquaPanel> panels = new HashMap<UUID, AquaPanel>();
 
 	public AquaPanelDelegate(AqualockPlugin plugin) {
 		this.plugin = plugin;
