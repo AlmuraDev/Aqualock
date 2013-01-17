@@ -19,9 +19,6 @@
  */
 package com.almuramc.aqualock.bukkit.input;
 
-import java.util.HashMap;
-import java.util.UUID;
-
 import com.almuramc.aqualock.bukkit.AqualockPlugin;
 import com.almuramc.aqualock.bukkit.display.AquaPanel;
 import com.almuramc.aqualock.bukkit.util.BlockUtil;
@@ -80,12 +77,12 @@ public class AquaPanelDelegate implements BindingExecutionDelegate {
 			}
 		}
 		panel = new AquaPanel(plugin);
-        try {
-            player.getMainScreen().attachPopupScreen(panel);
-        } catch (Exception e) {
-            player.closeActiveWindow();
-            return;
-        }
+		try {
+			player.getMainScreen().attachPopupScreen(panel);
+		} catch (Exception e) {
+			player.closeActiveWindow();
+			return;
+		}
 		panel.setLocation(block.getLocation());
 		panel.populate(lock);
 	}
