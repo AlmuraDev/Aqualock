@@ -192,7 +192,6 @@ public class BlockUtil {
 			AqualockPlugin.getInstance().getServer().getScheduler().scheduleSyncDelayedTask(AqualockPlugin.getInstance(), new Runnable() {
 				@Override
 				public void run() {
-					System.out.println("Executing close task.");
 					finalBlock.setData((byte) (finalBlock.getData() ^ 0x4));
 				}
 			}, 100);
@@ -209,7 +208,7 @@ public class BlockUtil {
 	}
 
 	public static boolean isChestMaterial(Material material) {
-		return material == Material.CHEST && material != Material.ENDER_CHEST;
+		return material == Material.CHEST;
 	}
 
 	public static boolean shouldOpenPassPanel(Material material) {
