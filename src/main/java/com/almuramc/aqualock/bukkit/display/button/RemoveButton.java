@@ -20,7 +20,7 @@
 package com.almuramc.aqualock.bukkit.display.button;
 
 import com.almuramc.aqualock.bukkit.AqualockPlugin;
-import com.almuramc.aqualock.bukkit.display.CachedGeoPopup;
+import com.almuramc.aqualock.bukkit.display.PopulateLocationPopup;
 import com.almuramc.aqualock.bukkit.display.field.PasswordField;
 import com.almuramc.aqualock.bukkit.util.LockUtil;
 
@@ -38,7 +38,7 @@ public class RemoveButton extends GenericButton {
 
 	@Override
 	public void onButtonClick(ButtonClickEvent event) {
-		final CachedGeoPopup panel = (CachedGeoPopup) event.getScreen();
+		final PopulateLocationPopup panel = (PopulateLocationPopup) event.getScreen();
 		String password = "";
 		for (Widget widget : panel.getAttachedWidgets()) {
 			if (widget instanceof PasswordField) {
@@ -46,7 +46,7 @@ public class RemoveButton extends GenericButton {
 			}
 		}
 		if (LockUtil.unlock(panel.getPlayer().getName(), password, panel.getLocation())) {
-			((CachedGeoPopup) event.getScreen()).onClose();
+			((PopulateLocationPopup) event.getScreen()).onClose();
 		}
 	}
 }

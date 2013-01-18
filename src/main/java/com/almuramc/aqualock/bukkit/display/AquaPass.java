@@ -19,8 +19,6 @@
  */
 package com.almuramc.aqualock.bukkit.display;
 
-import java.util.HashMap;
-
 import com.almuramc.aqualock.bukkit.AqualockPlugin;
 import com.almuramc.aqualock.bukkit.display.button.CloseButton;
 import com.almuramc.aqualock.bukkit.display.button.UnlockButton;
@@ -38,20 +36,17 @@ import org.getspout.spoutapi.gui.GenericLabel;
 import org.getspout.spoutapi.gui.GenericTextField;
 import org.getspout.spoutapi.gui.GenericTexture;
 import org.getspout.spoutapi.gui.RenderPriority;
+import org.getspout.spoutapi.gui.Screen;
 import org.getspout.spoutapi.gui.WidgetAnchor;
+import org.getspout.spoutapi.player.SpoutPlayer;
 
-import org.bukkit.Location;
-
-public class AquaPass extends CachedGeoPopup {
+public class AquaPass extends PopulateLocationPopup {
 	private final AqualockPlugin plugin;
 	//Widgets
 	private final GenericButton unlockButton, closeButton;
 	private final GenericLabel costToUseLabel, costToUseOutputLabel, passwordLabel, ownerLabel, realOwnersOutputLabel;
 	private final GenericTextField passwordField;
 	private final GenericTexture borderTexture, aquaPhoto;
-	//Geo
-	private Location location;
-	private static HashMap<Location, Boolean> openedLocations = new HashMap<>();
 
 	public AquaPass(AqualockPlugin plugin) {
 		this.plugin = plugin;
@@ -144,37 +139,19 @@ public class AquaPass extends CachedGeoPopup {
 		this.setTransparent(true);
 	}
 
-	/**
-	 * Populates the panel with information from the backend
-	 */
+	@Override
 	public void populate(Lock lock) {
-		openedLocations.put(getLocation(), true);
+		final Screen screen = getScreen();
+		final SpoutPlayer player = getPlayer();
+
+		if (getScreen() == null || getPlayer() == null) {
+			return;
+		}
+
 		realOwnersOutputLabel.setText(lock.getOwner());
 		costToUseOutputLabel.setText(Double.toString(((BukkitLock) lock).getUseCost()));
 		unlockButton.setEnabled(true);
 		this.setDirty(true);
-	}
-
-	@Override
-	public boolean isOpen() {
-		return openedLocations.get(location) == null ? false : openedLocations.get(location);
-	}
-
-	@Override
-	public void setOpen(boolean open) {
-		openedLocations.put(location, open);
-	}
-
-	public static boolean isOpen(Location location) {
-		return openedLocations.get(location) == null ? false : openedLocations.get(location);
-	}
-
-	public Location getLocation() {
-		return location;
-	}
-
-	public void setLocation(Location location) {
-		this.location = location;
 	}
 
 	public String getPassword() {

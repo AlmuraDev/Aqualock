@@ -21,7 +21,7 @@ package com.almuramc.aqualock.bukkit.display.button;
 
 import com.almuramc.aqualock.bukkit.AqualockPlugin;
 import com.almuramc.aqualock.bukkit.display.AquaPass;
-import com.almuramc.aqualock.bukkit.display.CachedGeoPopup;
+import com.almuramc.aqualock.bukkit.display.PopulateLocationPopup;
 import com.almuramc.aqualock.bukkit.lock.BukkitLock;
 import com.almuramc.aqualock.bukkit.util.BlockUtil;
 import com.almuramc.aqualock.bukkit.util.LockUtil;
@@ -29,6 +29,7 @@ import com.almuramc.aqualock.bukkit.util.LockUtil;
 import org.getspout.spoutapi.SpoutManager;
 import org.getspout.spoutapi.event.screen.ButtonClickEvent;
 import org.getspout.spoutapi.gui.GenericButton;
+import org.getspout.spoutapi.gui.Screen;
 import org.getspout.spoutapi.player.SpoutPlayer;
 
 import org.bukkit.Bukkit;
@@ -48,8 +49,12 @@ public class UnlockButton extends GenericButton {
 
 	@Override
 	public void onButtonClick(ButtonClickEvent event) {
-		final Location location = ((CachedGeoPopup) event.getScreen()).getLocation();
+		final Location location = ((PopulateLocationPopup) event.getScreen()).getLocation();
 		final SpoutPlayer player = SpoutManager.getPlayer(event.getPlayer());
+		final Screen screen = event.getScreen();
+		if (screen == null || !(screen != null && screen instanceof PopulateLocationPopup) || location == null || player == null) {
+			return;
+		}
 		final Block block = location.getBlock();
 		final String password = ((AquaPass) event.getScreen()).getPassword();
 		final BukkitLock lock = (BukkitLock) plugin.getRegistry().getLock(block.getWorld().getUID(), block.getX(), block.getY(), block.getZ());
@@ -61,7 +66,7 @@ public class UnlockButton extends GenericButton {
 		if (!LockUtil.use(player.getName(), password, block.getLocation(), lock.getUseCost())) {
 			return;
 		}
-		((CachedGeoPopup) event.getScreen()).onClose();
+		((PopulateLocationPopup) event.getScreen()).onClose();
 		switch (location.getBlock().getType()) {
 			case CHEST:
 				final Chest chest = (Chest) location.getBlock().getState();
@@ -89,6 +94,9 @@ public class UnlockButton extends GenericButton {
 						player.openInventory(furnace.getInventory());
 					}
 				}, 10L);
+				break;
+			case FENCE_GATE:
+				BlockUtil.onGateInteract(block);
 				break;
 		}
 	}

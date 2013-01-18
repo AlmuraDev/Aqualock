@@ -19,7 +19,6 @@
  */
 package com.almuramc.aqualock.bukkit.display;
 
-import java.util.HashMap;
 import java.util.List;
 
 import com.almuramc.aqualock.bukkit.AqualockPlugin;
@@ -55,12 +54,12 @@ import org.getspout.spoutapi.gui.GenericLabel;
 import org.getspout.spoutapi.gui.GenericTextField;
 import org.getspout.spoutapi.gui.GenericTexture;
 import org.getspout.spoutapi.gui.RenderPriority;
+import org.getspout.spoutapi.gui.Screen;
 import org.getspout.spoutapi.gui.Widget;
 import org.getspout.spoutapi.gui.WidgetAnchor;
+import org.getspout.spoutapi.player.SpoutPlayer;
 
-import org.bukkit.Location;
-
-public class AquaPanel extends CachedGeoPopup {
+public class AquaPanel extends PopulateLocationPopup {
 	private final AqualockPlugin plugin;
 	//Widgets
 	private final GenericButton closeButton, applyButton, unlockButton;
@@ -68,9 +67,6 @@ public class AquaPanel extends CachedGeoPopup {
 	private final GenericLabel usersLabel, coownersLabel, costToUseLabel, damageOnFailLabel, costToCreateOutputLabel, costToCreateLabel, passwordLabel, ownerLabel, closeTimerLabel;
 	private final GenericTextField usersField, coownersField, costToUseField, damageOnFailField, passwordField, ownerField, closeTimerField;
 	private final GenericTexture borderTexture, aquaPhoto;
-	//Geo
-	private Location location;
-	private static HashMap<Location, Boolean> openedLocations = new HashMap<>();
 
 	public AquaPanel(AqualockPlugin plugin) {
 		this.plugin = plugin;
@@ -265,11 +261,15 @@ public class AquaPanel extends CachedGeoPopup {
 		this.setTransparent(true);
 	}
 
-	/**
-	 * Populates the panel with information from the backend
-	 */
+	@Override
 	public void populate(Lock lock) {
-		openedLocations.put(location, true);
+		final Screen screen = getScreen();
+		final SpoutPlayer player = getPlayer();
+
+		if (getScreen() == null || getPlayer() == null) {
+			return;
+		}
+
 		if (lock == null) {
 			for (Widget widget : getAttachedWidgets()) {
 				if (widget instanceof GenericTextField && (!(widget instanceof OwnerField))) {
@@ -342,8 +342,8 @@ public class AquaPanel extends CachedGeoPopup {
 		}
 		costToCreateOutputLabel.setText(Double.toString(value).replaceAll("[^\\d.]", ""));
 		costToCreateOutputLabel.setTextColor(new Color(hexColor));
-		if (LockUtil.canPerformAction(getPlayer(), "UNLOCK")) {
-			final String name = getPlayer().getName();
+		if (LockUtil.canPerformAction(player, "UNLOCK")) {
+			final String name = player.getName();
 			boolean canUnlock;
 			if (!ownerField.getText().equals(name)) {
 				if (!coowners.contains(name)) {
@@ -367,27 +367,5 @@ public class AquaPanel extends CachedGeoPopup {
 		applyButton.setText("Update");
 		damageOnFailField.setText(Integer.toString(((BukkitLock) lock).getDamage()));
 		this.setDirty(true);
-	}
-
-	@Override
-	public boolean isOpen() {
-		return openedLocations.get(location) == null ? false : openedLocations.get(location);
-	}
-
-	@Override
-	public void setOpen(boolean open) {
-		openedLocations.put(location, open);
-	}
-
-	public Location getLocation() {
-		return location;
-	}
-
-	public void setLocation(Location location) {
-		this.location = location;
-	}
-
-	public static boolean isOpen(Location location) {
-		return openedLocations.get(location) == null ? false : openedLocations.get(location);
 	}
 }
