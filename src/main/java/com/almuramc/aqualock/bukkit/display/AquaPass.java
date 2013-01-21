@@ -97,14 +97,14 @@ public class AquaPass extends PopulateLocationPopup {
 				.setAnchor(WidgetAnchor.CENTER_CENTER)
 				.setHeight(10)
 				.setWidth(40)
-				.shiftXPos(20)
+				.shiftXPos(28)
 				.shiftYPos(-25);
 		passwordField = new PasswordField();
 		passwordField
 				.setAnchor(WidgetAnchor.CENTER_CENTER)
 				.setHeight(14)
 				.setWidth(107)
-				.shiftXPos(-25)
+				.shiftXPos(-20)
 				.shiftYPos(-3);
 		passwordLabel = new PasswordLabel("Password:");
 		passwordLabel

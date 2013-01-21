@@ -77,12 +77,7 @@ public class AquaPanelDelegate implements BindingExecutionDelegate {
 			}
 		}
 		panel = new AquaPanel(plugin);
-		try {
-			player.getMainScreen().attachPopupScreen(panel);
-		} catch (Exception e) {
-			player.closeActiveWindow();
-			return;
-		}
+		player.getMainScreen().attachPopupScreen(panel);
 		panel.setLocation(block.getLocation());
 		panel.populate(lock);
 	}

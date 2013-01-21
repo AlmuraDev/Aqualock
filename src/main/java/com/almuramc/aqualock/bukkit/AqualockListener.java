@@ -151,8 +151,8 @@ public class AqualockListener implements Listener {
 				if (!PermissionUtil.has(interacter, interacted.getWorld(), "aqualock.admin") && password != null && !password.isEmpty()) {
 					AquaPass passwordPopup = new AquaPass(AqualockPlugin.getInstance());
 					passwordPopup.setLocation(interacted.getLocation());
-					passwordPopup.populate(lock);
 					SpoutManager.getPlayer(interacter).getMainScreen().attachPopupScreen(passwordPopup);
+					passwordPopup.populate(lock);
 					event.setCancelled(true);
 					return;
 				}

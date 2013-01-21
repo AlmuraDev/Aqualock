@@ -353,6 +353,7 @@ public class AquaPanel extends PopulateLocationPopup {
 				canUnlock = true;
 			} else {
 				canUnlock = true;
+				passwordField.setText(((BukkitLock) lock).getPasscode());
 			}
 			if (canUnlock) {
 				unlockButton.setTooltip("Click this to free this lock!");
