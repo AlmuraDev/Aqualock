@@ -104,7 +104,7 @@ public class AquaPass extends PopulateLocationPopup {
 				.setAnchor(WidgetAnchor.CENTER_CENTER)
 				.setHeight(14)
 				.setWidth(107)
-				.shiftXPos(-20)
+				.shiftXPos(-25)
 				.shiftYPos(-3);
 		passwordLabel = new PasswordLabel("Password:");
 		passwordLabel
