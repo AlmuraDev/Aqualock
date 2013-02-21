@@ -72,8 +72,7 @@ public class AquaPanel extends PopulateLocationPopup {
 		this.plugin = plugin;
 		borderTexture = new GenericTexture("http://www.almuramc.com/images/playerplus.png");
 		borderTexture
-				.setAnchor(WidgetAnchor.CENTER_CENTER)
-				.setTooltip("Aqualock - developed by AlmuraDev")
+				.setAnchor(WidgetAnchor.CENTER_CENTER)				
 				.setPriority(RenderPriority.High)
 				.setWidth(400)
 				.setHeight(200)
@@ -82,6 +81,7 @@ public class AquaPanel extends PopulateLocationPopup {
 		aquaPhoto = new GenericTexture("http://www.almuramc.com/images/aqualock.png");
 		aquaPhoto
 				.setAnchor(WidgetAnchor.CENTER_CENTER)
+				.setTooltip("Aqualock - developed by AlmuraDev")
 				.setPriority(RenderPriority.Normal)
 				.setWidth(60)
 				.setHeight(60)
@@ -221,7 +221,7 @@ public class AquaPanel extends PopulateLocationPopup {
 				.setAnchor(WidgetAnchor.CENTER_CENTER)
 				.setHeight(15)
 				.setWidth(40)
-				.shiftXPos(0)
+				.shiftXPos(-50)
 				.shiftYPos(92);
 		passwordField = new PasswordField();
 		passwordField
@@ -247,7 +247,7 @@ public class AquaPanel extends PopulateLocationPopup {
 				.setTooltip("Current owner of the locked item.")
 				.setHeight(14)
 				.setWidth(107)
-				.shiftXPos(-145)
+				.shiftXPos(-170)
 				.shiftYPos(94);
 		ownerLabel = new OwnerLabel("Owner:");
 		ownerLabel
