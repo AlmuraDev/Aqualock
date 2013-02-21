@@ -58,8 +58,7 @@ public abstract class PopulateLocationPopup extends GenericPopup {
 	public Screen getScreen() {
 		final Screen screen = super.getScreen();
 		if (screen== null) {
-			Bukkit.getLogger().warning("Attempting to get a null screen!" +
-					"SpoutPlugin's issue.");
+			//Bukkit.getLogger().warning("Attempting to get a null screen!" +	"SpoutPlugin's issue.");
 		}
 		return screen;
 	}
@@ -72,8 +71,7 @@ public abstract class PopulateLocationPopup extends GenericPopup {
 	public SpoutPlayer getPlayer() {
 		final SpoutPlayer player = super.getPlayer();
 		if (player == null) {
-			Bukkit.getLogger().warning("Attempting to get the player of a null screen!" +
-					"SpoutPlugin's issue.");
+			//Bukkit.getLogger().warning("Attempting to get the player of a null screen!" + "SpoutPlugin's issue.");
 		}
 		return player;
 	}
