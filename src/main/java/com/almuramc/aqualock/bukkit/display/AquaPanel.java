@@ -73,6 +73,7 @@ public class AquaPanel extends PopulateLocationPopup {
 		borderTexture = new GenericTexture("http://www.almuramc.com/images/playerplus.png");
 		borderTexture
 				.setAnchor(WidgetAnchor.CENTER_CENTER)
+				.setTooltip("Aqualock - developed by AlmuraDev")
 				.setPriority(RenderPriority.High)
 				.setWidth(400)
 				.setHeight(200)
@@ -93,7 +94,7 @@ public class AquaPanel extends PopulateLocationPopup {
 				.setHeight(18)
 				.setWidth(40)
 				.shiftXPos(142)
-				.shiftYPos(87);
+				.shiftYPos(92);
 		applyButton = new ApplyButton(plugin);
 		applyButton
 				.setAuto(true)
@@ -101,7 +102,7 @@ public class AquaPanel extends PopulateLocationPopup {
 				.setHeight(18)
 				.setWidth(40)
 				.shiftXPos(90)
-				.shiftYPos(87);
+				.shiftYPos(92);
 		unlockButton = new RemoveButton(plugin);
 		unlockButton
 				.setAuto(true)
@@ -110,17 +111,18 @@ public class AquaPanel extends PopulateLocationPopup {
 				.setHeight(18)
 				.setWidth(45)
 				.shiftXPos(33)
-				.shiftYPos(87);
+				.shiftYPos(92);
 		usersField = new UserField();
 		usersField
-				.setMaximumLines(2)
-				.setMaximumCharacters(100)
+				.setMaximumLines(6)
+				.setMaximumCharacters(200)				
 				.setTabIndex(2)
 				.setAnchor(WidgetAnchor.CENTER_CENTER)
-				.setHeight(29)
+				.setTooltip("List of users who can access this locked item.")
+				.setHeight(75)
 				.setWidth(165)
 				.shiftXPos(15)
-				.shiftYPos(40);
+				.shiftYPos(10);
 		usersLabel = new UserLabel("Users:");
 		usersLabel
 				.setAuto(true)
@@ -128,17 +130,18 @@ public class AquaPanel extends PopulateLocationPopup {
 				.setHeight(11)
 				.setWidth(40)
 				.shiftXPos(15)
-				.shiftYPos(29);
+				.shiftYPos(0);
 		coownersField = new CoOwnerField();
 		coownersField
 				.setMaximumLines(2)
 				.setMaximumCharacters(100)
 				.setTabIndex(1)
 				.setAnchor(WidgetAnchor.CENTER_CENTER)
+				.setTooltip("List of users who can modify this locked item.")
 				.setHeight(29)
 				.setWidth(165)
 				.shiftXPos(15)
-				.shiftYPos(-7);
+				.shiftYPos(-37);
 		coownersLabel = new CoOwnerLabel("Co-Owners:");
 		coownersLabel
 				.setAuto(true)
@@ -146,7 +149,7 @@ public class AquaPanel extends PopulateLocationPopup {
 				.setHeight(10)
 				.setWidth(40)
 				.shiftXPos(15)
-				.shiftYPos(-19);
+				.shiftYPos(-49);
 		costToCreateOutputLabel = new CreateCostValueLabel("");
 		costToCreateOutputLabel
 				.setAuto(true)
@@ -166,6 +169,7 @@ public class AquaPanel extends PopulateLocationPopup {
 		damageOnFailField = new DamageField();
 		damageOnFailField
 				.setAnchor(WidgetAnchor.CENTER_CENTER)
+				.setTooltip("Damage to player for trying to break the lock.")
 				.setHeight(14)
 				.setWidth(40)
 				.shiftXPos(-70)
@@ -181,13 +185,14 @@ public class AquaPanel extends PopulateLocationPopup {
 		costToUseField = new UseCostField();
 		costToUseField
 				.setAnchor(WidgetAnchor.CENTER_CENTER)
+				.setTooltip("Cost charged to users of this locked item.")
 				.setHeight(14)
 				.setWidth(40)
 				.shiftXPos(-70)
 				.shiftYPos(40);
 		costToUseLabel = new UseCostLabel("Cost to use:");
 		costToUseLabel
-				.setAuto(true)
+				.setAuto(true)				
 				.setAnchor(WidgetAnchor.CENTER_CENTER)
 				.setHeight(10)
 				.setWidth(40)
@@ -196,6 +201,7 @@ public class AquaPanel extends PopulateLocationPopup {
 		closeTimerField = new CloseTimerField();
 		closeTimerField
 				.setAnchor(WidgetAnchor.CENTER_CENTER)
+				.setTooltip("Timer in Seconds before Auto-Close.")
 				.setHeight(14)
 				.setWidth(40)
 				.shiftXPos(-70)
@@ -211,18 +217,20 @@ public class AquaPanel extends PopulateLocationPopup {
 		everyoneCheckbox = new EveryoneCheckbox();
 		everyoneCheckbox
 				.setAuto(true)
+				.setTooltip("Enables everyone to access this locked item.")
 				.setAnchor(WidgetAnchor.CENTER_CENTER)
 				.setHeight(15)
 				.setWidth(40)
-				.shiftXPos(-165)
-				.shiftYPos(87);
+				.shiftXPos(0)
+				.shiftYPos(92);
 		passwordField = new PasswordField();
 		passwordField
 				.setAnchor(WidgetAnchor.CENTER_CENTER)
+				.setTooltip("Input Password here./nOtherise leave blank for fingerprint lock.")
 				.setHeight(14)
 				.setWidth(107)
 				.shiftXPos(70)
-				.shiftYPos(-49);
+				.shiftYPos(-69);
 		passwordLabel = new PasswordLabel("Password:");
 		passwordLabel
 				.setAuto(true)
@@ -230,24 +238,25 @@ public class AquaPanel extends PopulateLocationPopup {
 				.setHeight(8)
 				.setWidth(40)
 				.shiftXPos(15)
-				.shiftYPos(-45);
+				.shiftYPos(-65);
 		ownerField = new OwnerField();
 		ownerField
 				.setMaximumCharacters(18)
 				.setMaximumLines(1)
 				.setAnchor(WidgetAnchor.CENTER_CENTER)
+				.setTooltip("Current owner of the locked item.")
 				.setHeight(14)
 				.setWidth(107)
-				.shiftXPos(70)
-				.shiftYPos(-69);
+				.shiftXPos(-145)
+				.shiftYPos(94);
 		ownerLabel = new OwnerLabel("Owner:");
 		ownerLabel
 				.setAuto(true)
 				.setAnchor(WidgetAnchor.CENTER_CENTER)
 				.setHeight(10)
 				.setWidth(40)
-				.shiftXPos(15)
-				.shiftYPos(-65);
+				.shiftXPos(-170)
+				.shiftYPos(81);
 		attachWidgets(plugin, borderTexture, aquaPhoto, closeButton, applyButton, unlockButton, usersField, usersLabel, coownersField, coownersLabel,
 				costToUseField, costToUseLabel, damageOnFailField, damageOnFailLabel, costToCreateOutputLabel,
 				costToCreateLabel, everyoneCheckbox, passwordField, passwordLabel, ownerField, ownerLabel, closeTimerField, closeTimerLabel);

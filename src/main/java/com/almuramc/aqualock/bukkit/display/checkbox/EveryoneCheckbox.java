@@ -23,6 +23,6 @@ import org.getspout.spoutapi.gui.GenericCheckBox;
 
 public class EveryoneCheckbox extends GenericCheckBox {
 	public EveryoneCheckbox() {
-		super("Allow Everyone");
+		super("Everyone");
 	}
 }
