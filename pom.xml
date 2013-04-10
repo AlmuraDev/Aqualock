@@ -12,7 +12,7 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<bukkitVersion>1.4.6-R0.4-SNAPSHOT</bukkitVersion>
+		<bukkitVersion>1.5.1-R0.2-SNAPSHOT</bukkitVersion>
 		<buildNumber>Unknown</buildNumber>
 	</properties>
 
