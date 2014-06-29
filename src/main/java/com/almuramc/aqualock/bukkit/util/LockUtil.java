@@ -79,10 +79,13 @@ public class LockUtil {
 		if (!performAction(player, passcode, location, 0, "LOCK")) {
 			return false;
 		}
+		
+		final Player online = player.getPlayer();
 		if (AqualockPlugin.getDependency().isResidenceEnabled()) {
 			final ClaimedResidence res = Residence.getResidenceManager().getByLoc(location);
 			if (res != null) {
 				if (!res.getPermissions().playerHas(player.getName(), "lockable", true)) {
+					SpoutManager.getPlayer(online).sendNotification("Aqualock", "Insufficent Residence Permission!", Material.CAKE);
 					return false;
 				}
 			}
@@ -93,8 +96,7 @@ public class LockUtil {
 		} else {
 			lock = new BukkitLock(playerName, coowners, users, passcode, location, data, useCost, damage);
 		}
-		//After all that is said and done, add the lock made to the registry and backend.
-		final Player online = player.getPlayer();
+		//After all that is said and done, add the lock made to the registry and backend.		
 		SpoutManager.getPlayer(online).sendNotification("Aqualock", "Locked the block!", Material.CAKE);
 		registry.addLock(lock);
 		backend.addLock(lock);
@@ -158,7 +160,7 @@ public class LockUtil {
 			registry.removeLock(lock);
 			backend.removeLock(lock);
 			final Player online = player.getPlayer();
-			SpoutManager.getPlayer(online).sendNotification("Aqualock", "Unlocked the block!", Material.CAKE);
+			SpoutManager.getPlayer(online).sendNotification("Aqualock", "Lock removed.", Material.CAKE);
 			final Block oBlock = BlockUtil.getDoubleDoor(location);
 			if (oBlock != null) {
 				backend.removeLock(registry.getLock(oBlock.getWorld().getUID(), oBlock.getX(), oBlock.getY(), oBlock.getZ()));
@@ -274,7 +276,7 @@ public class LockUtil {
 			registry.addLock(clock);
 			backend.addLock(clock);
 		}
-		SpoutManager.getPlayer(modifying).sendNotification("Aqualock", "Updated the block!", Material.CAKE);
+		SpoutManager.getPlayer(modifying).sendNotification("Aqualock", "Updated the lock!", Material.CAKE);
 		return true;
 	}
 

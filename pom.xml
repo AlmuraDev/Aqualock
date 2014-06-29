@@ -5,7 +5,7 @@
 	<!-- Project information -->
 	<groupId>com.almuramc</groupId>
 	<artifactId>aqualock</artifactId>
-	<version>dev-SNAPSHOT</version>
+	<version>1.5</version>
 	<name>Aqualock</name>
 	<url>http://www.almuramc.com</url>
 	<description>Aqualock is the implementation of Bolt as a Bukkit/Spout plugin providing lightweight voxel protection.</description>
